@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Reusable Styles *//* Custom reusable styles for navbar */
+.nav-link {
+    @apply text-black font-semibold tracking-wide transition duration-300 hover:text-primary;
+    font-family: 'Montserrat', sans-serif; /* Use Montserrat font */
+    font-size: 20px; /* Font size */
+    line-height: 30.48px; /* Line height */
+  }
+  
+  
+  .button-primary {
+    @apply bg-primary text-white px-6 py-2 rounded-md tracking-wide border border-transparent font-semibold text-lg 
+           hover:bg-transparent hover:border-primary hover:text-primary transition duration-300;
+           
+  }
+  
+  
