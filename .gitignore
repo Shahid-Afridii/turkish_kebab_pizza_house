@@ -8,7 +8,7 @@ yarn-error.log*
 # Dependency directoriy
 node_modules/
 
-# Build directories
+# Build directories 
 build/
 dist/
 
