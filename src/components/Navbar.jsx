@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   FiUser,
   FiMapPin,
@@ -9,11 +9,12 @@ import {
   FiMenu,
   FiX,
   FiShoppingCart,
-} from 'react-icons/fi'; // React Icons for Cart, Search, etc.
-import { motion } from 'framer-motion'; // Import Framer Motion
+} from "react-icons/fi"; // React Icons
+import { motion } from "framer-motion"; // Import Framer Motion
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -23,13 +24,15 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <header className="bg-white  relative z-50">
-      <div className="container mx-auto flex justify-between items-center py-4 px-6">
+    <header className="bg-gray-50 relative z-50">
+      <div className="container mx-auto flex justify-between items-center px-2 py-4 lg:px-6">
         {/* Logo */}
         <Link to="/" className="flex items-center">
           <img
-            src="/src/assets/Mask group.png" // Replace with your actual logo path
+            src="/assets/Mask group.png" // Replace with your actual logo path
             alt="Logo"
             className="h-16 w-18"
           />
@@ -37,13 +40,28 @@ const Navbar = () => {
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link to="/menu" className="nav-link">
+          <Link
+            to="/menu"
+            className={`nav-link ${
+              isActive("/menu") ? "border-b-2 border-primary text-primary" : ""
+            }`}
+          >
             View Menu
           </Link>
-          <Link to="/info" className="nav-link">
+          <Link
+            to="/info"
+            className={`nav-link ${
+              isActive("/info") ? "border-b-2 border-primary text-primary" : ""
+            }`}
+          >
             Restaurant Info
           </Link>
-          <Link to="/about" className="nav-link">
+          <Link
+            to="/about"
+            className={`nav-link ${
+              isActive("/about") ? "border-b-2 border-primary text-primary" : ""
+            }`}
+          >
             About Us
           </Link>
         </nav>
@@ -52,15 +70,14 @@ const Navbar = () => {
         <div className="hidden md:flex items-center space-x-6">
           {/* Cart Icon */}
           <Link
-  to="/cart"
-  className="flex items-center justify-center  rounded-full h-10 w-12  hover:text-black"
->
-  <img
-    src="/src/assets/cart.png" // Replace with your image path
-    alt="Cart"
-   
-  />
-</Link>
+            to="/cart"
+            className="flex items-center justify-center rounded-full h-10 w-12 hover:text-black"
+          >
+            <img
+              src="assets/cart.png" // Replace with your image path
+              alt="Cart"
+            />
+          </Link>
 
           {/* Login Button */}
           <Link to="/login" className="button-primary">
@@ -125,7 +142,9 @@ const Navbar = () => {
                 <FiUser size={24} className="text-black flex-shrink-0" />
                 <div className="ml-4">
                   <span className="font-medium text-black block">My Account</span>
-                  <span className="text-sm text-gray-500 block">Edit Name, Number</span>
+                  <span className="text-sm text-gray-500 block">
+                    Edit Name, Number
+                  </span>
                 </div>
               </Link>
 
@@ -138,7 +157,9 @@ const Navbar = () => {
                 <FiMapPin size={24} className="text-gray-600 flex-shrink-0" />
                 <div className="ml-4">
                   <span className="font-medium text-black block">Address</span>
-                  <span className="text-sm text-gray-500 block">Edit Address, Add Address</span>
+                  <span className="text-sm text-gray-500 block">
+                    Edit Address, Add Address
+                  </span>
                 </div>
               </Link>
 
@@ -150,21 +171,49 @@ const Navbar = () => {
               >
                 <FiClock size={24} className="text-black flex-shrink-0" />
                 <div className="ml-4">
-                  <span className="font-medium text-black block">Order History</span>
-                  <span className="text-sm text-gray-500 block">Re-order, Rate Orders</span>
+                  <span className="font-medium text-black block">
+                    Order History
+                  </span>
+                  <span className="text-sm text-gray-500 block">
+                    Re-order, Rate Orders
+                  </span>
                 </div>
               </Link>
             </div>
 
             {/* Navigation Links */}
             <div className="mt-6 flex justify-center items-center flex-col space-y-4">
-              <Link to="/menu" className="nav-link" onClick={closeMenu}>
+              <Link
+                to="/menu"
+                className={`nav-link ${
+                  isActive("/menu")
+                    ? "border-b-2 border-primary text-primary"
+                    : ""
+                }`}
+                onClick={closeMenu}
+              >
                 View Menu
               </Link>
-              <Link to="/info" className="nav-link" onClick={closeMenu}>
+              <Link
+                to="/info"
+                className={`nav-link ${
+                  isActive("/info")
+                    ? "border-b-2 border-primary text-primary"
+                    : ""
+                }`}
+                onClick={closeMenu}
+              >
                 Restaurant Info
               </Link>
-              <Link to="/about" className="nav-link" onClick={closeMenu}>
+              <Link
+                to="/about"
+                className={`nav-link ${
+                  isActive("/about")
+                    ? "border-b-2 border-primary text-primary"
+                    : ""
+                }`}
+                onClick={closeMenu}
+              >
                 About Us
               </Link>
             </div>

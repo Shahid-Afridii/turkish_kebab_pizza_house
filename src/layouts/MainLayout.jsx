@@ -4,8 +4,8 @@ import Footer from '../components/Footer';
 
 const MainLayout = ({ children }) => (
   <div>
-    <Navbar />
-    <main className="py-4 px-4">{children}</main>
+    <Navbar className="bg-gray-50" />
+    <main className="py-4 px-4 bg-gray-50 ">{children}</main>
     <Footer />
   </div>
 );

@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Shimmer from '../components/shimmer'; // Global shimmer component
+import RestaurantInfo from '../pages/RestrauntInfo';
 
 // Lazy load the components
 const Home = lazy(() => import('../pages/Home'));
@@ -16,6 +17,7 @@ const AppRoutes = () => (
       <Route path="/" element={<Home />} />
       <Route path="/menu" element={<Menu />} />
       <Route path="/cart" element={<Cart />} />
+      <Route path="/info" element={<RestaurantInfo />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />

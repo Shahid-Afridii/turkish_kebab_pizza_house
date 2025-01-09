@@ -4,13 +4,13 @@ import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
 const categories = [
-  { id: 1, name: "Meals", img: "/src/assets/side-view-pizza-with-chicken-mushrooms-served-with-sauce-vegetables-salad-wooden-plate-removebg-preview 1.png" },
-  { id: 2, name: "Pizzas", img: "/src/assets/hawaiian-pizza-removebg-preview 1.png" },
-  { id: 3, name: "Garlic Breads", img: "/src/assets/delicious-orange-bun-table-removebg-preview 1.png" },
-  { id: 4, name: "Kebabs", img: "/src/assets/cooked-meat-veggies-kebab-skewers-with-pita-removebg-preview 1.png" },
-  { id: 5, name: "Burgers", img: "/src/assets/front-view-tasty-meat-burger-with-vegetables-dark-surface-sandwich-fast-food-bun-removebg-preview 1.png" },
-  { id: 6, name: "Sundries", img: "/src/assets/Chicken_wings-removebg-preview 1.png" },
-  { id: 7, name: "Chips", img: "/src/assets/horizontal-view-delicious-homemade-potato-chips-brown-plate-gray-table-removebg-preview 1.png" },
+  { id: 1, name: "Meals", img: "assets/side-view-pizza-with-chicken-mushrooms-served-with-sauce-vegetables-salad-wooden-plate-removebg-preview 1.png" },
+  { id: 2, name: "Pizzas", img: "assets/hawaiian-pizza-removebg-preview 1.png" },
+  { id: 3, name: "Garlic Breads", img: "assets/delicious-orange-bun-table-removebg-preview 1.png" },
+  { id: 4, name: "Kebabs", img: "assets/cooked-meat-veggies-kebab-skewers-with-pita-removebg-preview 1.png" },
+  { id: 5, name: "Burgers", img: "assets/front-view-tasty-meat-burger-with-vegetables-dark-surface-sandwich-fast-food-bun-removebg-preview 1.png" },
+  { id: 6, name: "Sundries", img: "assets/Chicken_wings-removebg-preview 1.png" },
+  { id: 7, name: "Chips", img: "assets/horizontal-view-delicious-homemade-potato-chips-brown-plate-gray-table-removebg-preview 1.png" },
 ];
 
 const CategoryCarousel = () => {

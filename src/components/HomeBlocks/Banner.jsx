@@ -6,7 +6,7 @@ const Banner = () => {
     <div className="relative w-full h-screen overflow-hidden">
       {/* Fullscreen Responsive Image */}
       <motion.img
-        src="/src/assets/Banner image 4 1.png" // Replace with your image path
+        src="assets/Banner image 4 1.png" // Replace with your image path
         alt="Pizza"
         className="absolute top-0 left-0 w-full h-full"
         initial={{ scale: 1.2 }}
@@ -63,7 +63,7 @@ const Banner = () => {
             transition={{ duration: 1, delay: 1.4 }}
           >
             <img
-              src="/src/assets/delivery.png" // Replace with your PNG file path
+              src="assets/delivery.png" // Replace with your PNG file path
               alt="Delivery Icon"
               className="w-5 h-5"
             />

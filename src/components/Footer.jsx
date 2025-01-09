@@ -4,16 +4,16 @@ import {
   FaPhoneAlt,
   FaFacebookF,
   FaInstagram,
-  FaTwitter,
   FaCcPaypal,
   FaCreditCard,
   FaMoneyBillAlt,
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { SiGooglepay } from "react-icons/si";
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-b from-white to-gray-100 py-4">
+    <footer className="bg-red-50 py-4">
       <div className="px-6 pt-8">
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
@@ -78,7 +78,7 @@ const Footer = () => {
                 href="#"
                 className="flex items-center justify-center w-10 h-10 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 transition"
               >
-                <FaTwitter />
+                <FaXTwitter />
               </a>
             </div>
           </div>
@@ -111,9 +111,9 @@ const Footer = () => {
 
         {/* Bottom Section */}
         <div className="flex font-Montserrat_Alternates flex-col md:flex-row justify-between items-center text-gray-600 text-sm">
-          <p>&copy; 2025 Turkish Kebab Pizza House. All Rights Reserved.</p>
+          <p>&copy; 2025 Turkish Kebab Pizza House. </p>
           <p>
-            Designed by <a href="#" className="hover:text-primary font-medium">OrderYOYO</a>
+          All Rights Reserved.
           </p>
         </div>
       </div>
