@@ -25,8 +25,15 @@ const CategoryCarousel = () => {
     if (carouselRef.current) {
       const containerWidth = carouselRef.current.offsetWidth;
       const itemWidth = carouselRef.current.scrollWidth / categories.length;
-      const scrollPosition = index * itemWidth - containerWidth / 2 + itemWidth / 2;
-      carouselRef.current.scrollTo({ left: Math.max(scrollPosition, 0), behavior: "smooth" });
+      const scrollPosition =
+        index * itemWidth - containerWidth / 2 + itemWidth / 2;
+
+      // Ensure the scroll position doesn't go out of bounds
+      const maxScrollLeft = carouselRef.current.scrollWidth - containerWidth;
+      carouselRef.current.scrollTo({
+        left: Math.min(Math.max(scrollPosition, 0), maxScrollLeft),
+        behavior: "smooth",
+      });
     }
   };
 
@@ -86,7 +93,7 @@ const CategoryCarousel = () => {
   return (
     <motion.div
       ref={ref}
-      className="flex items-center  font-montserrat justify-between rounded-lg shadow-xl mt-8 p-4 w-full overflow-hidden"
+      className="flex items-center justify-between font-montserrat rounded-lg shadow-xl mt-8 p-4 w-full overflow-hidden"
       initial="hidden"
       animate={controls}
       variants={animationVariants}
@@ -106,7 +113,7 @@ const CategoryCarousel = () => {
       {/* Category Items */}
       <motion.div
         ref={carouselRef}
-        className="flex items-center space-x-6 overflow-x-scroll scrollbar-hide w-full px-4"
+        className="flex items-center justify-center gap-6 w-full px-4 overflow-x-scroll scrollbar-hide scroll-snap-x"
       >
         {categories.map((category, index) => (
           <motion.div
@@ -114,7 +121,7 @@ const CategoryCarousel = () => {
             onClick={() => handleCategoryClick(index)}
             className={`flex flex-col items-center justify-center space-y-2 cursor-pointer ${
               currentIndex === index ? "bg-primary/10 border border-primary rounded-lg" : ""
-            } p-4`}
+            } p-4 scroll-snap-align-center`}
             variants={itemVariants}
             whileHover="hover"
           >
