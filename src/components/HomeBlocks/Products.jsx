@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import DrawerModal from "../CartModal/DrawerModal";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { FaChevronDown } from "react-icons/fa";
 
+// Static Data for All Items
 const items = [
   {
     id: 1,
@@ -13,6 +15,9 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: true,
+    toppings: ["Mushroom", "Chicken", "Pepperoni", "Sweetcorn", "Onions", "Green Peppers"],
+    dips: ["Curry", "Gravy", "Garlic", "Chilli", "Mint Sauce"],
+    drinks: ["Coca Cola", "Diet Coke", "Fanta Orange", "Sprite"],
   },
   {
     id: 2,
@@ -23,6 +28,9 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: true,
+    toppings: ["Tuna", "Bacon", "Jalapenos", "Kebab", "Salami", "Sweetcorn"],
+    dips: ["House", "Garlic", "Chilli", "Barbecue", "Honey Mustard"],
+    drinks: ["Coca Cola", "Diet Coke", "Coke Zero", "Pepsi", "7UP"],
   },
   {
     id: 3,
@@ -33,6 +41,9 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: true,
+    toppings: ["Lamb", "Chicken", "Nuggets", "Wings", "Cheese", "Pickles"],
+    dips: ["Curry", "Garlic", "Hot Sauce", "Mayonnaise"],
+    drinks: ["Sprite", "Coca Cola", "Diet Coke", "Fanta Orange"],
   },
   {
     id: 4,
@@ -43,6 +54,9 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: false,
+    toppings: ["Salami", "Olives", "Peppers", "Chicken", "Mushrooms", "Sweetcorn"],
+    dips: ["House", "Garlic", "Barbecue", "Ranch", "Ketchup"],
+    drinks: ["Coke Zero", "Fanta Orange", "Pepsi", "Mountain Dew"],
   },
   {
     id: 5,
@@ -53,6 +67,9 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: false,
+    toppings: ["Cheese", "Lettuce", "Tomato", "Pickles", "Onions", "Bacon"],
+    dips: ["Ketchup", "Mayonnaise", "Mustard", "Ranch"],
+    drinks: ["Coca Cola", "Sprite", "Water", "Diet Coke"],
   },
   {
     id: 6,
@@ -63,14 +80,20 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: false,
+    toppings: ["Pepperoni", "Cheese", "Sweetcorn", "Jalapenos", "Mushrooms", "Chicken"],
+    dips: ["Garlic", "Chilli", "Barbecue", "Honey Mustard", "Ranch"],
+    drinks: ["Coca Cola", "Diet Coke", "Sprite", "Fanta Orange"],
   },
 ];
+
 
 const Products = () => {
   const [visibleItems, setVisibleItems] = useState(6);
   const controls = useAnimation();
   const { ref, inView } = useInView({ threshold: 0.2 });
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const handleShowMore = () => {
     setVisibleItems((prev) => prev + 3);
@@ -85,10 +108,10 @@ const Products = () => {
 
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      transition: { duration: 0.6, staggerChildren: 0.1 } 
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.6, staggerChildren: 0.1 },
     },
   };
 
@@ -98,12 +121,22 @@ const Products = () => {
     hover: { scale: 1.02, transition: { duration: 0.3 } },
   };
 
+  const handleAddItem = (item) => {
+    setSelectedItem(item);
+    setDrawerOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
+    setSelectedItem(null);
+  };
+
   return (
     <div className="px-4 sm:px-8 py-8 mt-8 bg-gray-50">
       <h2 className="text-2xl font-title font-semibold mb-6">Meals</h2>
       <motion.div
         ref={ref}
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-6 mx-auto"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 mx-auto"
         initial="hidden"
         animate={controls}
         variants={cardVariants}
@@ -155,7 +188,10 @@ const Products = () => {
               <p className="text-sm text-gray-600 mt-2">{item.description}</p>
               <div className="flex justify-between items-center mt-4">
                 <span className="text-red-500 font-bold text-lg">{item.price}</span>
-                <button className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition">
+                <button
+                  onClick={() => handleAddItem(item)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition"
+                >
                   Add Item
                 </button>
               </div>
@@ -174,6 +210,13 @@ const Products = () => {
           </button>
         </div>
       )}
+
+      {/* Drawer Modal */}
+      <DrawerModal
+        isOpen={isDrawerOpen}
+        onClose={handleCloseDrawer}
+        selectedItem={selectedItem}
+      />
     </div>
   );
 };

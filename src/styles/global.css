@@ -26,4 +26,14 @@
   }
   
   
-  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-title; /* Poppins - Titles */
+  }
+
+  body, p, span, div, li {
+    @apply font-montserrat; /* Montserrat - General body font */
+  }
+
+  input, textarea, select {
+    @apply font-Noto_Sans; /* Noto Sans - Form elements */
+  }
