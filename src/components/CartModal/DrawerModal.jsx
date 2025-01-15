@@ -10,7 +10,7 @@ const drawerVariants = {
 
 const overlayVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+  visible: { opacity: 1, filter: "blur(8px)", transition: { duration: 0.5, ease: "easeOut" } },
   exit: { opacity: 0, transition: { duration: 0.4, ease: "easeIn" } },
 };
 
@@ -67,7 +67,7 @@ const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
         <>
           {/* Overlay */}
           <motion.div
-            className="fixed inset-0 bg-black bg-opacity-40 z-40"
+            className="fixed inset-0 bg-black bg-opacity-40 z-40 backdrop-blur-md"
             variants={overlayVariants}
             initial="hidden"
             animate="visible"
@@ -95,7 +95,7 @@ const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
                 <p className="text-sm text-gray-500 mt-1">{selectedItem?.description}</p>
                 <p className="text-green-600 font-medium mt-1">{selectedItem?.rating} ⭐ • 30 min</p>
                 <motion.button
-                  className="absolute top-4 right-4 bg-primary text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center"
+                  className="absolute top-4 right-4 bg-red-500 text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center"
                   onClick={onClose}
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.95 }}
