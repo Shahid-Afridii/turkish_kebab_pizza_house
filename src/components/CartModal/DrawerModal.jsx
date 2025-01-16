@@ -196,6 +196,7 @@ className="fixed
                         variants={chipVariants}
                         initial="hidden"
                         animate="visible"
+                         whileHover="hover"
                         className={`inline-flex items-center px-2 py-1 text-sm rounded border transition cursor-pointer ${
                           selectedToppings.includes(topping)
                             ? "bg-primary text-white border-primary"
@@ -250,6 +251,7 @@ className="fixed
                         variants={chipVariants}
                         initial="hidden"
                         animate="visible"
+                         whileHover="hover"
                         className={`inline-flex text-sm items-center px-2 py-1 rounded border transition cursor-pointer ${
                           selectedDips.includes(dip)
                             ? "bg-primary text-white border-primary"
@@ -302,6 +304,7 @@ className="fixed
                         key={index}
                         custom={index}
                         variants={chipVariants}
+                         whileHover="hover"
                         initial="hidden"
                         animate="visible"
                         className={`inline-flex text-sm items-center px-2 py-1 rounded border transition cursor-pointer ${
@@ -378,6 +381,9 @@ className="fixed
                   <motion.span
                     className="px-3 py-1 text-base font-medium text-gray-800 bg-gray-100 rounded-md border border-gray-300"
                     variants={chipVariants}
+                    initial="hidden"
+                    animate="visible"
+                    whileHover="hover"
                   >
                     {quantity}
                   </motion.span>
