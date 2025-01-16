@@ -154,7 +154,7 @@ className="fixed
               bg-white shadow-xl 
               z-50 rounded-t-xl 
               md:rounded-none 
-              overflow-hidden"            variants={drawerVariants}
+              overflow-visible"            variants={drawerVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -170,14 +170,16 @@ className="fixed
                 <h3 className="text-xl md:text-2xl font-semibold text-gray-800">{selectedItem?.name}</h3>
                 <p className="text-sm text-gray-500 mt-1">{selectedItem?.description}</p>
                 <p className="text-green-600 font-medium mt-1">{selectedItem?.rating} ⭐ • 30 min</p>
+                {/* Close Button */}
                 <motion.button
-                  className="absolute top-4 right-4 bg-red-500 text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center"
-                  onClick={onClose}
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  ✕
-                </motion.button>
+  className="absolute -top-4 md:-top-0  right-0 bg-primary text-white w-8 h-8 rounded-md lg:rounded-full shadow-lg flex items-center justify-center md:m-3 z-50"
+  // className="absolute -top-6 right-0 bg-red-500 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center border-4 border-white z-50"
+  onClick={onClose}
+  whileHover={{ scale: 1.1 }}
+  whileTap={{ scale: 0.95 }}
+>
+  ✕
+</motion.button>
               </motion.div>
 
               {/* Content */}
