@@ -16,7 +16,7 @@ const Footer = () => {
     <footer className="bg-red-50 py-4">
       <div className="px-6 pt-8">
         {/* Top Section */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* About Us */}
           <div className="font-Noto_Sans">
             <h3 className="text-2xl font-title font-bold text-gray-800">Turkish Kebab Pizza House</h3>
