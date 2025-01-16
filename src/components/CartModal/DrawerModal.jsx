@@ -77,8 +77,16 @@ const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
 
           {/* Drawer */}
           <motion.div
-            className="fixed top-0 right-0 w-full max-w-md h-full bg-white shadow-xl z-50 rounded-l-xl overflow-hidden"
-            variants={drawerVariants}
+className="fixed 
+              top-32 sm:top-16 
+              md:top-0 right-0 
+              w-full max-w-md 
+              h-[calc(100%-8rem)] sm:h-[calc(100%-4rem)] 
+              md:h-full 
+              bg-white shadow-xl 
+              z-50 rounded-t-xl 
+              md:rounded-none 
+              overflow-hidden"            variants={drawerVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -282,15 +290,7 @@ const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
                     className="w-full p-4 border-2 border-gray-300 rounded-lg bg-gray-50 focus:border-primary focus:ring-primary focus:outline-none transition"
                     rows="3"
                   ></textarea>
-                  <motion.button
-                    onClick={handleSendInstructions}
-                    className="mt-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition"
-                    variants={buttonVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                  >
-                    Send
-                  </motion.button>
+                  
                 </div>
               </motion.div>
 
