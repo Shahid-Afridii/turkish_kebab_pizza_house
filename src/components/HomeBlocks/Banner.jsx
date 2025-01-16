@@ -91,7 +91,7 @@ const Banner = () => {
 
       {/* Mobile Banner */}
       <div className="block md:hidden">
-        <div className="relative w-full h-[50vh] sm:h-[60vh] flex items-center bg-white">
+        <div className="relative w-full h-[50vh] sm:h-[60vh] flex items-center">
           {/* Left-Side Content */}
           <div className="w-[50%] h-full flex flex-col justify-center items-start">
             <motion.div
