@@ -3,27 +3,30 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaPlus, FaMinus, FaTimes } from "react-icons/fa";
 
 const drawerVariants = {
-  hidden: { x: "100%", opacity: 0, rotateY: -90 },
+  hidden: {
+    x: "100%",
+    opacity: 0,
+    rotateY: 30,
+    scale: 0.95,
+  },
   visible: {
     x: 0,
     opacity: 1,
     rotateY: 0,
+    scale: 1,
     transition: {
-      duration: 0.8,
-      type: "spring",
-      damping: 20,
-      stiffness: 150,
+      duration: 1.2,
+      ease: [0.25, 0.1, 0.25, 1], // Smooth cubic-bezier for a breezy effect
     },
   },
   exit: {
     x: "100%",
     opacity: 0,
-    rotateY: 90,
+    rotateY: -30,
+    scale: 0.95,
     transition: {
-      duration: 0.7,
-      type: "spring",
-      damping: 25,
-      stiffness: 120,
+      duration: 1.1,
+      ease: [0.25, 0.1, 0.25, 1],
     },
   },
 };
@@ -33,54 +36,65 @@ const overlayVariants = {
   visible: {
     opacity: 1,
     transition: {
-      duration: 0.6,
-      ease: [0.25, 0.1, 0.25, 1],
+      duration: 0.8,
+      ease: [0.4, 0, 0.2, 1], // Smooth fade-in for overlay
     },
   },
   exit: {
     opacity: 0,
     transition: {
-      duration: 0.5,
-      ease: [0.25, 0.1, 0.25, 1],
+      duration: 0.7,
+      ease: [0.4, 0, 0.2, 1],
     },
   },
 };
 
 const chipVariants = {
-  hidden: { opacity: 0, scale: 0.8, rotateX: -45 },
+  hidden: {
+    opacity: 0,
+    transform: "scale(0.8) translateY(20px)", // Start small and lower
+  },
   visible: (custom) => ({
     opacity: 1,
-    scale: 1,
-    rotateX: 0,
+    transform: "scale(1) translateY(0)", // Grows to full size and moves up
     transition: {
-      delay: custom * 0.1,
-      duration: 0.6,
-      type: "spring",
-      damping: 18,
-      stiffness: 120,
+      delay: custom * 0.1, // Slight delay for cascading effect
+      duration: 0.7,
+      ease: [0.4, 0, 0.2, 1], // Smooth cubic-bezier easing
     },
   }),
+  hover: {
+    transform: "scale(1.08)", // Slight growth for a hover effect
+    boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.15)", // Adds a shadow for depth
+    transition: {
+      duration: 0.5,
+      ease: "easeOut", // Subtle easing for hover
+    },
+  },
 };
+
+
 
 const buttonVariants = {
   hover: {
-    scale: 1.05,
-    rotateZ: -2,
-    boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
+    scale: 1.08,
+    rotateZ: 2,
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)", // Creates depth and elegance
     transition: {
-      duration: 0.4,
+      duration: 0.6,
       ease: "easeOut",
     },
   },
   tap: {
-    scale: 0.95,
-    rotateZ: 2,
+    scale: 0.92,
+    rotateZ: -2,
     transition: {
-      duration: 0.3,
-      ease: "easeIn",
+      duration: 0.4,
+      ease: "easeInOut",
     },
   },
 };
+
 
 
 
