@@ -77,23 +77,25 @@ const chipVariants = {
 
 const buttonVariants = {
   hover: {
-    scale: 1.08,
-    rotateZ: 2,
-    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)", // Creates depth and elegance
+    scale: 1.03, // Very subtle enlargement
+    boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)", // Soft shadow for subtle depth
     transition: {
-      duration: 0.6,
-      ease: "easeOut",
+      duration: 0.3, // Shorter and more fluid
+      ease: "easeOut", // Natural easing
     },
   },
   tap: {
-    scale: 0.92,
-    rotateZ: -2,
+    scale: 0.97, // Slight shrink for tactile feedback
+    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Lighter shadow for pressed state
     transition: {
-      duration: 0.4,
+      duration: 0.2,
       ease: "easeInOut",
     },
   },
 };
+
+
+
 
 
 
@@ -374,6 +376,8 @@ className="fixed
                     onClick={() => handleQuantityChange("decrement")}
                     className="w-8 h-8 bg-primary text-white rounded-full shadow-md flex items-center justify-center hover:bg-opacity-90 transition-transform active:scale-95"
                     variants={buttonVariants}
+                     whileHover="hover"
+  whileTap="tap"
                   >
                     <FaMinus size={12} />
                   </motion.button>
@@ -392,6 +396,8 @@ className="fixed
                     onClick={() => handleQuantityChange("increment")}
                     className="w-8 h-8 bg-primary text-white rounded-full shadow-md flex items-center justify-center hover:bg-opacity-90 transition-transform active:scale-95"
                     variants={buttonVariants}
+                     whileHover="hover"
+  whileTap="tap"
                   >
                     <FaPlus size={12} />
                   </motion.button>
