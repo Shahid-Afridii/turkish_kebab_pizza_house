@@ -3,35 +3,87 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaPlus, FaMinus, FaTimes } from "react-icons/fa";
 
 const drawerVariants = {
-  hidden: { x: "100%", opacity: 0 },
-  visible: { x: 0, opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
-  exit: { x: "100%", opacity: 0, transition: { duration: 0.5, ease: "easeIn" } },
+  hidden: { x: "100%", opacity: 0, rotateY: -90 },
+  visible: {
+    x: 0,
+    opacity: 1,
+    rotateY: 0,
+    transition: {
+      duration: 0.8,
+      type: "spring",
+      damping: 20,
+      stiffness: 150,
+    },
+  },
+  exit: {
+    x: "100%",
+    opacity: 0,
+    rotateY: 90,
+    transition: {
+      duration: 0.7,
+      type: "spring",
+      damping: 25,
+      stiffness: 120,
+    },
+  },
 };
 
 const overlayVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, filter: "blur(8px)", transition: { duration: 0.5, ease: "easeOut" } },
-  exit: { opacity: 0, transition: { duration: 0.4, ease: "easeIn" } },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  },
 };
 
 const chipVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.9 },
+  hidden: { opacity: 0, scale: 0.8, rotateX: -45 },
   visible: (custom) => ({
     opacity: 1,
-    y: 0,
     scale: 1,
+    rotateX: 0,
     transition: {
       delay: custom * 0.1,
-      duration: 0.8,
-      ease: "easeInOut",
+      duration: 0.6,
+      type: "spring",
+      damping: 18,
+      stiffness: 120,
     },
   }),
 };
 
 const buttonVariants = {
-  hover: { scale: 1.1, transition: { duration: 0.3 } },
-  tap: { scale: 0.95, transition: { duration: 0.2 } },
+  hover: {
+    scale: 1.05,
+    rotateZ: -2,
+    boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
+    transition: {
+      duration: 0.4,
+      ease: "easeOut",
+    },
+  },
+  tap: {
+    scale: 0.95,
+    rotateZ: 2,
+    transition: {
+      duration: 0.3,
+      ease: "easeIn",
+    },
+  },
 };
+
+
+
 
 const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
   const [quantity, setQuantity] = useState(1);
