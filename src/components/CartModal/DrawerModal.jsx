@@ -145,16 +145,15 @@ const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
 
           {/* Drawer */}
           <motion.div
-className="fixed 
-              top-32 sm:top-16 
-              md:top-0 right-0 
-              w-full max-w-md 
-              h-[calc(100%-8rem)] sm:h-[calc(100%-4rem)] 
-              md:h-full 
-              bg-white shadow-xl 
-              z-[9999] rounded-t-xl 
-              md:rounded-none 
-              overflow-visible"            variants={drawerVariants}
+className={`fixed 
+  top-0 sm:top-16 
+  md:top-0 right-0 
+  w-full max-w-md 
+  h-full 
+  bg-white shadow-xl 
+  z-[9999] rounded-t-xl 
+  md:rounded-none 
+  overflow-visible`}          variants={drawerVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -172,7 +171,7 @@ className="fixed
                 <p className="text-green-600 font-medium mt-1">{selectedItem?.rating} ⭐ • 30 min</p>
                 {/* Close Button */}
                 <motion.button
-  className="absolute -top-4 md:-top-0  right-0 bg-primary text-white w-8 h-8 rounded-md lg:rounded-full shadow-lg flex items-center justify-center md:m-3 z-50"
+  className="absolute -top-0 md:-top-0  right-0 bg-primary text-white w-8 h-8 rounded-md lg:rounded-full shadow-lg flex items-center justify-center md:m-3 z-50"
   // className="absolute -top-6 right-0 bg-red-500 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center border-4 border-white z-50"
   onClick={onClose}
   whileHover={{ scale: 1.1 }}
