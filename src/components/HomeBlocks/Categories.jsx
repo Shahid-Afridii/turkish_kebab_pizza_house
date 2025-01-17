@@ -62,10 +62,10 @@ const CategoryCarousel = () => {
 
   const handleTouchEnd = () => {
     const swipeDistance = touchStartX.current - touchEndX.current;
-    if (swipeDistance > 50) {
+    if (swipeDistance > 30) {
       // Swipe left
       handleNext();
-    } else if (swipeDistance < -50) {
+    } else if (swipeDistance < -30) {
       // Swipe right
       handlePrev();
     }
