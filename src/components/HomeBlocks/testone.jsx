@@ -69,24 +69,24 @@ const CategoryCarousel = () => {
         ref={carouselRef}
         className={`flex ${
           isScrollable ? "justify-start" : "justify-center"
-        } gap-4 pb-4 overflow-hidden w-full px-2 md:px-8`}
+        } gap-4 overflow-hidden w-full px-2 md:px-8`}
       >
         {categories.map((category) => (
           <motion.div
             key={category.id}
             onClick={() => handleCategoryClick(category.id)}
-            className={`flex flex-col items-center justify-center w-20 sm:w-24 lg:w-28 cursor-pointer rounded-full`}
-            whileHover={{ scale: 1.05 }}
-          >
-            <div className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 overflow-hidden rounded-full shadow-md bg-white ${
+            className={`flex flex-col items-center justify-center w-20 sm:w-24 lg:w-28 cursor-pointer ${
               activeCategory === category.id
                 ? "border-2 border-primary shadow-lg"
                 : "border-2 border-transparent"
-            }`}>
+            } rounded-full`}
+            whileHover={{ scale: 1.05 }}
+          >
+            <div className="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 overflow-hidden rounded-full shadow-md bg-white">
               <img
                 src={category.img}
                 alt={category.name}
-                className="w-full h-full object-contain "
+                className="w-full h-full object-contain"
               />
             </div>
             <span
