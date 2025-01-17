@@ -1,7 +1,7 @@
 import React, { useState,forwardRef } from "react";
 import DrawerModal from "../CartModal/DrawerModal";
 import { motion, useAnimation } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+
 import { FaChevronDown } from "react-icons/fa";
 
 // Static Data for All Items
@@ -90,7 +90,7 @@ const items = [
 const Products = forwardRef((props, ref) => {
   const [visibleItems, setVisibleItems] = useState(6);
   const controls = useAnimation();
-  const { ref: inViewRef, inView } = useInView({ threshold: 0.2 });
+  // const { ref: inViewRef, inView } = useInView({ threshold: 0.2 });
   const [hasAnimated, setHasAnimated] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -100,11 +100,11 @@ const Products = forwardRef((props, ref) => {
   };
 
   React.useEffect(() => {
-    if (inView && !hasAnimated) {
+    if (!hasAnimated) {
       controls.start("visible");
       setHasAnimated(true);
     }
-  }, [inView, controls, hasAnimated]);
+  }, [ controls, hasAnimated]);
 
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.95 },
@@ -138,7 +138,7 @@ const Products = forwardRef((props, ref) => {
         Meals
       </h2>
       <motion.div
-        ref={inViewRef}
+        // ref={inViewRef}
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 mx-auto"
         initial="hidden"
         animate={controls}
