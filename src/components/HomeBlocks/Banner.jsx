@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const Banner = () => {
+const Banner = ({onMenuClick}) => {
   return (
     <div>
       {/* Desktop and Tablet Banner */}
@@ -77,6 +77,7 @@ const Banner = () => {
 
               {/* Button */}
               <motion.button
+                onClick={onMenuClick}
                 className="button-primary"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -153,6 +154,7 @@ const Banner = () => {
 
       {/* Button */}
       <motion.button
+        onClick={onMenuClick}
         className="mt-4 bg-red-500 text-white text-sm sm:text-base py-2 px-4 rounded-lg hover:bg-red-600 transition"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}

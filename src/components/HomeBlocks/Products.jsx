@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,forwardRef } from "react";
 import DrawerModal from "../CartModal/DrawerModal";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -87,10 +87,10 @@ const items = [
 ];
 
 
-const Products = () => {
+const Products = forwardRef((props, ref) => {
   const [visibleItems, setVisibleItems] = useState(6);
   const controls = useAnimation();
-  const { ref, inView } = useInView({ threshold: 0.2 });
+  const { ref: inViewRef, inView } = useInView({ threshold: 0.2 });
   const [hasAnimated, setHasAnimated] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -133,9 +133,12 @@ const Products = () => {
 
   return (
     <div className="px-4 sm:px-8 py-8 mt-8 bg-gray-50">
-      <h2 className="text-2xl font-title font-semibold mb-6">Meals</h2>
+      {/* Attach the ref to the h2 element */}
+      <h2 ref={ref} className="text-2xl font-title font-semibold mb-6">
+        Meals
+      </h2>
       <motion.div
-        ref={ref}
+        ref={inViewRef}
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 mx-auto"
         initial="hidden"
         animate={controls}
@@ -219,6 +222,8 @@ const Products = () => {
       />
     </div>
   );
-};
+});
 
 export default Products;
+
+

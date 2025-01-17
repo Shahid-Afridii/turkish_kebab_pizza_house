@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 const categories = [
   { id: 1, name: "Meals", img: "assets/side-view-pizza-with-chicken-mushrooms-served-with-sauce-vegetables-salad-wooden-plate-removebg-preview 1.png" },
@@ -20,16 +21,21 @@ const CategoryCarousel = () => {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  // Check if the carousel is scrollable
-  useEffect(() => {
-    const updateScrollable = () => {
-      if (carouselRef.current) {
-        const containerWidth = carouselRef.current.offsetWidth;
-        const contentWidth = carouselRef.current.scrollWidth;
-        setIsScrollable(contentWidth > containerWidth); // Enable arrows if content exceeds container
-      }
-    };
+  const { ref, inView } = useInView({
+    triggerOnce: true, // Animation triggers only once
+    threshold: 0.1, // Trigger when 10% of the component is in the viewport
+  });
 
+  // Check if the carousel is scrollable
+  const updateScrollable = () => {
+    if (carouselRef.current) {
+      const containerWidth = carouselRef.current.offsetWidth;
+      const contentWidth = carouselRef.current.scrollWidth;
+      setIsScrollable(contentWidth > containerWidth); // Enable arrows if content exceeds container
+    }
+  };
+
+  React.useEffect(() => {
     updateScrollable();
     window.addEventListener("resize", updateScrollable);
     return () => window.removeEventListener("resize", updateScrollable);
@@ -75,7 +81,10 @@ const CategoryCarousel = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center w-full mt-4 md:mt-8 shadow-xl lg:shadow-sm">
+    <div
+      ref={ref}
+      className="relative flex items-center justify-center w-full mt-4 md:mt-8 shadow-xl lg:shadow-sm"
+    >
       {/* Left Arrow */}
       {isScrollable && (
         <button
@@ -87,8 +96,11 @@ const CategoryCarousel = () => {
       )}
 
       {/* Carousel */}
-      <div
+      <motion.div
         ref={carouselRef}
+        initial={{ opacity: 0, y: 50 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5, ease: "easeOut" }}
         className={`flex ${
           isScrollable ? "justify-start" : "justify-center"
         } gap-4 pb-4 overflow-hidden w-full px-2 md:px-8`}
@@ -104,7 +116,7 @@ const CategoryCarousel = () => {
             whileHover={{ scale: 1.05 }}
           >
             <div
-              className={`flex items-center  justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-32 lg:h-32 overflow-hidden rounded-full shadow-sm bg-white ${
+              className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-32 lg:h-32 overflow-hidden rounded-full shadow-sm bg-white ${
                 activeCategory === category.id
                   ? "border-2 border-primary shadow-lg"
                   : "border-2 border-transparent"
@@ -126,7 +138,7 @@ const CategoryCarousel = () => {
             </span>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Right Arrow */}
       {isScrollable && (
