@@ -100,11 +100,11 @@ const CategoryCarousel = () => {
           <motion.div
             key={category.id}
             onClick={() => handleCategoryClick(category.id)}
-            className={`flex flex-col items-center justify-center w-20 sm:w-24 lg:w-28 cursor-pointer rounded-full`}
+            className={`flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full`}
             whileHover={{ scale: 1.05 }}
           >
             <div
-              className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 overflow-hidden rounded-full shadow-md bg-white ${
+              className={`flex items-center  justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-32 lg:h-32 overflow-hidden rounded-full shadow-sm bg-white ${
                 activeCategory === category.id
                   ? "border-2 border-primary shadow-lg"
                   : "border-2 border-transparent"
