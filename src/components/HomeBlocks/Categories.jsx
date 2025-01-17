@@ -17,6 +17,9 @@ const CategoryCarousel = () => {
   const [activeCategory, setActiveCategory] = useState(null); // Track the active category
   const carouselRef = useRef(null);
 
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
   // Check if the carousel is scrollable
   useEffect(() => {
     const updateScrollable = () => {
@@ -35,7 +38,7 @@ const CategoryCarousel = () => {
   const handleNext = () => {
     if (carouselRef.current) {
       const containerWidth = carouselRef.current.offsetWidth;
-      const scrollAmount = containerWidth / 2; // Scroll by half the width of the container
+      const scrollAmount = containerWidth * 0.75; // Increase scroll speed by scrolling 75% of the container width
       carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
@@ -43,13 +46,9 @@ const CategoryCarousel = () => {
   const handlePrev = () => {
     if (carouselRef.current) {
       const containerWidth = carouselRef.current.offsetWidth;
-      const scrollAmount = containerWidth / 2; // Scroll by half the width of the container
+      const scrollAmount = containerWidth * 0.75; // Increase scroll speed
       carouselRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
     }
-  };
-
-  const handleCategoryClick = (id) => {
-    setActiveCategory(id); // Set the clicked category as active
   };
 
   const handleTouchStart = (e) => {
@@ -62,20 +61,21 @@ const CategoryCarousel = () => {
 
   const handleTouchEnd = () => {
     const swipeDistance = touchStartX.current - touchEndX.current;
-    if (swipeDistance > 50) {
+    if (swipeDistance > 30) {
       // Swipe left
       handleNext();
-    } else if (swipeDistance < -50) {
+    } else if (swipeDistance < -30) {
       // Swipe right
       handlePrev();
     }
   };
 
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
+  const handleCategoryClick = (id) => {
+    setActiveCategory(id); // Set the clicked category as active
+  };
 
   return (
-    <div className="relative flex items-center shadow-xl lg:shadow-sm justify-center w-full mt-4 md:mt-8">
+    <div className="relative flex items-center justify-center w-full mt-4 md:mt-8 shadow-xl lg:shadow-sm">
       {/* Left Arrow */}
       {isScrollable && (
         <button
