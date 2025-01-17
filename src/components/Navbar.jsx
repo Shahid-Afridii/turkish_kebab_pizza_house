@@ -27,7 +27,7 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="bg-gray-50 relative z-50">
+    <header className="bg-gray-50 relative z-[9999]">
       <div className="container mx-auto flex justify-between items-center px-2 py-4 lg:px-6">
         {/* Logo */}
         <Link to="/" className="flex items-center">
@@ -104,7 +104,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+        <div className="fixed inset-0 bg-white z-[9999] overflow-y-auto">
           <motion.div
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: "0%" }}

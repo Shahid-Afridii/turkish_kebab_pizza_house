@@ -62,10 +62,10 @@ const CategoryCarousel = () => {
 
   const handleTouchEnd = () => {
     const swipeDistance = touchStartX.current - touchEndX.current;
-    if (swipeDistance > 30) {
+    if (swipeDistance > 50) {
       // Swipe left
       handleNext();
-    } else if (swipeDistance < -30) {
+    } else if (swipeDistance < -50) {
       // Swipe right
       handlePrev();
     }
@@ -75,7 +75,7 @@ const CategoryCarousel = () => {
   const touchEndX = useRef(0);
 
   return (
-    <div className="relative flex items-center justify-center w-full mt-4 md:mt-8">
+    <div className="relative flex items-center shadow-xl lg:shadow-sm justify-center w-full mt-4 md:mt-8">
       {/* Left Arrow */}
       {isScrollable && (
         <button
