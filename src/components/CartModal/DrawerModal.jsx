@@ -135,7 +135,7 @@ const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
         <>
           {/* Overlay */}
           <motion.div
-            className="fixed inset-0 bg-black bg-opacity-40 z-40 backdrop-blur-md"
+            className="fixed inset-0 bg-black bg-opacity-40 z-[9998] backdrop-blur-md "
             variants={overlayVariants}
             initial="hidden"
             animate="visible"
@@ -152,7 +152,7 @@ className="fixed
               h-[calc(100%-8rem)] sm:h-[calc(100%-4rem)] 
               md:h-full 
               bg-white shadow-xl 
-              z-50 rounded-t-xl 
+              z-[9999] rounded-t-xl 
               md:rounded-none 
               overflow-visible"            variants={drawerVariants}
             initial="hidden"
@@ -162,7 +162,7 @@ className="fixed
             <div className="h-full flex flex-col">
               {/* Sticky Header */}
               <motion.div
-                className="sticky top-0 bg-white px-4 py-5 shadow-sm z-10 text-center border-b border-gray-200"
+                className="sticky top-0 bg-white px-4 py-5 shadow-sm z-[9999]text-center border-b border-gray-200"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}

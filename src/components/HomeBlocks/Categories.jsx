@@ -52,15 +52,37 @@ const CategoryCarousel = () => {
     setActiveCategory(id); // Set the clicked category as active
   };
 
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const swipeDistance = touchStartX.current - touchEndX.current;
+    if (swipeDistance > 50) {
+      // Swipe left
+      handleNext();
+    } else if (swipeDistance < -50) {
+      // Swipe right
+      handlePrev();
+    }
+  };
+
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
   return (
     <div className="relative flex items-center justify-center w-full mt-4 md:mt-8">
       {/* Left Arrow */}
       {isScrollable && (
         <button
           onClick={handlePrev}
-          className="absolute left-[-5px] md:left-2 z-10 w-6 h-6 md:w-8 md:h-8 bg-white shadow-md rounded-full flex items-center justify-center text-primary border border-primary hover:bg-primary hover:text-white"
+          className="absolute left-[-5px] sm:left-2 z-10 w-6 h-6 sm:w-8 sm:h-8 bg-white shadow-md rounded-full flex items-center justify-center text-primary border border-primary hover:bg-primary hover:text-white hidden sm:flex"
         >
-          <FaArrowLeft className="w-3 h-3 md:w-4 md:h-4" />
+          <FaArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
         </button>
       )}
 
@@ -70,6 +92,9 @@ const CategoryCarousel = () => {
         className={`flex ${
           isScrollable ? "justify-start" : "justify-center"
         } gap-4 pb-4 overflow-hidden w-full px-2 md:px-8`}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {categories.map((category) => (
           <motion.div
@@ -78,11 +103,13 @@ const CategoryCarousel = () => {
             className={`flex flex-col items-center justify-center w-20 sm:w-24 lg:w-28 cursor-pointer rounded-full`}
             whileHover={{ scale: 1.05 }}
           >
-            <div className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 overflow-hidden rounded-full shadow-md bg-white ${
-              activeCategory === category.id
-                ? "border-2 border-primary shadow-lg"
-                : "border-2 border-transparent"
-            }`}>
+            <div
+              className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 overflow-hidden rounded-full shadow-md bg-white ${
+                activeCategory === category.id
+                  ? "border-2 border-primary shadow-lg"
+                  : "border-2 border-transparent"
+              }`}
+            >
               <img
                 src={category.img}
                 alt={category.name}
@@ -105,9 +132,9 @@ const CategoryCarousel = () => {
       {isScrollable && (
         <button
           onClick={handleNext}
-          className="absolute right-[-5px] md:right-2 z-10 w-6 h-6 md:w-8 md:h-8 bg-white shadow-md rounded-full flex items-center justify-center text-primary border border-primary hover:bg-primary hover:text-white"
+          className="absolute right-[-5px] sm:right-2 z-10 w-6 h-6 sm:w-8 sm:h-8 bg-white shadow-md rounded-full flex items-center justify-center text-primary border border-primary hover:bg-primary hover:text-white hidden sm:flex"
         >
-          <FaArrowRight className="w-3 h-3 md:w-4 md:h-4" />
+          <FaArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
         </button>
       )}
     </div>
