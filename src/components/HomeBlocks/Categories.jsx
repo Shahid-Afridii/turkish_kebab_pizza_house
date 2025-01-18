@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -35,7 +35,7 @@ const CategoryCarousel = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     updateScrollable();
     window.addEventListener("resize", updateScrollable);
     return () => window.removeEventListener("resize", updateScrollable);
@@ -98,8 +98,8 @@ const CategoryCarousel = () => {
       {/* Carousel */}
       <motion.div
         ref={carouselRef}
-        initial={{ opacity: 0, y: 50 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
+        initial={{ opacity: 0, y: -50 }} // Start from the top
+        animate={inView ? { opacity: 1, y: 0 } : {}} // Move to its original position
         transition={{ duration: 0.5, ease: "easeOut" }}
         className={`flex ${
           isScrollable ? "justify-start" : "justify-center"
