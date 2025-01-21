@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Shimmer from '../components/shimmer'; // Global shimmer component
 import RestaurantInfo from '../pages/RestrauntInfo';
 
 // Lazy load the components
