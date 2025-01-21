@@ -1,10 +1,18 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect,Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Banner from "../components/HomeBlocks/Banner";
 import Search from "../components/HomeBlocks/Search";
 import Categories from "../components/HomeBlocks/Categories";
 import Products from "../components/HomeBlocks/Products";
+import withErrorBoundary from "../components/ErrorBoundary/withErrorBoundary"; 
 
+import SkeletonBanner from "../components/skeleton/BannerSkeleton";
+
+  // Lazy-load components with dynamic fallbacks and error messages
+const BannerWithErrorBoundary = withErrorBoundary(
+  React.lazy(() => import("../components/HomeBlocks/Banner")),
+  <SkeletonBanner />,
+  "Failed to load the banner."
+);
 const Home = () => {
   const productsHeadingRef = useRef(null);
   const categoriesRef = useRef(null);
@@ -50,7 +58,7 @@ const Home = () => {
   return (
     <div className="relative">
       <div className="relative">
-        <Banner onMenuClick={scrollToProductsHeading} />
+      <BannerWithErrorBoundary onMenuClick={scrollToProductsHeading} />
       </div>
 
       {/* Sticky Search Section */}

@@ -12,7 +12,7 @@ const Login = lazy(() => import('../pages/Login'));
 const Signup = lazy(() => import('../pages/Signup'));
 
 const AppRoutes = () => (
-  <Suspense fallback={<Shimmer />}>
+  
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/menu" element={<Menu />} />
@@ -22,7 +22,7 @@ const AppRoutes = () => (
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
     </Routes>
-  </Suspense>
+
 );
 
 export default AppRoutes;
