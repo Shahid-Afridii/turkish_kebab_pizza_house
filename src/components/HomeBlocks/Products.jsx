@@ -1,10 +1,12 @@
-import React, { useState,forwardRef } from "react";
-import DrawerModal from "../CartModal/DrawerModal";
-import { motion, useAnimation } from "framer-motion";
+import React, { useState, forwardRef } from 'react';
+import DrawerModal from '../CartModal/DrawerModal';
+import { motion } from 'framer-motion';
+import { Navigation, A11y } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { FaPlus, FaChevronLeft, FaChevronRight, FaStar } from 'react-icons/fa';
 
-import { FaChevronDown } from "react-icons/fa";
-
-// Static Data for All Items
 const items = [
   {
     id: 1,
@@ -84,42 +86,33 @@ const items = [
     dips: ["Garlic", "Chilli", "Barbecue", "Honey Mustard", "Ranch"],
     drinks: ["Coca Cola", "Diet Coke", "Sprite", "Fanta Orange"],
   },
-];
+ ];
+ 
+ 
 
+const CustomNavigation = ({ prevEl, nextEl, showArrows }) => {
+  if (!showArrows) return null; // Don't render arrows if disabled
+  return (
+    <div className="absolute inset-y-0 flex items-center justify-between w-full pointer-events-none z-10">
+      <button
+        ref={prevEl}
+        className="pointer-events-auto bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 transition-all transform -translate-x-3"
+      >
+        <FaChevronLeft />
+      </button>
+      <button
+        ref={nextEl}
+        className="pointer-events-auto bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 transition-all transform translate-x-3"
+      >
+        <FaChevronRight />
+      </button>
+    </div>
+  );
+};
 
 const Products = forwardRef((props, ref) => {
-  const [visibleItems, setVisibleItems] = useState(6);
-  const controls = useAnimation();
-  // const { ref: inViewRef, inView } = useInView({ threshold: 0.2 });
-  const [hasAnimated, setHasAnimated] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-
-  const handleShowMore = () => {
-    setVisibleItems((prev) => prev + 3);
-  };
-
-  React.useEffect(() => {
-    if (!hasAnimated) {
-      controls.start("visible");
-      setHasAnimated(true);
-    }
-  }, [ controls, hasAnimated]);
-
-  const cardVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.6, staggerChildren: 0.1 },
-    },
-  };
-
-  const childVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
-    hover: { scale: 1.02, transition: { duration: 0.3 } },
-  };
 
   const handleAddItem = (item) => {
     setSelectedItem(item);
@@ -131,90 +124,111 @@ const Products = forwardRef((props, ref) => {
     setSelectedItem(null);
   };
 
+  const prevElRef = React.useRef(null);
+  const nextElRef = React.useRef(null);
+
+  // Hide arrows on screens below 768px
+  const [showArrows, setShowArrows] = useState(window.innerWidth >= 768);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setShowArrows(window.innerWidth >= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <div className="px-4 sm:px-8 py-8 mt-8 bg-gray-50">
-      {/* Attach the ref to the h2 element */}
+    <div className="relative px-4 sm:px-8 py-8 mt-8 bg-gray-50">
       <h2 ref={ref} className="text-2xl font-title font-semibold mb-6">
         Meals
       </h2>
-      <motion.div
-        // ref={inViewRef}
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 mx-auto"
-        initial="hidden"
-        animate={controls}
-        variants={cardVariants}
-      >
-        {items.slice(0, visibleItems).map((item) => (
-          <motion.div
-            key={item.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition duration-300 flex flex-col justify-between"
-            variants={childVariants}
-            whileHover="hover"
-          >
-            <div className="relative">
-              {item.popular && (
-                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                  Popular
-                </span>
-              )}
-              <img
-                src={item.img}
-                alt={item.name}
-                className="w-full  object-cover"
-              />
-            </div>
-            <div className="p-4 flex flex-col justify-between h-full">
-              <h3 className="text-lg font-bold text-gray-800">{item.name}</h3>
-              <div className="flex items-center text-sm text-gray-500 mt-2">
-                <span className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill={i < Math.round(item.rating) ? "currentColor" : "none"}
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      className="w-4 h-4 text-yellow-400 mr-1"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.027 6.254a1 1 0 00.95.69h6.614c.969 0 1.371 1.24.588 1.81l-5.351 3.89a1 1 0 00-.364 1.118l2.027 6.254c.3.921-.755 1.688-1.54 1.118l-5.351-3.89a1 1 0 00-1.175 0l-5.351 3.89c-.784.57-1.84-.197-1.54-1.118l2.027-6.254a1 1 0 00-.364-1.118l-5.351-3.89c-.783-.57-.38-1.81.588-1.81h6.614a1 1 0 00.95-.69l2.027-6.254z"
-                      />
-                    </svg>
-                  ))}
-                </span>
-                <span className="ml-2 text-green-600 font-semibold">{item.rating}</span>
-                <span className="ml-2 text-gray-500">{item.reviews}</span>
-              </div>
-              <p className="text-sm text-gray-600 mt-2">{item.description}</p>
-              <div className="flex justify-between items-center mt-4">
-                <span className="text-red-500 font-bold text-lg">{item.price}</span>
-                <button
-                  onClick={() => handleAddItem(item)}
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition"
-                >
-                  Add Item
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-      {visibleItems < items.length && (
-        <div className="flex justify-center mt-8">
-          <button
-            onClick={handleShowMore}
-            className="flex items-center justify-center bg-red-500 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition"
-          >
-            Show more
-            <FaChevronDown className="ml-2" />
-          </button>
-        </div>
-      )}
 
-      {/* Drawer Modal */}
+      <div className="relative">
+        <Swiper
+          modules={[Navigation, A11y]}
+          spaceBetween={10}
+          slidesPerView={1.5}
+          breakpoints={{
+            320: { slidesPerView: 1.2, spaceBetween: 10 },
+            375: { slidesPerView: 1.5, spaceBetween: 15 },
+            640: { slidesPerView: 2, spaceBetween: 20 },
+            768: { slidesPerView: 2, spaceBetween: 20 },
+            1024: { slidesPerView: 4, spaceBetween: 20 },
+            1920: { slidesPerView: 6, spaceBetween: 25 }, // For larger screens
+          }}
+          navigation={{
+            prevEl: prevElRef.current,
+            nextEl: nextElRef.current,
+          }}
+          onBeforeInit={(swiper) => {
+            swiper.params.navigation.prevEl = prevElRef.current;
+            swiper.params.navigation.nextEl = nextElRef.current;
+          }}
+          className="w-full"
+        >
+          {items.map((item) => (
+            <SwiperSlide key={item.id}>
+              <motion.div
+                className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition duration-300 flex flex-col justify-between"
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="relative">
+                  {item.popular && (
+                    <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      Popular
+                    </span>
+                  )}
+                  <img
+                    src={item.img}
+                    alt={item.name}
+                    className="w-full h-48 object-cover"
+                  />
+                </div>
+                <div className="p-4 flex flex-col justify-between h-full">
+                  <h3 className="text-lg font-bold text-gray-800">
+                    {item.name}
+                  </h3>
+                  <div className="flex items-center text-sm text-gray-500 mt-2">
+                    {[...Array(5)].map((_, i) => (
+                      <FaStar
+                        key={i}
+                        className={`w-4 h-4 ${
+                          i < Math.round(item.rating)
+                            ? 'text-yellow-400'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    ))}
+                    <span className="ml-2 text-green-600 font-semibold">
+                      {item.rating}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-2 truncate">
+                    {item.description}
+                  </p>
+                  <div className="flex justify-between items-center mt-4">
+                    <span className="text-red-500 font-bold text-lg">
+                      {item.price}
+                    </span>
+                    <button
+                      onClick={() => handleAddItem(item)}
+                      className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition flex items-center"
+                    >
+                      <FaPlus className="mr-2" />
+                      Add Item
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {/* Custom Arrows */}
+        <CustomNavigation prevEl={prevElRef} nextEl={nextElRef} showArrows={showArrows} />
+      </div>
+
       <DrawerModal
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
@@ -225,5 +239,3 @@ const Products = forwardRef((props, ref) => {
 });
 
 export default Products;
-
-
