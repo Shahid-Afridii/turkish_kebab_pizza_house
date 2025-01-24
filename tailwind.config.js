@@ -2,6 +2,10 @@ module.exports = {
   content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'], // Adjust paths as needed
   theme: {
     extend: {
+      screens: {
+        '2xl': '1920px', // This is already available in Tailwind by default
+        '3xl': '2560px', // Add custom screen for larger sizes
+      },
       fontFamily: {
         title: ['Poppins', 'sans-serif'], // For Titles
         button: ['Montserrat', 'sans-serif'], // For Buttons

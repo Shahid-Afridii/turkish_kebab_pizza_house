@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect,Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Search from "../components/HomeBlocks/Search";
 import Categories from "../components/HomeBlocks/Categories";
+import SliderProducts from "../components/HomeBlocks/SliderProducts";
 import Products from "../components/HomeBlocks/Products";
 import withErrorBoundary from "../components/ErrorBoundary/withErrorBoundary"; 
 
@@ -106,6 +107,15 @@ const Home = () => {
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <Products ref={productsHeadingRef} />
+      </motion.div>
+      {/* slider Products Section */}
+      <motion.div
+        className="relative"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+      >
+        <SliderProducts  />
       </motion.div>
     </div>
   );
