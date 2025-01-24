@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useEffect } from "react";
 import DrawerModal from "../CartModal/DrawerModal";
 import { motion } from "framer-motion";
 import { Navigation, A11y } from "swiper/modules";
@@ -70,7 +70,8 @@ const items = [
   },
 ];
 
-const CustomNavigation = ({ prevEl, nextEl, disablePrev, disableNext }) => {
+const CustomNavigation = ({ prevEl, nextEl, disablePrev, disableNext, showArrows }) => {
+  if (!showArrows) return null; // Hide arrows if showArrows is false
   return (
     <div className="absolute inset-y-0 flex items-center justify-between w-full pointer-events-none z-10">
       <button
@@ -100,6 +101,7 @@ const Products = forwardRef((props, ref) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [disablePrev, setDisablePrev] = useState(true);
   const [disableNext, setDisableNext] = useState(false);
+  const [showArrows, setShowArrows] = useState(window.innerWidth >= 768);
 
   const handleAddItem = (item) => {
     setSelectedItem(item);
@@ -119,6 +121,14 @@ const Products = forwardRef((props, ref) => {
     setDisableNext(swiper.isEnd);
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setShowArrows(window.innerWidth >= 768); // Show arrows only for screens >= 768px
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="relative px-4 sm:px-8 py-8 mt-8 bg-gray-50">
       <h2 ref={ref} className="text-2xl font-title font-semibold mb-6">
@@ -135,7 +145,8 @@ const Products = forwardRef((props, ref) => {
             375: { slidesPerView: 1.5, spaceBetween: 15 },
             640: { slidesPerView: 2, spaceBetween: 20 },
             768: { slidesPerView: 2, spaceBetween: 20 },
-            1024: { slidesPerView: 4, spaceBetween: 20 },
+            1024: { slidesPerView: 3, spaceBetween: 20 },
+            1440: { slidesPerView: 4, spaceBetween: 20 },
             1920: { slidesPerView: 6, spaceBetween: 25 },
           }}
           navigation={{
@@ -214,6 +225,7 @@ const Products = forwardRef((props, ref) => {
           nextEl={nextElRef}
           disablePrev={disablePrev}
           disableNext={disableNext}
+          showArrows={showArrows}
         />
       </div>
 
