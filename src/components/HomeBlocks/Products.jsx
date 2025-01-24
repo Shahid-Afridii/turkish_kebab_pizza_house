@@ -1,5 +1,5 @@
 import React, { useState, forwardRef } from "react";
-import DrawerModal from "../CartModal/DrawerModal";
+import DrawerModal from "../Cart/DrawerModal";
 import { motion } from "framer-motion";
 import { FaPlus,FaChevronDown } from "react-icons/fa";
 

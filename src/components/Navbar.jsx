@@ -11,11 +11,12 @@ import {
   FiShoppingCart,
 } from "react-icons/fi"; // React Icons
 import { motion } from "framer-motion"; // Import Framer Motion
-
+import { useSelector } from "react-redux";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-
+  const cartItems = useSelector((state) => state.cart.items); // Fetch cart items from Redux store
+  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0); // Calculate total items in the cart
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -69,15 +70,21 @@ const Navbar = () => {
         {/* Desktop Cart & Login */}
         <div className="hidden md:flex items-center space-x-6">
           {/* Cart Icon */}
-          <Link
-            to="/cart"
-            className="flex items-center justify-center rounded-full h-10 w-12 hover:text-black"
-          >
-            <img
-              src="assets/cart.png" // Replace with your image path
-              alt="Cart"
-            />
-          </Link>
+           {/* Cart Icon with Badge */}
+  <div className="relative flex items-center">
+    <Link
+      to="/cart"
+      className="flex items-center justify-center rounded-full h-12 w-12  transition"
+    >
+      <img src="assets/cart.png" alt="Cart" className="w-12 h-12" />
+    </Link>
+    {totalItems > 0 && (
+      <span className="absolute -bottom-2 -right-2 bg-primary text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
+        {totalItems}
+      </span>
+    )}
+  </div>
+
 
           {/* Login Button */}
           <Link to="/login" className="button-primary">

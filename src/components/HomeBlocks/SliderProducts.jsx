@@ -1,5 +1,5 @@
 import React, { useState, forwardRef, useEffect } from "react";
-import DrawerModal from "../CartModal/DrawerModal";
+import DrawerModal from "../Cart/DrawerModal";
 import { motion } from "framer-motion";
 import { Navigation, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";

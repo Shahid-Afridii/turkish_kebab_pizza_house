@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaPlus, FaMinus, FaTimes } from "react-icons/fa";
-
+import { useDispatch,useSelector } from "react-redux";
+import { addToCart } from "../../redux/slices/cartSlice";
+import BottomCartBar from "./BottomCartBar";
 const drawerVariants = {
   hidden: {
     x: "100%",
@@ -73,8 +75,6 @@ const chipVariants = {
   },
 };
 
-
-
 const buttonVariants = {
   hover: {
     scale: 1.03, // Very subtle enlargement
@@ -94,23 +94,36 @@ const buttonVariants = {
   },
 };
 
-
-
-
-
-
-
-
 const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
-  const [quantity, setQuantity] = useState(1);
   const [instructions, setInstructions] = useState("");
+  const dispatch = useDispatch();
+  // Get the quantity from the Redux store
+  const existingItem = useSelector((state) =>
+    state.cart.items.find((item) => item.id === selectedItem?.id)
+);
+const initialQuantity = existingItem ? existingItem.quantity : 1;
+const [quantity, setQuantity] = useState(initialQuantity);
 
   const [selectedToppings, setSelectedToppings] = useState([]);
   const [selectedDips, setSelectedDips] = useState([]);
   const [selectedDrinks, setSelectedDrinks] = useState([]);
-
+  const [showCartBar, setShowCartBar] = useState(false);
   const handleQuantityChange = (type) => {
-    setQuantity((prev) => (type === "increment" ? prev + 1 : Math.max(1, prev - 1)));
+    setQuantity((prev) =>
+      type === "increment" ? prev + 1 : Math.max(1, prev - 1)
+    );
+  };
+
+  const handleAddToCart = () => {
+    if (selectedItem) {
+      dispatch(addToCart({ ...selectedItem, quantity }));
+      setShowCartBar(true);
+      onClose(); // Close the drawer
+    }
+  };
+
+  const handleCloseCartBar = () => {
+    setShowCartBar(false);
   };
 
   const handleChipSelect = (item, setSelected) => {
@@ -123,11 +136,7 @@ const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
     setSelected([]);
   };
 
-  const handleSendInstructions = () => {
-    console.log("Special Instructions:", instructions);
-    alert("Special instructions sent!");
-    setInstructions("");
-  };
+ 
 
   return (
     <AnimatePresence>
@@ -145,7 +154,7 @@ const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
 
           {/* Drawer */}
           <motion.div
-className={`fixed 
+            className={`fixed 
   top-0 sm:top-16 
   md:top-0 right-0 
   w-full max-w-md 
@@ -153,7 +162,8 @@ className={`fixed
   bg-white shadow-xl 
   z-[9999] rounded-t-xl 
   md:rounded-none 
-  overflow-visible`}          variants={drawerVariants}
+  overflow-visible`}
+            variants={drawerVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -166,19 +176,25 @@ className={`fixed
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <h3 className="text-xl md:text-2xl font-semibold text-gray-800">{selectedItem?.name}</h3>
-                <p className="text-sm text-gray-500 mt-1">{selectedItem?.description}</p>
-                <p className="text-green-600 font-medium mt-1">{selectedItem?.rating} ⭐ • 30 min</p>
+                <h3 className="text-xl md:text-2xl font-semibold text-gray-800">
+                  {selectedItem?.name}
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  {selectedItem?.description}
+                </p>
+                <p className="text-green-600 font-medium mt-1">
+                  {selectedItem?.rating} ⭐ • 30 min
+                </p>
                 {/* Close Button */}
                 <motion.button
-  className="absolute -top-0 md:-top-0  right-0 bg-primary text-white w-8 h-8 rounded-md lg:rounded-full shadow-lg flex items-center justify-center md:m-3 z-50"
-  // className="absolute -top-6 right-0 bg-red-500 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center border-4 border-white z-50"
-  onClick={onClose}
-  whileHover={{ scale: 1.1 }}
-  whileTap={{ scale: 0.95 }}
->
-  ✕
-</motion.button>
+                  className="absolute -top-0 md:-top-0  right-0 bg-primary text-white w-8 h-8 rounded-md lg:rounded-full shadow-lg flex items-center justify-center md:m-3 z-50"
+                  // className="absolute -top-6 right-0 bg-red-500 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center border-4 border-white z-50"
+                  onClick={onClose}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  ✕
+                </motion.button>
               </motion.div>
 
               {/* Content */}
@@ -189,8 +205,12 @@ className={`fixed
               >
                 {/* Toppings */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-lg text-gray-800 mb-1">Choose your Toppings</h4>
-                  <p className="text-sm text-gray-500 mb-3">Select up to 2 toppings.</p>
+                  <h4 className="font-semibold text-lg text-gray-800 mb-1">
+                    Choose your Toppings
+                  </h4>
+                  <p className="text-sm text-gray-500 mb-3">
+                    Select up to 2 toppings.
+                  </p>
                   <div className="flex flex-wrap gap-3">
                     {selectedItem?.toppings?.map((topping, index) => (
                       <motion.div
@@ -199,13 +219,15 @@ className={`fixed
                         variants={chipVariants}
                         initial="hidden"
                         animate="visible"
-                         whileHover="hover"
+                        whileHover="hover"
                         className={`inline-flex items-center px-2 py-1 text-sm rounded border transition cursor-pointer ${
                           selectedToppings.includes(topping)
                             ? "bg-primary text-white border-primary"
                             : "bg-gray-100 text-gray-800 border-gray-300"
                         }`}
-                        onClick={() => handleChipSelect(topping, setSelectedToppings)}
+                        onClick={() =>
+                          handleChipSelect(topping, setSelectedToppings)
+                        }
                       >
                         <span>{topping}</span>
                         {!selectedToppings.includes(topping) && (
@@ -244,8 +266,12 @@ className={`fixed
 
                 {/* Dips */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-lg text-gray-800 mb-1">Choose your Dip</h4>
-                  <p className="text-sm text-gray-500 mb-3">Select 1 dip for your meal.</p>
+                  <h4 className="font-semibold text-lg text-gray-800 mb-1">
+                    Choose your Dip
+                  </h4>
+                  <p className="text-sm text-gray-500 mb-3">
+                    Select 1 dip for your meal.
+                  </p>
                   <div className="flex flex-wrap gap-3">
                     {selectedItem?.dips?.map((dip, index) => (
                       <motion.div
@@ -254,7 +280,7 @@ className={`fixed
                         variants={chipVariants}
                         initial="hidden"
                         animate="visible"
-                         whileHover="hover"
+                        whileHover="hover"
                         className={`inline-flex text-sm items-center px-2 py-1 rounded border transition cursor-pointer ${
                           selectedDips.includes(dip)
                             ? "bg-primary text-white border-primary"
@@ -299,15 +325,19 @@ className={`fixed
 
                 {/* Drinks */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-lg text-gray-800 mb-1">Choose your Drink</h4>
-                  <p className="text-sm text-gray-500 mb-3">Select 1 drink for your meal.</p>
+                  <h4 className="font-semibold text-lg text-gray-800 mb-1">
+                    Choose your Drink
+                  </h4>
+                  <p className="text-sm text-gray-500 mb-3">
+                    Select 1 drink for your meal.
+                  </p>
                   <div className="flex flex-wrap gap-3">
                     {selectedItem?.drinks?.map((drink, index) => (
                       <motion.div
                         key={index}
                         custom={index}
                         variants={chipVariants}
-                         whileHover="hover"
+                        whileHover="hover"
                         initial="hidden"
                         animate="visible"
                         className={`inline-flex text-sm items-center px-2 py-1 rounded border transition cursor-pointer ${
@@ -315,7 +345,9 @@ className={`fixed
                             ? "bg-primary text-white border-primary"
                             : "bg-gray-100 text-gray-800 border-gray-300"
                         }`}
-                        onClick={() => handleChipSelect(drink, setSelectedDrinks)}
+                        onClick={() =>
+                          handleChipSelect(drink, setSelectedDrinks)
+                        }
                       >
                         <span>{drink}</span>
                         {!selectedDrinks.includes(drink) && (
@@ -354,7 +386,9 @@ className={`fixed
 
                 {/* Notes Section */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-lg text-gray-800 mb-1">Special Instructions</h4>
+                  <h4 className="font-semibold text-lg text-gray-800 mb-1">
+                    Special Instructions
+                  </h4>
                   <textarea
                     value={instructions}
                     onChange={(e) => setInstructions(e.target.value)}
@@ -362,7 +396,6 @@ className={`fixed
                     className="w-full p-4 border-2 border-gray-300 rounded-lg bg-gray-50 focus:border-primary focus:ring-primary focus:outline-none transition"
                     rows="3"
                   ></textarea>
-                  
                 </div>
               </motion.div>
 
@@ -377,8 +410,8 @@ className={`fixed
                     onClick={() => handleQuantityChange("decrement")}
                     className="w-8 h-8 bg-primary text-white rounded-full shadow-md flex items-center justify-center hover:bg-opacity-90 transition-transform active:scale-95"
                     variants={buttonVariants}
-                     whileHover="hover"
-  whileTap="tap"
+                    whileHover="hover"
+                    whileTap="tap"
                   >
                     <FaMinus size={12} />
                   </motion.button>
@@ -397,8 +430,8 @@ className={`fixed
                     onClick={() => handleQuantityChange("increment")}
                     className="w-8 h-8 bg-primary text-white rounded-full shadow-md flex items-center justify-center hover:bg-opacity-90 transition-transform active:scale-95"
                     variants={buttonVariants}
-                     whileHover="hover"
-  whileTap="tap"
+                    whileHover="hover"
+                    whileTap="tap"
                   >
                     <FaPlus size={12} />
                   </motion.button>
@@ -406,18 +439,23 @@ className={`fixed
 
                 <motion.button
                   className="bg-primary text-white px-2 md:px-5 py-3 rounded-lg font-bold text-sm hover:bg-opacity-90 shadow-lg transition"
-                  onClick={onClose}
+                  onClick={handleAddToCart}
                   variants={buttonVariants}
                   whileHover="hover"
                   whileTap="tap"
                 >
-                  Add to Cart • £{(parseFloat(selectedItem?.price.replace("£", "")) * quantity).toFixed(2)}
+                  Add to Cart • £
+                  {(
+                    parseFloat(selectedItem?.price.replace("£", "")) * quantity
+                  ).toFixed(2)}
                 </motion.button>
               </motion.div>
             </div>
           </motion.div>
         </>
       )}
+            <BottomCartBar isVisible={showCartBar} onClose={handleCloseCartBar} />
+
     </AnimatePresence>
   );
 };
