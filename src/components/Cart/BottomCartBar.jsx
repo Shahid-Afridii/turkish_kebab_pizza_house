@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
+
 const waveAnimation = {
   hidden: {
     y: "100%", // Start from below the screen
@@ -43,10 +44,26 @@ const BottomCartBar = ({ isVisible, onClose }) => {
   const discountThreshold = 16; // Minimum total for discount
   const amountNeeded = Math.max(0, discountThreshold - totalPrice);
 
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
   if (!isVisible) return null;
 
   return (
     <motion.div
+      ref={containerRef}
       className="fixed bottom-0 left-0 right-0 z-50 bg-green-700 text-white shadow-2xl"
       variants={waveAnimation}
       initial="hidden"
@@ -90,7 +107,7 @@ const BottomCartBar = ({ isVisible, onClose }) => {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="text-white px-3 py-2 rounded-lg font-bold text-xs sm:text-sm lg:text-lg  flex items-center justify-center"
+          className="text-white px-3 py-2 rounded-lg font-bold text-xs sm:text-sm lg:text-lg flex items-center justify-center"
         >
           <FaTimes className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
         </button>
