@@ -12,9 +12,20 @@ import {
 } from "react-icons/fi"; // React Icons
 import { motion } from "framer-motion"; // Import Framer Motion
 import { useSelector } from "react-redux";
+import Login from "../pages/Login";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const [isLoginDrawerOpen, setIsLoginDrawerOpen] = useState(false);
+
+  const toggleLoginDrawer = (e) => {
+    e.preventDefault(); // Prevent the default link behavior
+    setIsLoginDrawerOpen(true);
+  };
+
+  const closeLoginDrawer = () => {
+    setIsLoginDrawerOpen(false);
+  };
   const cartItems = useSelector((state) => state.cart.items); // Fetch cart items from Redux store
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0); // Calculate total items in the cart
   const toggleMenu = () => {
@@ -87,7 +98,8 @@ const Navbar = () => {
 
 
           {/* Login Button */}
-          <Link to="/login" className="button-primary">
+          <Link to="#login" // Prevents navigation by React Router
+            onClick={toggleLoginDrawer} className="button-primary">
             Login
           </Link>
         </div>
@@ -238,6 +250,8 @@ const Navbar = () => {
           </motion.div>
         </div>
       )}
+            <Login isOpen={isLoginDrawerOpen} onClose={closeLoginDrawer} />
+
     </header>
   );
 };
