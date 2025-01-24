@@ -1,11 +1,11 @@
-import React, { useState, forwardRef } from 'react';
-import DrawerModal from '../CartModal/DrawerModal';
-import { motion } from 'framer-motion';
-import { Navigation, A11y } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { FaPlus, FaChevronLeft, FaChevronRight, FaStar } from 'react-icons/fa';
+import React, { useState, forwardRef } from "react";
+import DrawerModal from "../CartModal/DrawerModal";
+import { motion } from "framer-motion";
+import { Navigation, A11y } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { FaPlus, FaChevronLeft, FaChevronRight, FaStar } from "react-icons/fa";
 
 const items = [
   {
@@ -17,9 +17,6 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: true,
-    toppings: ["Mushroom", "Chicken", "Pepperoni", "Sweetcorn", "Onions", "Green Peppers"],
-    dips: ["Curry", "Gravy", "Garlic", "Chilli", "Mint Sauce"],
-    drinks: ["Coca Cola", "Diet Coke", "Fanta Orange", "Sprite"],
   },
   {
     id: 2,
@@ -30,9 +27,6 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: true,
-    toppings: ["Tuna", "Bacon", "Jalapenos", "Kebab", "Salami", "Sweetcorn"],
-    dips: ["House", "Garlic", "Chilli", "Barbecue", "Honey Mustard"],
-    drinks: ["Coca Cola", "Diet Coke", "Coke Zero", "Pepsi", "7UP"],
   },
   {
     id: 3,
@@ -43,9 +37,6 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: true,
-    toppings: ["Lamb", "Chicken", "Nuggets", "Wings", "Cheese", "Pickles"],
-    dips: ["Curry", "Garlic", "Hot Sauce", "Mayonnaise"],
-    drinks: ["Sprite", "Coca Cola", "Diet Coke", "Fanta Orange"],
   },
   {
     id: 4,
@@ -56,9 +47,6 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: false,
-    toppings: ["Salami", "Olives", "Peppers", "Chicken", "Mushrooms", "Sweetcorn"],
-    dips: ["House", "Garlic", "Barbecue", "Ranch", "Ketchup"],
-    drinks: ["Coke Zero", "Fanta Orange", "Pepsi", "Mountain Dew"],
   },
   {
     id: 5,
@@ -69,9 +57,6 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: false,
-    toppings: ["Cheese", "Lettuce", "Tomato", "Pickles", "Onions", "Bacon"],
-    dips: ["Ketchup", "Mayonnaise", "Mustard", "Ranch"],
-    drinks: ["Coca Cola", "Sprite", "Water", "Diet Coke"],
   },
   {
     id: 6,
@@ -82,27 +67,27 @@ const items = [
     rating: "4.5",
     reviews: "1K Reviews",
     popular: false,
-    toppings: ["Pepperoni", "Cheese", "Sweetcorn", "Jalapenos", "Mushrooms", "Chicken"],
-    dips: ["Garlic", "Chilli", "Barbecue", "Honey Mustard", "Ranch"],
-    drinks: ["Coca Cola", "Diet Coke", "Sprite", "Fanta Orange"],
   },
- ];
- 
- 
+];
 
-const CustomNavigation = ({ prevEl, nextEl, showArrows }) => {
-  if (!showArrows) return null; // Don't render arrows if disabled
+const CustomNavigation = ({ prevEl, nextEl, disablePrev, disableNext }) => {
   return (
     <div className="absolute inset-y-0 flex items-center justify-between w-full pointer-events-none z-10">
       <button
         ref={prevEl}
-        className="pointer-events-auto bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 transition-all transform -translate-x-3"
+        className={`pointer-events-auto bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 transition-all transform -translate-x-3 ${
+          disablePrev ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={disablePrev}
       >
         <FaChevronLeft />
       </button>
       <button
         ref={nextEl}
-        className="pointer-events-auto bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 transition-all transform translate-x-3"
+        className={`pointer-events-auto bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 transition-all transform translate-x-3 ${
+          disableNext ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={disableNext}
       >
         <FaChevronRight />
       </button>
@@ -113,6 +98,8 @@ const CustomNavigation = ({ prevEl, nextEl, showArrows }) => {
 const Products = forwardRef((props, ref) => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [disablePrev, setDisablePrev] = useState(true);
+  const [disableNext, setDisableNext] = useState(false);
 
   const handleAddItem = (item) => {
     setSelectedItem(item);
@@ -127,16 +114,10 @@ const Products = forwardRef((props, ref) => {
   const prevElRef = React.useRef(null);
   const nextElRef = React.useRef(null);
 
-  // Hide arrows on screens below 768px
-  const [showArrows, setShowArrows] = useState(window.innerWidth >= 768);
-
-  React.useEffect(() => {
-    const handleResize = () => {
-      setShowArrows(window.innerWidth >= 768);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const updateArrows = (swiper) => {
+    setDisablePrev(swiper.isBeginning);
+    setDisableNext(swiper.isEnd);
+  };
 
   return (
     <div className="relative px-4 sm:px-8 py-8 mt-8 bg-gray-50">
@@ -155,7 +136,7 @@ const Products = forwardRef((props, ref) => {
             640: { slidesPerView: 2, spaceBetween: 20 },
             768: { slidesPerView: 2, spaceBetween: 20 },
             1024: { slidesPerView: 4, spaceBetween: 20 },
-            1920: { slidesPerView: 6, spaceBetween: 25 }, // For larger screens
+            1920: { slidesPerView: 6, spaceBetween: 25 },
           }}
           navigation={{
             prevEl: prevElRef.current,
@@ -165,6 +146,8 @@ const Products = forwardRef((props, ref) => {
             swiper.params.navigation.prevEl = prevElRef.current;
             swiper.params.navigation.nextEl = nextElRef.current;
           }}
+          onSlideChange={(swiper) => updateArrows(swiper)}
+          onInit={(swiper) => updateArrows(swiper)}
           className="w-full"
         >
           {items.map((item) => (
@@ -195,8 +178,8 @@ const Products = forwardRef((props, ref) => {
                         key={i}
                         className={`w-4 h-4 ${
                           i < Math.round(item.rating)
-                            ? 'text-yellow-400'
-                            : 'text-gray-300'
+                            ? "text-yellow-400"
+                            : "text-gray-300"
                         }`}
                       />
                     ))}
@@ -226,7 +209,12 @@ const Products = forwardRef((props, ref) => {
         </Swiper>
 
         {/* Custom Arrows */}
-        <CustomNavigation prevEl={prevElRef} nextEl={nextElRef} showArrows={showArrows} />
+        <CustomNavigation
+          prevEl={prevElRef}
+          nextEl={nextElRef}
+          disablePrev={disablePrev}
+          disableNext={disableNext}
+        />
       </div>
 
       <DrawerModal
