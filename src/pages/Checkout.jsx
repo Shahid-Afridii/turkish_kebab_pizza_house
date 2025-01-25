@@ -11,6 +11,9 @@ import {
   FaPlus,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
+import AccountSection from "../components/Checkout/AccountSection";
+import DeliveryPickupSection from "../components/Checkout/DeliveryPickupSection";
+import PaymentSection from "../components/Checkout/PaymentSection";
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -37,15 +40,14 @@ const Checkout = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
         {/* Left Section */}
         <div className="lg:col-span-2 space-y-4 md:space-y-6">
-          {/* Account Section */}
-          <div className="bg-white rounded-lg shadow p-4">
+        <div className={`bg-white rounded-lg shadow-md ${activeAccordion === 1 ? "p-6" : "p-4"}`}>
             <div
               className="flex items-center justify-between cursor-pointer"
               onClick={() => toggleAccordion(1)}
             >
-              <div className="flex items-center gap-2 md:gap-4">
+              <div className="flex items-center gap-4">
                 <FaUser className="text-primary w-5 h-5 md:w-6 md:h-6" />
-                <h2 className="text-sm md:text-lg font-semibold">Account</h2>
+                <h2 className="text-lg font-semibold">Account</h2>
               </div>
               {activeAccordion === 1 ? (
                 <FaChevronUp className="text-primary" />
@@ -53,48 +55,19 @@ const Checkout = () => {
                 <FaChevronDown className="text-gray-600" />
               )}
             </div>
-            {activeAccordion === 1 && (
-              <div className="mt-4">
-                <p className="text-xs md:text-sm text-gray-600 mb-4">
-                  Login with your mobile number
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    placeholder="Enter your name"
-                    className="w-full border rounded-lg px-3 py-2 text-xs md:text-sm outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  <div className="flex items-center border rounded-lg px-3 py-2">
-                    <img
-                      src="https://flagcdn.com/w40/gb.png"
-                      alt="UK Flag"
-                      className="w-4 h-4 md:w-5 md:h-5 mr-2"
-                    />
-                    <input
-                      type="text"
-                      placeholder="117 2345678"
-                      className="flex-1 outline-none text-xs md:text-sm"
-                    />
-                    <button className="ml-2 md:ml-4 bg-primary text-white px-3 md:px-4 py-1 rounded-lg text-xs md:text-sm font-medium hover:bg-primary/90">
-                      OTP
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
+            {activeAccordion === 1 && <AccountSection />}
           </div>
 
-          {/* Delivery/Pick-up Section */}
-          <div className="bg-white rounded-lg shadow p-4">
+      
+         {/* Delivery/Pick-up Section */}
+         <div className={`bg-white rounded-lg shadow-md ${activeAccordion === 2 ? "p-6" : "p-4"}`}>
             <div
               className="flex items-center justify-between cursor-pointer"
               onClick={() => toggleAccordion(2)}
             >
-              <div className="flex items-center gap-2 md:gap-4">
+              <div className="flex items-center gap-4">
                 <FaMapMarkerAlt className="text-primary w-5 h-5 md:w-6 md:h-6" />
-                <h2 className="text-sm md:text-lg font-semibold">
-                  Delivery/Pick-up
-                </h2>
+                <h2 className="text-lg font-semibold">Delivery/Pick-up</h2>
               </div>
               {activeAccordion === 2 ? (
                 <FaChevronUp className="text-primary" />
@@ -102,39 +75,27 @@ const Checkout = () => {
                 <FaChevronDown className="text-gray-600" />
               )}
             </div>
-            {activeAccordion === 2 && (
-              <div className="mt-4">
-                <p className="text-xs md:text-sm text-gray-600">
-                  Select your preferred delivery or pick-up option.
-                </p>
-              </div>
-            )}
+            {activeAccordion === 2 && <DeliveryPickupSection />}
           </div>
 
           {/* Payment Section */}
-          <div className="bg-white rounded-lg shadow p-4">
-            <div
-              className="flex items-center justify-between cursor-pointer"
-              onClick={() => toggleAccordion(3)}
-            >
-              <div className="flex items-center gap-2 md:gap-4">
-                <FaCreditCard className="text-primary w-5 h-5 md:w-6 md:h-6" />
-                <h2 className="text-sm md:text-lg font-semibold">Payment</h2>
-              </div>
-              {activeAccordion === 3 ? (
-                <FaChevronUp className="text-primary" />
-              ) : (
-                <FaChevronDown className="text-gray-600" />
-              )}
-            </div>
-            {activeAccordion === 3 && (
-              <div className="mt-4">
-                <p className="text-xs md:text-sm text-gray-600">
-                  Choose your payment method.
-                </p>
-              </div>
-            )}
-          </div>
+          <div className={`bg-white rounded-lg shadow-md ${activeAccordion === 3 ? "p-6" : "p-4"}`}>
+  <div
+    className="flex items-center justify-between cursor-pointer"
+    onClick={() => toggleAccordion(3)}
+  >
+    <div className="flex items-center gap-4">
+      <FaCreditCard className="text-primary w-5 h-5 md:w-6 md:h-6" />
+      <h2 className="text-lg font-semibold">Payment</h2>
+    </div>
+    {activeAccordion === 3 ? (
+      <FaChevronUp className="text-primary" />
+    ) : (
+      <FaChevronDown className="text-gray-600" />
+    )}
+  </div>
+  {activeAccordion === 3 && <PaymentSection />}
+</div>
         </div>
 
         {/* Right Section */}
