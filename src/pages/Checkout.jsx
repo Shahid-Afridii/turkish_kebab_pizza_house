@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { updateQuantity, removeFromCart } from "../redux/slices/cartSlice";
 import {
@@ -14,11 +14,12 @@ import { motion } from "framer-motion";
 import AccountSection from "../components/Checkout/AccountSection";
 import DeliveryPickupSection from "../components/Checkout/DeliveryPickupSection";
 import PaymentSection from "../components/Checkout/PaymentSection";
+import OrderStatus from "../components/order/OrderStatus";
 
 const Checkout = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
-
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [activeAccordion, setActiveAccordion] = useState(null);
 
   const toggleAccordion = (index) => {
@@ -31,6 +32,14 @@ const Checkout = () => {
     0
   );
 
+    // Scroll to top when navigating to this page
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+    const handlePaymentCompletion = () => {
+      setPaymentCompleted(true);
+    };
+  
   return (
     <div className="container mx-auto p-2 lg:p-0 bg-gray-50 min-h-screen">
       <h1 className="text-2xl md:text-3xl font-bold mb-8 text-center text-gray-800">
@@ -198,6 +207,7 @@ const Checkout = () => {
   </div>
 </div>
 
+{paymentCompleted && <OrderStatus isVisible={true} onClose={() => setPaymentCompleted(false)} orderStatus="preparing" />}
 
 
       </div>
