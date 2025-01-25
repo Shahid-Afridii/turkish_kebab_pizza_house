@@ -139,86 +139,106 @@ const Checkout = () => {
 
         {/* Right Section */}
         <div>
-        <div className="bg-white rounded-lg shadow p-4">
-  <h2 className="text-sm md:text-lg font-semibold mb-4">
-    Items in your cart
-  </h2>
-  <ul className="space-y-4">
-    {cartItems.map((item) => (
-      <li
-        key={item.id}
-        className="flex items-center justify-between border-b pb-4"
-      >
-        {/* Product Image */}
-        <img
-          src={item.img}
-          alt={item.name}
-          className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-lg"
-        />
+  <div className="bg-white rounded-lg shadow p-4">
+    <h2 className="text-sm md:text-lg font-semibold mb-4">Items in your cart</h2>
+    <ul className="space-y-4">
+      {cartItems.map((item) => (
+        <li
+          key={item.id}
+          className="flex items-center justify-between border-b pb-4"
+        >
+          {/* Product Image */}
+          <img
+            src={item.img}
+            alt={item.name}
+            className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-lg"
+          />
 
-        {/* Product Details */}
-        <div className="flex-1 ml-3">
-          <h4 className="font-semibold text-xs md:text-sm">{item.name}</h4>
-          <p className="text-xs text-gray-500 line-clamp-2">
-            {/* Truncate Description */}
-            {item.toppings?.join(", ") || "None"}
-          </p>
-        </div>
+          {/* Product Details */}
+          <div className="flex-1 ml-3">
+            <h4 className="font-semibold text-xs md:text-sm">{item.name}</h4>
+            <div className="text-xs text-gray-500 space-y-1">
+              {item.toppings && item.toppings.length > 0 && (
+                <p>
+                  <span className="font-semibold text-gray-700">Toppings:</span>{" "}
+                  {item.toppings.join(", ")}
+                </p>
+              )}
+              {item.dips && item.dips.length > 0 && (
+                <p>
+                  <span className="font-semibold text-gray-700">Dips:</span>{" "}
+                  {item.dips.join(", ")}
+                </p>
+              )}
+              {item.drinks && item.drinks.length > 0 && (
+                <p>
+                  <span className="font-semibold text-gray-700">Drinks:</span>{" "}
+                  {item.drinks.join(", ")}
+                </p>
+              )}
+              {/* Fallback to Description */}
+              {!item.toppings?.length &&
+                !item.dips?.length &&
+                !item.drinks?.length && (
+                  <p className="line-clamp-2">{item.description}</p>
+              )}
+            </div>
+          </div>
 
-        {/* Quantity Buttons */}
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => {
-              if (item.quantity > 1) {
+          {/* Quantity Buttons */}
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => {
+                if (item.quantity > 1) {
+                  dispatch(
+                    updateQuantity({ id: item.id, quantity: item.quantity - 1 })
+                  );
+                } else {
+                  dispatch(removeFromCart({ id: item.id }));
+                }
+              }}
+              className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
+            >
+              <FaMinus size={10} />
+            </button>
+            <span className="px-2 py-1 text-xs md:text-sm font-medium text-gray-800 bg-gray-100 rounded-md border border-gray-300">
+              {item.quantity}
+            </span>
+            <button
+              onClick={() =>
                 dispatch(
-                  updateQuantity({ id: item.id, quantity: item.quantity - 1 })
-                );
-              } else {
-                dispatch(removeFromCart({ id: item.id }));
+                  updateQuantity({ id: item.id, quantity: item.quantity + 1 })
+                )
               }
-            }}
-            className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
-          >
-            <FaMinus size={10} />
-          </button>
-          <span className="px-2 py-1 text-xs md:text-sm font-medium text-gray-800 bg-gray-100 rounded-md border border-gray-300">
-            {item.quantity}
-          </span>
-          <button
-            onClick={() =>
-              dispatch(
-                updateQuantity({ id: item.id, quantity: item.quantity + 1 })
-              )
-            }
-            className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
-          >
-            <FaPlus size={10} />
-          </button>
-        </div>
-      </li>
-    ))}
-  </ul>
+              className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
+            >
+              <FaPlus size={10} />
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div className="bg-white rounded-lg shadow p-4 mt-4 md:mt-6">
+    <h2 className="text-sm md:text-lg font-semibold mb-4">Order Summary</h2>
+    <div className="flex justify-between text-xs md:text-sm mb-2">
+      <span>Item Total</span>
+      <span>£{totalPrice.toFixed(2)}</span>
+    </div>
+    <div className="flex justify-between text-xs md:text-sm mb-4">
+      <span>Service Fee</span>
+      <span>£0.50</span>
+    </div>
+    <div className="flex justify-between text-sm md:text-lg font-bold">
+      <span>TO PAY</span>
+      <span>£{(totalPrice + 0.5).toFixed(2)}</span>
+    </div>
+  </div>
 </div>
 
 
-          <div className="bg-white rounded-lg shadow p-4 mt-4 md:mt-6">
-            <h2 className="text-sm md:text-lg font-semibold mb-4">
-              Order Summary
-            </h2>
-            <div className="flex justify-between text-xs md:text-sm mb-2">
-              <span>Item Total</span>
-              <span>£{totalPrice.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-xs md:text-sm mb-4">
-              <span>Service Fee</span>
-              <span>£0.50</span>
-            </div>
-            <div className="flex justify-between text-sm md:text-lg font-bold">
-              <span>TO PAY</span>
-              <span>£{(totalPrice + 0.5).toFixed(2)}</span>
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
   );

@@ -95,52 +95,66 @@ const buttonVariants = {
 };
 
 const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
-  const [instructions, setInstructions] = useState("");
+
   const dispatch = useDispatch();
-// Get the existing item from Redux store
+// Fetch existing cart item details (if already added)
 const existingItem = useSelector((state) =>
   state.cart.items.find((item) => item.id === selectedItem?.id)
 );
 
-// State for quantity
+// States
 const [quantity, setQuantity] = useState(existingItem ? existingItem.quantity : 1);
+const [selectedToppings, setSelectedToppings] = useState(existingItem?.toppings || []);
+const [selectedDips, setSelectedDips] = useState(existingItem?.dips || []);
+const [selectedDrinks, setSelectedDrinks] = useState(existingItem?.drinks || []);
+const [instructions, setInstructions] = useState(existingItem?.instructions || "");
+const [showCartBar, setShowCartBar] = useState(false);
 
-// Reset quantity when `selectedItem` changes
+// Reset states when `selectedItem` changes
 useEffect(() => {
   setQuantity(existingItem ? existingItem.quantity : 1);
+  setSelectedToppings(existingItem?.toppings || []);
+  setSelectedDips(existingItem?.dips || []);
+  setSelectedDrinks(existingItem?.drinks || []);
+  setInstructions(existingItem?.instructions || "");
 }, [selectedItem, existingItem]);
 
-  const [selectedToppings, setSelectedToppings] = useState([]);
-  const [selectedDips, setSelectedDips] = useState([]);
-  const [selectedDrinks, setSelectedDrinks] = useState([]);
-  const [showCartBar, setShowCartBar] = useState(false);
-  const handleQuantityChange = (type) => {
-    setQuantity((prev) =>
-      type === "increment" ? prev + 1 : Math.max(1, prev - 1)
-    );
-  };
+// Quantity change handler
+const handleQuantityChange = (type) => {
+  setQuantity((prev) => (type === "increment" ? prev + 1 : Math.max(1, prev - 1)));
+};
 
-  const handleAddToCart = () => {
-    if (selectedItem) {
-      dispatch(addToCart({ ...selectedItem, quantity }));
-      setShowCartBar(true);
-      onClose(); // Close the drawer
-    }
-  };
+// Add to Cart Handler
+const handleAddToCart = () => {
+  if (selectedItem) {
+    const updatedItem = {
+      ...selectedItem,
+      quantity,
+      toppings: selectedToppings,
+      dips: selectedDips,
+      drinks: selectedDrinks,
+      instructions,
+    };
+    dispatch(addToCart(updatedItem));
+    setShowCartBar(true);
+    onClose(); // Close the drawer
+  }
+};
 
-  const handleCloseCartBar = () => {
-    setShowCartBar(false);
-  };
+// Select Chip (Toppings, Dips, Drinks) Handler
+const handleChipSelect = (item, setSelected) => {
+  setSelected((prev) =>
+    prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+  );
+};
 
-  const handleChipSelect = (item, setSelected) => {
-    setSelected((prev) =>
-      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
-    );
-  };
-
-  const clearSelectedChips = (setSelected) => {
-    setSelected([]);
-  };
+// Clear Chip Selection Handler
+const clearSelectedChips = (setSelected) => {
+  setSelected([]);
+};
+const handleCloseCartBar = () => {
+  setShowCartBar(false);
+};
 
  
 
