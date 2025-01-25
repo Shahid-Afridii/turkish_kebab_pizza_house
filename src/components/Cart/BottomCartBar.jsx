@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
-
+import { Link } from "react-router-dom";
 const waveAnimation = {
   hidden: {
     y: "100%", // Start from below the screen
@@ -88,7 +88,7 @@ const BottomCartBar = ({ isVisible, onClose }) => {
 
         {/* Cart Details */}
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
-          <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
+          <Link  to="/checkout" className="flex items-center gap-1 sm:gap-2 lg:gap-3">
             <img
               src="assets/Vector.png" // Replace with the correct path to your cart icon
               alt="Cart Icon"
@@ -97,7 +97,7 @@ const BottomCartBar = ({ isVisible, onClose }) => {
             <span className="font-montserrat font-semibold text-xs sm:text-sm lg:text-lg">
               View Cart
             </span>
-          </div>
+          </Link>
           <div className="h-4 sm:h-6 lg:h-8 w-[2px] bg-white opacity-70"></div>
           <span className="font-bold text-sm sm:text-lg lg:text-xl">
             £{totalPrice.toFixed(2)}

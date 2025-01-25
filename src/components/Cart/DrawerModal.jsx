@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaPlus, FaMinus, FaTimes } from "react-icons/fa";
 import { useDispatch,useSelector } from "react-redux";
@@ -97,12 +97,18 @@ const buttonVariants = {
 const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
   const [instructions, setInstructions] = useState("");
   const dispatch = useDispatch();
-  // Get the quantity from the Redux store
-  const existingItem = useSelector((state) =>
-    state.cart.items.find((item) => item.id === selectedItem?.id)
+// Get the existing item from Redux store
+const existingItem = useSelector((state) =>
+  state.cart.items.find((item) => item.id === selectedItem?.id)
 );
-const initialQuantity = existingItem ? existingItem.quantity : 1;
-const [quantity, setQuantity] = useState(initialQuantity);
+
+// State for quantity
+const [quantity, setQuantity] = useState(existingItem ? existingItem.quantity : 1);
+
+// Reset quantity when `selectedItem` changes
+useEffect(() => {
+  setQuantity(existingItem ? existingItem.quantity : 1);
+}, [selectedItem, existingItem]);
 
   const [selectedToppings, setSelectedToppings] = useState([]);
   const [selectedDips, setSelectedDips] = useState([]);
