@@ -5,7 +5,7 @@ const Banner = ({onMenuClick}) => {
   return (
     <div>
       {/* Desktop and Tablet Banner */}
-      <div className="hidden md:block">
+      <div className="hidden md:block p-0 md:p-2 lg:p-0">
         <div className="relative w-full h-screen overflow-hidden">
           {/* Fullscreen Responsive Image */}
           <motion.img

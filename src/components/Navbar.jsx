@@ -123,133 +123,139 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-white z-[9999] overflow-y-auto">
-          <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: "0%" }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ duration: 0.3 }}
-            className="h-full w-full px-6 py-8"
-          >
-            {/* Close Icon */}
-            <div className="flex justify-end">
-              <button
-                onClick={closeMenu}
-                className="flex items-center justify-center h-10 w-10 text-primary bg-red-100 border border-primary rounded-full hover:bg-gray-100 transition"
-              >
-                <FiX size={24} />
-              </button>
-            </div>
+  <div className="fixed inset-0 bg-white z-[9999] overflow-y-auto">
+    <motion.div
+      initial={{ opacity: 0, x: "100%" }}
+      animate={{ opacity: 1, x: "0%" }}
+      exit={{ opacity: 0, x: "100%" }}
+      transition={{ duration: 0.3 }}
+      className="h-full w-full px-6 py-8"
+    >
+      {/* Close Icon */}
+      <div className="flex justify-end">
+        <button
+          onClick={closeMenu}
+          className="flex items-center justify-center h-10 w-10 text-primary bg-red-100 border border-primary rounded-full hover:bg-gray-100 transition"
+        >
+          <FiX size={24} />
+        </button>
+      </div>
 
-            {/* User Info */}
-            <div className="flex flex-col items-center space-y-2 border-b pb-4">
-              {/* User Icon */}
-              <div className="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center">
-                <FiUser size={35} className="text-gray-600" />
-              </div>
-              <span className="font-title text-lg text-black">Suresh</span>
-            </div>
-
-            {/* Account Options */}
-            <div className="flex flex-col border-gray-300 mt-6">
-              {/* My Account */}
-              <Link
-                to="/account"
-                className="flex font-link items-center py-4 w-full text-black hover:text-primary border-b border-gray-300"
-                onClick={closeMenu}
-              >
-                <FiUser size={24} className="text-black flex-shrink-0" />
-                <div className="ml-4">
-                  <span className="font-medium text-black block">My Account</span>
-                  <span className="text-sm text-gray-500 block">
-                    Edit Name, Number
-                  </span>
-                </div>
-              </Link>
-
-              {/* Address */}
-              <Link
-                to="/address"
-                className="flex font-link items-center py-4 w-full text-black hover:text-primary border-b border-gray-300"
-                onClick={closeMenu}
-              >
-                <FiMapPin size={24} className="text-gray-600 flex-shrink-0" />
-                <div className="ml-4">
-                  <span className="font-medium text-black block">Address</span>
-                  <span className="text-sm text-gray-500 block">
-                    Edit Address, Add Address
-                  </span>
-                </div>
-              </Link>
-
-              {/* Order History */}
-              <Link
-                to="/orders"
-                className="flex font-link items-center py-4 w-full text-black hover:text-primary"
-                onClick={closeMenu}
-              >
-                <FiClock size={24} className="text-black flex-shrink-0" />
-                <div className="ml-4">
-                  <span className="font-medium text-black block">
-                    Order History
-                  </span>
-                  <span className="text-sm text-gray-500 block">
-                    Re-order, Rate Orders
-                  </span>
-                </div>
-              </Link>
-            </div>
-
-            {/* Navigation Links */}
-            <div className="mt-6 flex justify-center items-center flex-col space-y-4">
-              <Link
-                to="/menu"
-                className={`nav-link ${
-                  isActive("/menu")
-                    ? "border-b-2 border-primary text-primary"
-                    : ""
-                }`}
-                onClick={closeMenu}
-              >
-                View Menu
-              </Link>
-              <Link
-                to="/info"
-                className={`nav-link ${
-                  isActive("/info")
-                    ? "border-b-2 border-primary text-primary"
-                    : ""
-                }`}
-                onClick={closeMenu}
-              >
-                Restaurant Info
-              </Link>
-              <Link
-                to="/about"
-                className={`nav-link ${
-                  isActive("/about")
-                    ? "border-b-2 border-primary text-primary"
-                    : ""
-                }`}
-                onClick={closeMenu}
-              >
-                About Us
-              </Link>
-            </div>
-
-            {/* Sign-Out Button */}
-            <div className="mt-6">
-              <button
-                className="flex items-center justify-center w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600 transition"
-                onClick={closeMenu}
-              >
-                <FiLogOut className="mr-2" size={20} />
-                Sign-out
-              </button>
-            </div>
-          </motion.div>
+      {/* User Info */}
+      <div className="flex flex-col items-center space-y-2 border-b pb-4">
+        {/* User Icon */}
+        <div className="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center">
+          <FiUser size={30} className="text-gray-600" />
         </div>
-      )}
+        <span className="font-title text-base text-black">Suresh</span>
+      </div>
+
+      {/* Account Options */}
+      <div className="flex flex-col border-gray-300 mt-6">
+        {/* My Account */}
+        <Link
+          to="/account"
+          className="flex font-link items-center py-3 w-full text-black hover:text-primary border-b border-gray-300 text-sm"
+          onClick={closeMenu}
+        >
+          <FiUser size={20} className="text-black flex-shrink-0" />
+          <div className="ml-4">
+            <span className="font-medium text-black block text-sm">My Account</span>
+            <span className="text-xs text-gray-500 block">
+              Edit Name, Number
+            </span>
+          </div>
+        </Link>
+
+        {/* Address */}
+        <Link
+          to="/address"
+          className="flex font-link items-center py-3 w-full text-black hover:text-primary border-b border-gray-300 text-sm"
+          onClick={closeMenu}
+        >
+          <FiMapPin size={20} className="text-gray-600 flex-shrink-0" />
+          <div className="ml-4">
+            <span className="font-medium text-black block text-sm">Address</span>
+            <span className="text-xs text-gray-500 block">
+              Edit Address, Add Address
+            </span>
+          </div>
+        </Link>
+
+        {/* Order History */}
+        <Link
+          to="/orders"
+          className="flex font-link items-center py-3 w-full text-black hover:text-primary text-sm"
+          onClick={closeMenu}
+        >
+          <FiClock size={20} className="text-black flex-shrink-0" />
+          <div className="ml-4">
+            <span className="font-medium text-black block text-sm">
+              Order History
+            </span>
+            <span className="text-xs text-gray-500 block">
+              Re-order, Rate Orders
+            </span>
+          </div>
+        </Link>
+      </div>
+
+      {/* Navigation Links */}
+      <div className="mt-6 flex justify-center items-center flex-col space-y-2">
+        <Link
+          to="/menu"
+          className={`nav-link text-sm ${
+            isActive("/menu")
+              ? "border-b-2 border-primary text-primary"
+              : ""
+          }`}
+          style={{fontSize: "16px"}}
+          onClick={closeMenu}
+        >
+          View Menu
+        </Link>
+        <Link
+          to="/info"
+          className={`nav-link text-sm ${
+            isActive("/info")
+              ? "border-b-2 border-primary text-primary"
+              : ""
+          }`}
+          style={{fontSize: "16px"}}
+
+          onClick={closeMenu}
+        >
+          Restaurant Info
+        </Link>
+        <Link
+          to="/about"
+          className={`nav-link text-sm ${
+            isActive("/about")
+              ? "border-b-2 border-primary text-primary"
+              : ""
+          }`}
+          style={{fontSize: "16px"}}
+
+          onClick={closeMenu}
+        >
+          About Us
+        </Link>
+      </div>
+
+      {/* Sign-Out Button */}
+      <div className="mt-6">
+        <button
+          className="flex items-center justify-center w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition text-sm"
+          onClick={closeMenu}
+        >
+          <FiLogOut className="mr-2" size={18} />
+          Sign-out
+        </button>
+      </div>
+    </motion.div>
+  </div>
+)}
+
             <Login isOpen={isLoginDrawerOpen} onClose={closeLoginDrawer} />
 
     </header>

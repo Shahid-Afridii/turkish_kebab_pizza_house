@@ -191,18 +191,18 @@ const handleCloseCartBar = () => {
             <div className="h-full flex flex-col">
               {/* Sticky Header */}
               <motion.div
-                className="sticky top-0 bg-white px-4 py-5 shadow-sm z-[9999]text-center border-b border-gray-200"
+                className="sticky top-0 bg-white px-4  py-3 md:py-5 shadow-sm z-[9999]text-center border-b border-gray-200"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <h3 className="text-xl md:text-2xl font-semibold text-gray-800">
+                <h3 className="text-md md:text-xl font-semibold text-gray-800">
                   {selectedItem?.name}
                 </h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-xs md:text-sm text-gray-500 mt-1">
                   {selectedItem?.description}
                 </p>
-                <p className="text-green-600 font-medium mt-1">
+                <p className="text-xs md:text-lg text-green-600 font-medium mt-1">
                   {selectedItem?.rating} ⭐ • 30 min
                 </p>
                 {/* Close Button */}
@@ -225,10 +225,10 @@ const handleCloseCartBar = () => {
               >
                 {/* Toppings */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-lg text-gray-800 mb-1">
+                  <h4 className="font-semibold text-sm md:text-lg text-gray-800 mb-1">
                     Choose your Toppings
                   </h4>
-                  <p className="text-sm text-gray-500 mb-3">
+                  <p className="text-xs md:text-sm text-gray-500 mb-3">
                     Select up to 2 toppings.
                   </p>
                   <div className="flex flex-wrap gap-3">
@@ -240,7 +240,7 @@ const handleCloseCartBar = () => {
                         initial="hidden"
                         animate="visible"
                         whileHover="hover"
-                        className={`inline-flex items-center px-2 py-1 text-sm rounded border transition cursor-pointer ${
+                        className={`inline-flex items-center px-2 py-1 text-xs lg:text-sm rounded border transition cursor-pointer ${
                           selectedToppings.includes(topping)
                             ? "bg-primary text-white border-primary"
                             : "bg-gray-100 text-gray-800 border-gray-300"
@@ -249,7 +249,7 @@ const handleCloseCartBar = () => {
                           handleChipSelect(topping, setSelectedToppings)
                         }
                       >
-                        <span>{topping}</span>
+                        <span >{topping}</span>
                         {!selectedToppings.includes(topping) && (
                           <FaPlus className="ml-2 text-xs text-gray-500" />
                         )}
@@ -257,7 +257,7 @@ const handleCloseCartBar = () => {
                     ))}
                   </div>
                   {selectedToppings.length > 0 && (
-                    <div className="flex items-center text-sm flex-wrap gap-2 mt-4">
+                    <div className="flex items-center text-xs md:text-sm flex-wrap gap-2 mt-4">
                       {selectedToppings.map((topping, index) => (
                         <div
                           key={index}
@@ -286,10 +286,10 @@ const handleCloseCartBar = () => {
 
                 {/* Dips */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-lg text-gray-800 mb-1">
+                  <h4 className="font-semibold text-sm  md:text-lg text-gray-800 mb-1">
                     Choose your Dip
                   </h4>
-                  <p className="text-sm text-gray-500 mb-3">
+                  <p className="text-xs md:text-sm text-gray-500 mb-3">
                     Select 1 dip for your meal.
                   </p>
                   <div className="flex flex-wrap gap-3">
@@ -301,7 +301,7 @@ const handleCloseCartBar = () => {
                         initial="hidden"
                         animate="visible"
                         whileHover="hover"
-                        className={`inline-flex text-sm items-center px-2 py-1 rounded border transition cursor-pointer ${
+                        className={`inline-flex text-xs md:text-sm items-center px-2 py-1 rounded border transition cursor-pointer ${
                           selectedDips.includes(dip)
                             ? "bg-primary text-white border-primary"
                             : "bg-gray-100 text-gray-800 border-gray-300"
@@ -316,7 +316,7 @@ const handleCloseCartBar = () => {
                     ))}
                   </div>
                   {selectedDips.length > 0 && (
-                    <div className="flex items-center text-sm flex-wrap gap-2 mt-4">
+                    <div className="flex items-center text-xs md:text-sm flex-wrap gap-2 mt-4">
                       {selectedDips.map((dip, index) => (
                         <div
                           key={index}
@@ -335,7 +335,7 @@ const handleCloseCartBar = () => {
                       ))}
                       <button
                         onClick={() => clearSelectedChips(setSelectedDips)}
-                        className="text-primary underline text-sm"
+                        className="text-primary underline text-xs lg:text-sm"
                       >
                         Clear
                       </button>
@@ -345,10 +345,10 @@ const handleCloseCartBar = () => {
 
                 {/* Drinks */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-lg text-gray-800 mb-1">
+                  <h4 className="font-semibold text-sm md:text-lg text-gray-800 mb-1">
                     Choose your Drink
                   </h4>
-                  <p className="text-sm text-gray-500 mb-3">
+                  <p className="text-xs md:text-sm text-gray-500 mb-3">
                     Select 1 drink for your meal.
                   </p>
                   <div className="flex flex-wrap gap-3">
@@ -360,7 +360,7 @@ const handleCloseCartBar = () => {
                         whileHover="hover"
                         initial="hidden"
                         animate="visible"
-                        className={`inline-flex text-sm items-center px-2 py-1 rounded border transition cursor-pointer ${
+                        className={`inline-flex text-xs md:text-sm items-center px-2 py-1 rounded border transition cursor-pointer ${
                           selectedDrinks.includes(drink)
                             ? "bg-primary text-white border-primary"
                             : "bg-gray-100 text-gray-800 border-gray-300"
@@ -377,7 +377,7 @@ const handleCloseCartBar = () => {
                     ))}
                   </div>
                   {selectedDrinks.length > 0 && (
-                    <div className="flex items-center text-sm flex-wrap gap-2 mt-4">
+                    <div className="flex items-center text-xs lg:text-sm flex-wrap gap-2 mt-4">
                       {selectedDrinks.map((drink, index) => (
                         <div
                           key={index}
@@ -405,8 +405,8 @@ const handleCloseCartBar = () => {
                 </div>
 
                 {/* Notes Section */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-lg text-gray-800 mb-1">
+                <div className="mb-6 text-sm md:text-lg ">
+                  <h4 className="font-semibold  text-gray-800 mb-1">
                     Special Instructions
                   </h4>
                   <textarea
@@ -425,10 +425,10 @@ const handleCloseCartBar = () => {
                 initial="hidden"
                 animate="visible"
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex  items-center space-x-2">
                   <motion.button
                     onClick={() => handleQuantityChange("decrement")}
-                    className="w-8 h-8 bg-primary text-white rounded-full shadow-md flex items-center justify-center hover:bg-opacity-90 transition-transform active:scale-95"
+                    className="w-6 h-6 md:w-8 md:h-8 bg-primary text-white rounded-full shadow-md flex items-center justify-center hover:bg-opacity-90 transition-transform active:scale-95"
                     variants={buttonVariants}
                     whileHover="hover"
                     whileTap="tap"
@@ -437,7 +437,7 @@ const handleCloseCartBar = () => {
                   </motion.button>
 
                   <motion.span
-                    className="px-3 py-1 text-base font-medium text-gray-800 bg-gray-100 rounded-md border border-gray-300"
+                    className="px-2 md:px-3 py-0 md:py-1 text-base font-medium text-gray-800 bg-gray-100 rounded-md border border-gray-300"
                     variants={chipVariants}
                     initial="hidden"
                     animate="visible"
@@ -448,7 +448,7 @@ const handleCloseCartBar = () => {
 
                   <motion.button
                     onClick={() => handleQuantityChange("increment")}
-                    className="w-8 h-8 bg-primary text-white rounded-full shadow-md flex items-center justify-center hover:bg-opacity-90 transition-transform active:scale-95"
+                    className="w-6 h-6 md:w-8 md:h-8 bg-primary text-white rounded-full shadow-md flex items-center justify-center hover:bg-opacity-90 transition-transform active:scale-95"
                     variants={buttonVariants}
                     whileHover="hover"
                     whileTap="tap"
@@ -458,7 +458,7 @@ const handleCloseCartBar = () => {
                 </div>
 
                 <motion.button
-                  className="bg-primary text-white px-2 md:px-5 py-3 rounded-lg font-bold text-sm hover:bg-opacity-90 shadow-lg transition"
+                  className="bg-primary text-white px-2 md:px-5 py-3 rounded-lg font-bold text-xs md:text-sm hover:bg-opacity-90 shadow-lg transition"
                   onClick={handleAddToCart}
                   variants={buttonVariants}
                   whileHover="hover"
