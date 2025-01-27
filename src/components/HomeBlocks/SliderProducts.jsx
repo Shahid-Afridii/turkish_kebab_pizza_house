@@ -200,7 +200,7 @@ const Products = forwardRef((props, ref) => {
                   />
                 </div>
                 <div className="p-4 flex flex-col justify-between h-full">
-                  <h3 className="text-lg font-bold text-gray-800">
+                  <h3 className="text-sm lg:text-lg font-bold text-gray-800">
                     {item.name}
                   </h3>
                   <div className="flex items-center text-sm text-gray-500 mt-2">
@@ -218,7 +218,7 @@ const Products = forwardRef((props, ref) => {
                       {item.rating}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-2 truncate">
+                  <p className="text-xs lg:text-lg text-gray-600 mt-2 truncate">
                     {item.description}
                   </p>
                   <div className="flex justify-between items-center mt-4">

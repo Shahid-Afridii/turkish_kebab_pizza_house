@@ -134,7 +134,7 @@ const Products = forwardRef((props, ref) => {
               />
             </div>
             <div className="p-4 flex flex-col">
-              <h3 className="text-lg font-bold text-gray-800">{item.name}</h3>
+              <h3 className="text-md lg:text-lg font-bold text-gray-800">{item.name}</h3>
               <div className="flex items-center text-sm text-gray-500 mt-2">
                 {[...Array(5)].map((_, i) => (
                   <svg
@@ -157,12 +157,12 @@ const Products = forwardRef((props, ref) => {
                     />
                   </svg>
                 ))}
-                <span className="ml-2 text-green-600 font-semibold">
+                <span className="ml-2 text-md lg:text-lg text-green-600 font-semibold">
                   {item.rating}
                 </span>
-                <span className="ml-2 text-gray-500">{item.reviews}</span>
+                <span className="ml-2 text-md lg:text-lg text-gray-500">{item.reviews}</span>
               </div>
-              <p className="text-sm text-gray-600 mt-2 truncate">
+              <p className="text-xs lg:text-lg text-gray-600 mt-2 truncate">
                 {item.description}
               </p>
               <div className="flex justify-between items-center mt-4">
