@@ -106,7 +106,7 @@ const Products = forwardRef((props, ref) => {
 
   return (
     <div className="px-4 sm:px-8 py-8 mt-8 bg-gray-50">
-      <h2 ref={ref} className="text-2xl font-bold mb-6 text-gray-800">
+      <h2 ref={ref} className="text-lg md:text-2xl font-bold mb-6 text-gray-800">
         Meals
       </h2>
       <motion.div

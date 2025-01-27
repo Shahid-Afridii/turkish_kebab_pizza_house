@@ -151,7 +151,7 @@ const Products = forwardRef((props, ref) => {
 
   return (
     <div className="relative px-4 sm:px-8 py-8  bg-gray-50">
-      <h2 ref={ref} className="text-2xl font-title font-semibold mb-6">
+      <h2 ref={ref} className="text-lg md:text-2xl font-title font-semibold mb-6">
         What are you craving for?
       </h2>
 
