@@ -82,9 +82,9 @@ const BottomCartBar = ({ isVisible, onClose }) => {
       {/* Bottom Green Section */}
       <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5">
         {/* Items Count Button */}
-        <button className="flex font-Montserrat_Alternates items-center justify-center bg-green-600 hover:bg-green-500 text-white px-4 py-2 sm:px-6 sm:py-2 lg:px-8 lg:py-3 rounded-lg font-bold text-xs sm:text-sm lg:text-lg">
+        <Link  to="/checkout" className="flex font-Montserrat_Alternates items-center justify-center bg-green-600 hover:bg-green-500 text-white px-4 py-2 sm:px-6 sm:py-2 lg:px-8 lg:py-3 rounded-lg font-bold text-xs sm:text-sm lg:text-lg">
           {cartItems.length} Item{cartItems.length !== 1 ? "s" : ""}
-        </button>
+        </Link>
 
         {/* Cart Details */}
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
