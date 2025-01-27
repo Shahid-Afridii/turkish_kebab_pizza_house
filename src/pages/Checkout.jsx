@@ -20,7 +20,7 @@ const Checkout = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
-  const [activeAccordion, setActiveAccordion] = useState(null);
+  const [activeAccordion, setActiveAccordion] = useState(1);
 
   const toggleAccordion = (index) => {
     setActiveAccordion(activeAccordion === index ? null : index);

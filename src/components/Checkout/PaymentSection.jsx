@@ -19,16 +19,15 @@ const PaymentSection = () => {
   };
 
   return (
-    <div className="bg-white mt-3 p-2  space-y-4 sm:space-y-6">
-      {/* Section Header */}
-    
-
+    <div className="bg-white mt-3 p-2 space-y-4 sm:space-y-6">
       {/* Promotion Code Section */}
       <div className="bg-red-50 border border-red-200 rounded-lg p-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
           <div className="flex items-center gap-2">
-            <FaPercent className="text-red-500 text-base sm:text-lg" />
-            <span className="text-sm sm:text-base font-medium text-gray-800">Promotion Code</span>
+            <FaPercent className="text-red-500 text-sm sm:text-lg" />
+            <span className="text-xs sm:text-sm font-medium text-gray-800">
+              Promotion Code
+            </span>
           </div>
           {!promotionVisible ? (
             <button
@@ -59,7 +58,9 @@ const PaymentSection = () => {
 
       {/* Payment Methods */}
       <div>
-        <h3 className="text-sm sm:text-lg font-medium text-gray-700 mb-2 sm:mb-4">Select Payment Method</h3>
+        <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-4">
+          Select Payment Method
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
           {/* Credit/Debit Card */}
           <button
@@ -70,8 +71,10 @@ const PaymentSection = () => {
                 : "bg-gray-100 text-gray-700"
             }`}
           >
-            <FaCreditCard className="text-base sm:text-2xl" />
-            <span className="text-xs sm:text-sm font-medium">Credit/Debit Card</span>
+            <FaCreditCard className="text-sm sm:text-2xl" />
+            <span className="text-xs sm:text-sm font-medium">
+              Credit/Debit Card
+            </span>
           </button>
 
           {/* PayPal */}
@@ -83,7 +86,7 @@ const PaymentSection = () => {
                 : "bg-gray-100 text-gray-700"
             }`}
           >
-            <FaPaypal className="text-base sm:text-2xl" />
+            <FaPaypal className="text-sm sm:text-2xl" />
             <span className="text-xs sm:text-sm font-medium">PayPal</span>
           </button>
 
@@ -96,7 +99,7 @@ const PaymentSection = () => {
                 : "bg-gray-100 text-gray-700"
             }`}
           >
-            <FaGoogle className="text-base sm:text-2xl" />
+            <FaGoogle className="text-sm sm:text-2xl" />
             <span className="text-xs sm:text-sm font-medium">Google Pay</span>
           </button>
 
@@ -109,8 +112,10 @@ const PaymentSection = () => {
                 : "bg-gray-100 text-gray-700"
             }`}
           >
-            <FaMoneyBillWave className="text-base sm:text-2xl" />
-            <span className="text-xs sm:text-sm font-medium">Pay with Cash</span>
+            <FaMoneyBillWave className="text-sm sm:text-2xl" />
+            <span className="text-xs sm:text-sm font-medium">
+              Pay with Cash
+            </span>
           </button>
         </div>
       </div>
