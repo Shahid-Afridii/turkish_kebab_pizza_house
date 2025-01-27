@@ -42,7 +42,7 @@ const Checkout = () => {
   
   return (
     <div className="container mx-auto p-2 lg:p-0 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl md:text-3xl font-bold mb-8 text-center text-gray-800">
+      <h1 className="text-md md:text-xl font-bold mb-8 text-center text-gray-800">
         Check-Out
       </h1>
 
