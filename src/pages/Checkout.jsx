@@ -56,7 +56,7 @@ const Checkout = () => {
             >
               <div className="flex items-center gap-4">
                 <FaUser className="text-primary w-5 h-5 md:w-6 md:h-6" />
-                <h2 className="text-lg font-semibold">Account</h2>
+                <h2 className="text-sm md:text-md lg:text-lg  font-semibold">Account</h2>
               </div>
               {activeAccordion === 1 ? (
                 <FaChevronUp className="text-primary" />
@@ -76,7 +76,7 @@ const Checkout = () => {
             >
               <div className="flex items-center gap-4">
                 <FaMapMarkerAlt className="text-primary w-5 h-5 md:w-6 md:h-6" />
-                <h2 className="text-lg font-semibold">Delivery/Pick-up</h2>
+                <h2 className="text-sm md:text-md lg:text-lg font-semibold">Delivery/Pick-up</h2>
               </div>
               {activeAccordion === 2 ? (
                 <FaChevronUp className="text-primary" />
@@ -95,7 +95,7 @@ const Checkout = () => {
   >
     <div className="flex items-center gap-4">
       <FaCreditCard className="text-primary w-5 h-5 md:w-6 md:h-6" />
-      <h2 className="text-lg font-semibold">Payment</h2>
+      <h2 className="text-sm md:text-md lg:text-lg font-semibold">Payment</h2>
     </div>
     {activeAccordion === 3 ? (
       <FaChevronUp className="text-primary" />
