@@ -140,8 +140,8 @@ const CategoryCarousel = () => {
                   activeCategory === category.id ? "border-2 border-primary shadow-lg" : "border-2 border-transparent"
                 }`}
               >
-                <img src={category.image} alt={category.name} className="w-full h-full object-contain" />
-              </div>
+<img src={`https://api.turkish-kebab-pizza-house.co.uk${category.image}`} alt={category.name} className="w-full h-full object-contain" />
+</div>
               <span className={`mt-2 text-xs sm:text-sm font-medium text-center truncate ${activeCategory === category.id ? "text-primary" : "text-gray-700"}`} style={{ maxWidth: "5rem" }}>
                 {category.name}
               </span>
