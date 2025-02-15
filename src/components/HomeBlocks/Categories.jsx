@@ -1,26 +1,29 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { fetchMenu } from "../../services/menu"; // Import API function
+import { fetchMenuData } from "../../redux/slices/menuSlice";
+import withErrorBoundary from "../../components/ErrorBoundary/withErrorBoundary"; // Import HOC
 
-const categories = [
-  { id: 1, name: "Meals", img: "assets/side-view-pizza-with-chicken-mushrooms-served-with-sauce-vegetables-salad-wooden-plate-removebg-preview 1.png" },
-  { id: 2, name: "Pizzas", img: "assets/hawaiian-pizza-removebg-preview 1.png" },
-  { id: 3, name: "Garlic Breads", img: "assets/delicious-orange-bun-table-removebg-preview 1.png" },
-  { id: 4, name: "Kebabs", img: "assets/cooked-meat-veggies-kebab-skewers-with-pita-removebg-preview 1.png" },
-  { id: 5, name: "Burgers", img: "assets/front-view-tasty-meat-burger-with-vegetables-dark-surface-sandwich-fast-food-bun-removebg-preview 1.png" },
-  { id: 6, name: "Sundries", img: "assets/Chicken_wings-removebg-preview 1.png" },
-  { id: 7, name: "Chips", img: "assets/horizontal-view-delicious-homemade-potato-chips-brown-plate-gray-table-removebg-preview 1.png" },
-];
+// const categories = [
+//   { id: 1, name: "Meals", img: "assets/side-view-pizza-with-chicken-mushrooms-served-with-sauce-vegetables-salad-wooden-plate-removebg-preview 1.png" },
+//   { id: 2, name: "Pizzas", img: "assets/hawaiian-pizza-removebg-preview 1.png" },
+//   { id: 3, name: "Garlic Breads", img: "assets/delicious-orange-bun-table-removebg-preview 1.png" },
+//   { id: 4, name: "Kebabs", img: "assets/cooked-meat-veggies-kebab-skewers-with-pita-removebg-preview 1.png" },
+//   { id: 5, name: "Burgers", img: "assets/front-view-tasty-meat-burger-with-vegetables-dark-surface-sandwich-fast-food-bun-removebg-preview 1.png" },
+//   { id: 6, name: "Sundries", img: "assets/Chicken_wings-removebg-preview 1.png" },
+//   { id: 7, name: "Chips", img: "assets/horizontal-view-delicious-homemade-potato-chips-brown-plate-gray-table-removebg-preview 1.png" },
+// ];
 
 const CategoryCarousel = () => {
   const [isScrollable, setIsScrollable] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null); // Track the active category
   const carouselRef = useRef(null);
-  const isFetched = useRef(false); // Prevent duplicate API calls
+  const isFetched = useRef(false);
+  const dispatch = useDispatch();
+  const { menu, status } = useSelector((state) => state.menu); // Get menu from Redux
 
-  const [menu, setMenu] = useState([]);
 
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -41,23 +44,13 @@ const CategoryCarousel = () => {
 
   
   useEffect(() => {
-    if (!isFetched.current) {
-      isFetched.current = true; // Prevent duplicate API calls
-
-      const loadMenu = async () => {
-        try {
-          const response = await fetchMenu();
-          if (response.status) {
-            setMenu(response.data);
-          }
-        } catch (error) {
-          console.error("Failed to fetch menu:", error);
-        }
-      };
-
-      loadMenu();
+    if (!isFetched.current && menu.length === 0 && status === "idle") {
+      dispatch(fetchMenuData());
+      isFetched.current = true; // Prevents double call
     }
-  }, []);
+  }, [status]);
+  
+  
   
 
   
@@ -172,4 +165,4 @@ const CategoryCarousel = () => {
   );
 };
 
-export default CategoryCarousel;
+export default withErrorBoundary(CategoryCarousel);

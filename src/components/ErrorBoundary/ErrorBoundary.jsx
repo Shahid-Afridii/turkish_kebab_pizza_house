@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { motion } from "framer-motion";
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -7,55 +8,50 @@ class ErrorBoundary extends Component {
   }
 
   static getDerivedStateFromError(error) {
-    // Update state to indicate an error has occurred
     return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log the error to an external service (optional)
-    console.error("Error caught in ErrorBoundary:", error, errorInfo);
+    console.error("⚠️ Error caught in ErrorBoundary:", error, errorInfo);
     this.setState({ errorInfo });
   }
 
   resetErrorBoundary = () => {
-    // Reset the error state
     this.setState({ hasError: false, error: null, errorInfo: null });
   };
 
   render() {
-    if (this.state.hasError) {
-      const { error, errorInfo } = this.state;
-      const { fallback } = this.props;
+    const { hasError, error, errorInfo } = this.state;
+    const { fallback, errorMessage = "Something went wrong!" } = this.props;
 
-      // Render the fallback UI if provided
-      if (fallback) {
-        return typeof fallback === "function"
-          ? fallback({ error, errorInfo, resetErrorBoundary: this.resetErrorBoundary })
-          : fallback;
-      }
-
-      // Default fallback UI
-      return (
-        <div className="p-6 bg-red-100 text-red-800 rounded-lg">
-          <h1 className="text-2xl font-bold">Something went wrong</h1>
-          {error && <p className="mt-2 text-sm">{error.toString()}</p>}
-          {errorInfo && (
-            <details className="mt-2 text-xs">
-              <summary>Details</summary>
-              <pre>{errorInfo.componentStack}</pre>
-            </details>
-          )}
-          <button
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            onClick={this.resetErrorBoundary}
+    if (hasError) {
+      return fallback ? (
+        fallback
+      ) : (
+        <div className="flex flex-col items-center justify-center h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 px-4">
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 text-center max-w-md"
           >
-            Try Again
-          </button>
+            <h1 className="text-3xl font-bold text-red-600 dark:text-red-400">
+              {errorMessage}
+            </h1>
+            {error && <p className="text-sm mt-2">{error.toString()}</p>}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={this.resetErrorBoundary}
+              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg"
+            >
+              Try Again
+            </motion.button>
+          </motion.div>
         </div>
       );
     }
 
-    // Render children if no error
     return this.props.children;
   }
 }
