@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { fetchMenu } from "../../services/menu"; // Import API function
 
 const categories = [
   { id: 1, name: "Meals", img: "assets/side-view-pizza-with-chicken-mushrooms-served-with-sauce-vegetables-salad-wooden-plate-removebg-preview 1.png" },
@@ -17,6 +18,9 @@ const CategoryCarousel = () => {
   const [isScrollable, setIsScrollable] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null); // Track the active category
   const carouselRef = useRef(null);
+  const isFetched = useRef(false); // Prevent duplicate API calls
+
+  const [menu, setMenu] = useState([]);
 
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -35,6 +39,28 @@ const CategoryCarousel = () => {
     }
   };
 
+  
+  useEffect(() => {
+    if (!isFetched.current) {
+      isFetched.current = true; // Prevent duplicate API calls
+
+      const loadMenu = async () => {
+        try {
+          const response = await fetchMenu();
+          if (response.status) {
+            setMenu(response.data);
+          }
+        } catch (error) {
+          console.error("Failed to fetch menu:", error);
+        }
+      };
+
+      loadMenu();
+    }
+  }, []);
+  
+
+  
   useEffect(() => {
     updateScrollable();
     window.addEventListener("resize", updateScrollable);
@@ -108,36 +134,29 @@ const CategoryCarousel = () => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {categories.map((category) => (
-          <motion.div
-            key={category.id}
-            onClick={() => handleCategoryClick(category.id)}
-            className={`flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full`}
-            whileHover={{ scale: 1.05 }}
-          >
-            <div
-              className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-32 lg:h-32 overflow-hidden rounded-full shadow-sm bg-white ${
-                activeCategory === category.id
-                  ? "border-2 border-primary shadow-lg"
-                  : "border-2 border-transparent"
-              }`}
+        {menu.length > 0 ? (
+          menu.map((category) => (
+            <motion.div
+              key={category.id}
+              onClick={() => setActiveCategory(category.id)}
+              className={`flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full`}
+              whileHover={{ scale: 1.05 }}
             >
-              <img
-                src={category.img}
-                alt={category.name}
-                className="w-full h-full object-contain "
-              />
-            </div>
-            <span
-              className={`mt-2 text-xs sm:text-sm font-medium text-center truncate ${
-                activeCategory === category.id ? "text-primary" : "text-gray-700"
-              }`}
-              style={{ maxWidth: "5rem" }}
-            >
-              {category.name}
-            </span>
-          </motion.div>
-        ))}
+              <div
+                className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-32 lg:h-32 overflow-hidden rounded-full shadow-sm bg-white ${
+                  activeCategory === category.id ? "border-2 border-primary shadow-lg" : "border-2 border-transparent"
+                }`}
+              >
+                <img src={category.image} alt={category.name} className="w-full h-full object-contain" />
+              </div>
+              <span className={`mt-2 text-xs sm:text-sm font-medium text-center truncate ${activeCategory === category.id ? "text-primary" : "text-gray-700"}`} style={{ maxWidth: "5rem" }}>
+                {category.name}
+              </span>
+            </motion.div>
+          ))
+        ) : (
+          <p className="text-center text-gray-500">Loading categories...</p>
+        )}
       </motion.div>
 
       {/* Right Arrow */}
