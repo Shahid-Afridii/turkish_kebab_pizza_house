@@ -1,7 +1,7 @@
 import React, { useState,useEffect , forwardRef } from "react";
 import DrawerModal from "../Cart/DrawerModal";
 import { useDispatch, useSelector } from "react-redux";
-
+import withErrorBoundary from "../../components/ErrorBoundary/withErrorBoundary"; // Import HOC
 import { motion } from "framer-motion";
 import { FaPlus,FaChevronDown } from "react-icons/fa";
 import { fetchMenuItems } from "../../redux/slices/menuSlice"; 
@@ -216,4 +216,4 @@ const Products = forwardRef((props, ref) => {
   );
 });
 
-export default Products;
+export default withErrorBoundary(Products);
