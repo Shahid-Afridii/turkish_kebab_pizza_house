@@ -44,7 +44,7 @@ const CategoryCarousel = () => {
 
   
   useEffect(() => {
-    if (!isFetched.current && menu.length === 0 && status === "idle") {
+    if (!isFetched.current && menu?.length === 0 && status === "idle") {
       dispatch(fetchMenuData());
       isFetched.current = true; // Prevents double call
     }

@@ -1,8 +1,10 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState,useEffect , forwardRef } from "react";
 import DrawerModal from "../Cart/DrawerModal";
+import { useDispatch, useSelector } from "react-redux";
+
 import { motion } from "framer-motion";
 import { FaPlus,FaChevronDown } from "react-icons/fa";
-
+import { fetchMenuItems } from "../../redux/slices/menuSlice"; 
 // Static Data for All Items
 const items = [
     {
@@ -89,6 +91,8 @@ const Products = forwardRef((props, ref) => {
   const [visibleItems, setVisibleItems] = useState(6);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const { menuItems, menuData, status } = useSelector((state) => state.menu);
+  const dispatch = useDispatch();
 
   const handleShowMore = () => {
     setVisibleItems((prev) => prev + 3);
@@ -103,7 +107,12 @@ const Products = forwardRef((props, ref) => {
     setDrawerOpen(false);
     setSelectedItem(null);
   };
-
+  useEffect(() => {
+    if (status === "idle") {
+    
+      dispatch(fetchMenuItems()); // ✅ Fetch menu items
+    }
+  }, [status, dispatch]);
   return (
     <div className="px-4 sm:px-8 py-8 mt-8 bg-gray-50">
       <h2 ref={ref} className="text-lg md:text-2xl font-bold mb-6 text-gray-800">
@@ -115,71 +124,69 @@ const Products = forwardRef((props, ref) => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        {items.slice(0, visibleItems).map((item) => (
-          <motion.div
-            key={item.id}
-            className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 transition-transform duration-300 hover:scale-105"
-            whileHover={{ scale: 1.05 }}
-          >
-            <div className="relative">
-              {item.popular && (
-                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                  Popular
-                </span>
-              )}
-              <img
-                src={item.img}
-                alt={item.name}
-                className="w-full h-48 object-cover"
-              />
-            </div>
-            <div className="p-4 flex flex-col">
-              <h3 className="text-md lg:text-lg font-bold text-gray-800">{item.name}</h3>
-              <div className="flex items-center text-sm text-gray-500 mt-2">
-                {[...Array(5)].map((_, i) => (
-                  <svg
-                    key={i}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill={i < Math.round(item.rating) ? "currentColor" : "none"}
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    className={`w-4 h-4 ${
-                      i < Math.round(item.rating)
-                        ? "text-yellow-400"
-                        : "text-gray-300"
-                    }`}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.027 6.254a1 1 0 00.95.69h6.614c.969 0 1.371 1.24.588 1.81l-5.351 3.89a1 1 0 00-.364 1.118l2.027 6.254c.3.921-.755 1.688-1.54 1.118l-5.351-3.89a1 1 0 00-1.175 0l-5.351 3.89c-.784.57-1.84-.197-1.54-1.118l2.027-6.254a1 1 0 00-.364-1.118l-5.351-3.89c-.783-.57-.38-1.81.588-1.81h6.614a1 1 0 00.95-.69l2.027-6.254z"
-                    />
-                  </svg>
-                ))}
-                <span className="ml-2 text-md lg:text-lg text-green-600 font-semibold">
-                  {item.rating}
-                </span>
-                <span className="ml-2 text-md lg:text-lg text-gray-500">{item.reviews}</span>
+{menuItems.slice(0, visibleItems).map((item) => (
+            <motion.div
+              key={item.id}
+              className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 transition-transform duration-300 hover:scale-105"
+              whileHover={{ scale: 1.05 }}
+            >
+              <div className="relative">
+                {item.popular && (
+                  <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                    Popular
+                  </span>
+                )}
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-48 object-cover"
+                />
               </div>
-              <p className="text-xs lg:text-lg text-gray-600 mt-2 truncate">
-                {item.description}
-              </p>
-              <div className="flex justify-between items-center mt-4">
-                                  <span className="text-red-500 font-bold text-lg">
-                                    {item.price}
-                                  </span>
-                                  <button
-                                    onClick={() => handleAddItem(item)}
-                                    className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition flex items-center"
-                                  >
-                                    <FaPlus className="mr-2" />
-                                    Add Item
-                                  </button>
-                                </div>
-            </div>
-          </motion.div>
-        ))}
+              <div className="p-4 flex flex-col">
+                <h3 className="text-md lg:text-lg font-bold text-gray-800">{item.name}</h3>
+                <div className="flex items-center text-sm text-gray-500 mt-2">
+                  {[...Array(5)].map((_, i) => (
+                    <svg
+                      key={i}
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill={i < Math.round(item.rating) ? "currentColor" : "none"}
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className={`w-4 h-4 ${
+                        i < Math.round(item.rating) ? "text-yellow-400" : "text-gray-300"
+                      }`}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.027 6.254a1 1 0 00.95.69h6.614c.969 0 1.371 1.24.588 1.81l-5.351 3.89a1 1 0 00-.364 1.118l2.027 6.254c.3.921-.755 1.688-1.54 1.118l-5.351-3.89a1 1 0 00-1.175 0l-5.351 3.89c-.784.57-1.84-.197-1.54-1.118l2.027-6.254a1 1 0 00-.364-1.118l-5.351-3.89c-.783-.57-.38-1.81.588-1.81h6.614a1 1 0 00.95-.69l2.027-6.254z"
+                      />
+                    </svg>
+                  ))}
+                  <span className="ml-2 text-md lg:text-lg text-green-600 font-semibold">
+                    {item.rating}
+                  </span>
+                  <span className="ml-2 text-md lg:text-lg text-gray-500">{item.reviews}</span>
+                </div>
+                <p className="text-xs lg:text-lg text-gray-600 mt-2 truncate">
+                  {item.description}
+                </p>
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-red-500 font-bold text-lg">
+                    £{item.price}
+                  </span>
+                  <button
+                    onClick={() => handleAddItem(item)}
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition flex items-center"
+                  >
+                    <FaPlus className="mr-2" />
+                    Add Item
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
       </motion.div>
       {visibleItems < items.length && (
         <div className="flex justify-center mt-8">
