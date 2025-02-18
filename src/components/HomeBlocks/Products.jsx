@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { FaPlus,FaChevronDown } from "react-icons/fa";
 import { fetchMenuItems } from "../../redux/slices/menuSlice"; 
+import { formatPrice } from "../../utils/formatPrice";
+const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 // Static Data for All Items
 const items = [
     {
@@ -91,9 +93,9 @@ const Products = forwardRef((props, ref) => {
   const [visibleItems, setVisibleItems] = useState(6);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const { menuItems, menuData, status } = useSelector((state) => state.menu);
+  const { menuItems, selectedCategoryId, status } = useSelector((state) => state.menu);
   const dispatch = useDispatch();
-
+  const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
   const handleShowMore = () => {
     setVisibleItems((prev) => prev + 3);
   };
@@ -108,16 +110,17 @@ const Products = forwardRef((props, ref) => {
     setSelectedItem(null);
   };
   useEffect(() => {
-    if (status === "idle") {
-    
-      dispatch(fetchMenuItems()); // ✅ Fetch menu items
+    if (selectedCategoryId) {
+      dispatch(fetchMenuItems()); // ✅ Fetch menu items dynamically
     }
-  }, [status, dispatch]);
+  }, [selectedCategoryId, dispatch]);
+
+  console.log("menuItems", menuItems);
   return (
     <div className="px-4 sm:px-8 py-8 mt-8 bg-gray-50">
-      <h2 ref={ref} className="text-lg md:text-2xl font-bold mb-6 text-gray-800">
+      {/* <h2 ref={ref} className="text-lg md:text-2xl font-bold mb-6 text-gray-800">
         Meals
-      </h2>
+      </h2> */}
       <motion.div
   className="grid grid-cols-1 p-2 lg:p-0 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6"
   initial={{ opacity: 0 }}
@@ -137,7 +140,7 @@ const Products = forwardRef((props, ref) => {
                   </span>
                 )}
                 <img
-                  src={item.image}
+                  src={`${IMAGE_URL}${item.image}`}
                   alt={item.name}
                   className="w-full h-48 object-cover"
                 />
@@ -169,12 +172,16 @@ const Products = forwardRef((props, ref) => {
                   </span>
                   <span className="ml-2 text-md lg:text-lg text-gray-500">{item.reviews}</span>
                 </div>
-                <p className="text-xs lg:text-lg text-gray-600 mt-2 truncate">
-                  {item.description}
-                </p>
+                {item.add_ons && item.add_ons.length > 0 && (
+  <p className="text-xs lg:text-lg text-gray-600 mt-2 truncate">
+    {item.add_ons.map((addon) => addon.name).join(", ")}
+  </p>
+)}
+
+
                 <div className="flex justify-between items-center mt-4">
                   <span className="text-red-500 font-bold text-lg">
-                    £{item.price}
+                    {formatPrice(item.price)}
                   </span>
                   <button
                     onClick={() => handleAddItem(item)}

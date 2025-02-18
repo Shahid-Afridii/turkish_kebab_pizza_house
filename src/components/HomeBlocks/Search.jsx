@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { toggleVegOnly, fetchMenuItems } from "../../redux/slices/menuSlice";
 const Search = () => {
-  const [vegOnly, setVegOnly] = useState(false);
+  const dispatch = useDispatch();
+  const vegOnly = useSelector((state) => state.menu.vegOnly); // ✅ Get Redux `vegOnly`
 
   const handleToggle = () => {
-    setVegOnly(!vegOnly);
+    dispatch(toggleVegOnly()); // ✅ Toggle Redux state
+    dispatch(fetchMenuItems()); // ✅ Re-fetch menu items
   };
+
 
   return (
     <div className="flex flex-row items-center justify-between lg:shadow-sm rounded-lg p-3 w-full mx-0 max-w-full lg:max-w-5xl lg:mx-auto">

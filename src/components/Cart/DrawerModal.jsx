@@ -4,6 +4,8 @@ import { FaPlus, FaMinus, FaTimes } from "react-icons/fa";
 import { useDispatch,useSelector } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
 import BottomCartBar from "./BottomCartBar";
+import { formatPrice } from "../../utils/formatPrice";
+
 const drawerVariants = {
   hidden: {
     x: "100%",
@@ -95,12 +97,13 @@ const buttonVariants = {
 };
 
 const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
-
+console.log("selectedItem", selectedItem)
   const dispatch = useDispatch();
 // Fetch existing cart item details (if already added)
 const existingItem = useSelector((state) =>
   state.cart.items.find((item) => item.id === selectedItem?.id)
 );
+  const [selectedAddOns, setSelectedAddOns] = useState({});
 
 // States
 const [quantity, setQuantity] = useState(existingItem ? existingItem.quantity : 1);
@@ -115,6 +118,8 @@ useEffect(() => {
   setQuantity(existingItem ? existingItem.quantity : 1);
   setSelectedToppings(existingItem?.toppings || []);
   setSelectedDips(existingItem?.dips || []);
+  setSelectedAddOns({});
+
   setSelectedDrinks(existingItem?.drinks || []);
   setInstructions(existingItem?.instructions || "");
 }, [selectedItem, existingItem]);
@@ -123,7 +128,35 @@ useEffect(() => {
 const handleQuantityChange = (type) => {
   setQuantity((prev) => (type === "increment" ? prev + 1 : Math.max(1, prev - 1)));
 };
+const handleAddOnSelect = (addOnId, itemId, isMultiSelect, selectUpto) => {
+  setSelectedAddOns((prev) => {
+    const currentSelections = prev[addOnId] || [];
 
+    if (isMultiSelect) {
+      // If already selected, remove it
+      if (currentSelections.includes(itemId)) {
+        return { ...prev, [addOnId]: currentSelections.filter((id) => id !== itemId) };
+      }
+      // If limit reached, prevent adding more
+      if (currentSelections.length >= selectUpto) {
+        return prev;
+      }
+      // Add new selection
+      return { ...prev, [addOnId]: [...currentSelections, itemId] };
+    } else {
+      // If single select, replace the selection
+      return { ...prev, [addOnId]: [itemId] };
+    }
+  });
+};
+
+const clearSelectedAddOns = (addOnId) => {
+  setSelectedAddOns((prev) => {
+    const newSelection = { ...prev };
+    delete newSelection[addOnId];
+    return newSelection;
+  });
+};
 // Add to Cart Handler
 const handleAddToCart = () => {
   if (selectedItem) {
@@ -141,22 +174,18 @@ const handleAddToCart = () => {
   }
 };
 
-// Select Chip (Toppings, Dips, Drinks) Handler
-const handleChipSelect = (item, setSelected) => {
-  setSelected((prev) =>
-    prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
-  );
-};
 
-// Clear Chip Selection Handler
-const clearSelectedChips = (setSelected) => {
-  setSelected([]);
-};
 const handleCloseCartBar = () => {
   setShowCartBar(false);
 };
 
- 
+const handleRemoveAddon = (addOnId, itemId) => {
+  setSelectedAddOns((prev) => ({
+    ...prev,
+    [addOnId]: prev[addOnId].filter((id) => id !== itemId),
+  }));
+};
+
 
   return (
     <AnimatePresence>
@@ -199,16 +228,19 @@ const handleCloseCartBar = () => {
                 <h3 className="text-md md:text-xl font-semibold text-gray-800">
                   {selectedItem?.name}
                 </h3>
-                <p className="text-xs md:text-sm text-gray-500 mt-1">
+                {/* Selection Limit Condition */}
+   {selectedItem?.description &&   <p className="text-xs md:text-sm text-gray-500 mt-1">
                   {selectedItem?.description}
-                </p>
-                <p className="text-xs md:text-lg text-green-600 font-medium mt-1">
+                </p> }
+              
+                {selectedItem?.rating &&   <p className="text-xs md:text-lg text-green-600 font-medium mt-1">
                   {selectedItem?.rating} ⭐ • 30 min
-                </p>
+                </p>}
+              
                 {/* Close Button */}
                 <motion.button
                   className="absolute -top-0 md:-top-0  right-0 bg-primary text-white w-8 h-8 rounded-md lg:rounded-full shadow-lg flex items-center justify-center md:m-3 z-50"
-                  // className="absolute -top-6 right-0 bg-red-500 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center border-4 border-white z-50"
+                  // className="absolute -top-6 right-0 bg-primary text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center border-4 border-white z-50"
                   onClick={onClose}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -223,186 +255,56 @@ const handleCloseCartBar = () => {
                 initial="hidden"
                 animate="visible"
               >
-                {/* Toppings */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-sm md:text-lg text-gray-800 mb-1">
-                    Choose your Toppings
-                  </h4>
-                  <p className="text-xs md:text-sm text-gray-500 mb-3">
-                    Select up to 2 toppings.
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    {selectedItem?.toppings?.map((topping, index) => (
-                      <motion.div
-                        key={index}
-                        custom={index}
-                        variants={chipVariants}
-                        initial="hidden"
-                        animate="visible"
-                        whileHover="hover"
-                        className={`inline-flex items-center px-2 py-1 text-xs lg:text-sm rounded border transition cursor-pointer ${
-                          selectedToppings.includes(topping)
-                            ? "bg-primary text-white border-primary"
-                            : "bg-gray-100 text-gray-800 border-gray-300"
-                        }`}
-                        onClick={() =>
-                          handleChipSelect(topping, setSelectedToppings)
-                        }
-                      >
-                        <span >{topping}</span>
-                        {!selectedToppings.includes(topping) && (
-                          <FaPlus className="ml-2 text-xs text-gray-500" />
-                        )}
-                      </motion.div>
-                    ))}
-                  </div>
-                  {selectedToppings.length > 0 && (
-                    <div className="flex items-center text-xs md:text-sm flex-wrap gap-2 mt-4">
-                      {selectedToppings.map((topping, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center bg-red-100 text-primary px-2 py-1 rounded-full"
-                        >
-                          {topping}
-                          <FaTimes
-                            className="ml-1 cursor-pointer"
-                            onClick={() =>
-                              setSelectedToppings((prev) =>
-                                prev.filter((item) => item !== topping)
-                              )
-                            }
-                          />
-                        </div>
-                      ))}
-                      <button
-                        onClick={() => clearSelectedChips(setSelectedToppings)}
-                        className="text-primary underline text-sm"
-                      >
-                        Clear
-                      </button>
-                    </div>
-                  )}
-                </div>
+{selectedItem?.add_ons?.length > 0 && selectedItem.add_ons.map((addOn) => (
+  <div key={addOn.id} className="mb-6">
+    {/* Add-on Name */}
+    <h4 className="font-semibold text-gray-800 mb-2">{addOn.name}</h4>
 
-                {/* Dips */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-sm  md:text-lg text-gray-800 mb-1">
-                    Choose your Dip
-                  </h4>
-                  <p className="text-xs md:text-sm text-gray-500 mb-3">
-                    Select 1 dip for your meal.
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    {selectedItem?.dips?.map((dip, index) => (
-                      <motion.div
-                        key={index}
-                        custom={index}
-                        variants={chipVariants}
-                        initial="hidden"
-                        animate="visible"
-                        whileHover="hover"
-                        className={`inline-flex text-xs md:text-sm items-center px-2 py-1 rounded border transition cursor-pointer ${
-                          selectedDips.includes(dip)
-                            ? "bg-primary text-white border-primary"
-                            : "bg-gray-100 text-gray-800 border-gray-300"
-                        }`}
-                        onClick={() => handleChipSelect(dip, setSelectedDips)}
-                      >
-                        <span>{dip}</span>
-                        {!selectedDips.includes(dip) && (
-                          <FaPlus className="ml-2 text-xs text-gray-500" />
-                        )}
-                      </motion.div>
-                    ))}
-                  </div>
-                  {selectedDips.length > 0 && (
-                    <div className="flex items-center text-xs md:text-sm flex-wrap gap-2 mt-4">
-                      {selectedDips.map((dip, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center bg-red-100 text-primary px-2 py-1 rounded-full"
-                        >
-                          {dip}
-                          <FaTimes
-                            className="ml-1 cursor-pointer"
-                            onClick={() =>
-                              setSelectedDips((prev) =>
-                                prev.filter((item) => item !== dip)
-                              )
-                            }
-                          />
-                        </div>
-                      ))}
-                      <button
-                        onClick={() => clearSelectedChips(setSelectedDips)}
-                        className="text-primary underline text-xs lg:text-sm"
-                      >
-                        Clear
-                      </button>
-                    </div>
-                  )}
-                </div>
+    {/* Selection Limit Condition */}
+    <p className="text-xs md:text-sm text-gray-500 mb-3">
+      {addOn.is_multi_select ? `Select up to ${addOn.select_upto} ${addOn.name}` : `Select 1 ${addOn.name}`}
+    </p>
 
-                {/* Drinks */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-sm md:text-lg text-gray-800 mb-1">
-                    Choose your Drink
-                  </h4>
-                  <p className="text-xs md:text-sm text-gray-500 mb-3">
-                    Select 1 drink for your meal.
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    {selectedItem?.drinks?.map((drink, index) => (
-                      <motion.div
-                        key={index}
-                        custom={index}
-                        variants={chipVariants}
-                        whileHover="hover"
-                        initial="hidden"
-                        animate="visible"
-                        className={`inline-flex text-xs md:text-sm items-center px-2 py-1 rounded border transition cursor-pointer ${
-                          selectedDrinks.includes(drink)
-                            ? "bg-primary text-white border-primary"
-                            : "bg-gray-100 text-gray-800 border-gray-300"
-                        }`}
-                        onClick={() =>
-                          handleChipSelect(drink, setSelectedDrinks)
-                        }
-                      >
-                        <span>{drink}</span>
-                        {!selectedDrinks.includes(drink) && (
-                          <FaPlus className="ml-2 text-xs text-gray-500" />
-                        )}
-                      </motion.div>
-                    ))}
-                  </div>
-                  {selectedDrinks.length > 0 && (
-                    <div className="flex items-center text-xs lg:text-sm flex-wrap gap-2 mt-4">
-                      {selectedDrinks.map((drink, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center bg-red-100 text-primary px-2 py-1 rounded-full"
-                        >
-                          {drink}
-                          <FaTimes
-                            className="ml-1 cursor-pointer"
-                            onClick={() =>
-                              setSelectedDrinks((prev) =>
-                                prev.filter((item) => item !== drink)
-                              )
-                            }
-                          />
-                        </div>
-                      ))}
-                      <button
-                        onClick={() => clearSelectedChips(setSelectedDrinks)}
-                        className="text-primary underline text-sm"
-                      >
-                        Clear
-                      </button>
-                    </div>
-                  )}
-                </div>
+    {/* Add-on Options */}
+    <div className="flex flex-wrap gap-2">
+      {addOn.items.map((item) => {
+        const isSelected = selectedAddOns[addOn.id]?.includes(item.id);
+        const isLimitReached = addOn.is_multi_select && selectedAddOns[addOn.id]?.length >= addOn.select_upto;
+
+        return (
+          <button
+            key={item.id}
+            onClick={() => handleAddOnSelect(addOn.id, item.id, addOn.is_multi_select, addOn.select_upto)}
+            disabled={isLimitReached && !isSelected} // Disable button if limit is reached
+            className={`px-3 py-1 rounded border transition ${
+              isSelected ? "bg-red-500 text-white border-red-500" : "bg-gray-100 text-gray-800 border-gray-300"
+            } ${isLimitReached && !isSelected ? "opacity-50 cursor-not-allowed" : ""}`} // Gray out extra selections
+          >
+            {item.name} (+{formatPrice(item.price)})
+          </button>
+        );
+      })}
+    </div>
+
+    {/* Display Selected Add-ons */}
+    {selectedAddOns[addOn.id]?.length > 0 && (
+      <div className="mt-2 flex flex-wrap gap-2">
+        {selectedAddOns[addOn.id].map((id) => {
+          const selectedItem = addOn.items.find((i) => i.id === id);
+          return (
+            <span key={id} className="px-2 py-1 bg-red-100 text-red-600 rounded-full flex items-center">
+              {selectedItem.name}
+              <FaTimes className="ml-1 cursor-pointer" onClick={() => handleRemoveAddon(addOn.id, id)} />
+            </span>
+          );
+        })}
+        <button onClick={() => clearSelectedAddOns(addOn.id)} className="text-red-500 underline text-sm">
+          Clear
+        </button>
+      </div>
+    )}
+  </div>
+))}
 
                 {/* Notes Section */}
                 <div className="mb-6 text-sm md:text-lg ">
@@ -464,10 +366,8 @@ const handleCloseCartBar = () => {
                   whileHover="hover"
                   whileTap="tap"
                 >
-                  Add to Cart • £
-                  {(
-                    parseFloat(selectedItem?.price.replace("£", "")) * quantity
-                  ).toFixed(2)}
+                   Add to Cart • {formatPrice(selectedItem?.price * quantity)}
+               
                 </motion.button>
               </motion.div>
             </div>

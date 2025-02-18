@@ -20,6 +20,8 @@ const Home = () => {
   const [isStickyVisible, setIsStickyVisible] = useState(false);
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+// ✅ Store Selected Category ID Here
+const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
   const scrollToProductsHeading = () => {
     const stickyContainerHeight = document.querySelector(".sticky")?.offsetHeight || 0;
@@ -96,7 +98,7 @@ const Home = () => {
           display: isStickyVisible ? "none" : "block", // Instant toggle
         }}
       >
-        <Categories />
+        <Categories setSelectedCategory={setSelectedCategoryId} />
       </div>
 
       {/* Products Section */}
@@ -106,7 +108,7 @@ const Home = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <Products ref={productsHeadingRef} />
+        <Products ref={productsHeadingRef} selectedCategoryId={selectedCategoryId} />
       </motion.div>
       {/* slider Products Section */}
       <motion.div

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { fetchMenuData } from "../../redux/slices/menuSlice";
+import { fetchMenuData,setSelectedCategoryId  } from "../../redux/slices/menuSlice";
 import withErrorBoundary from "../../components/ErrorBoundary/withErrorBoundary"; // Import HOC
 
 // const categories = [
@@ -22,8 +22,8 @@ const CategoryCarousel = () => {
   const carouselRef = useRef(null);
   const isFetched = useRef(false);
   const dispatch = useDispatch();
-  const { menu, status } = useSelector((state) => state.menu); // Get menu from Redux
-
+  const { menu, selectedCategoryId, status } = useSelector((state) => state.menu);// ✅ Load API & Image URLs from Vite environment variables
+const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -52,6 +52,7 @@ const CategoryCarousel = () => {
   
   
   
+
 
   
   useEffect(() => {
@@ -96,7 +97,8 @@ const CategoryCarousel = () => {
   };
 
   const handleCategoryClick = (id) => {
-    setActiveCategory(id); // Set the clicked category as active
+    dispatch(setSelectedCategoryId(id)); // ✅ Update Redux state with selected category
+    dispatch(fetchMenuItems()); // ✅ Fetch menu items for the new category
   };
 
   return (
@@ -130,19 +132,17 @@ const CategoryCarousel = () => {
         {menu.length > 0 ? (
           menu.map((category) => (
             <motion.div
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full`}
+            key={category.id} onClick={() => handleCategoryClick(category.id)}       className={`flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full`}
               whileHover={{ scale: 1.05 }}
             >
               <div
-                className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-32 lg:h-32 overflow-hidden rounded-full shadow-sm bg-white ${
-                  activeCategory === category.id ? "border-2 border-primary shadow-lg" : "border-2 border-transparent"
+                className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-32 p-1 lg:h-32 overflow-hidden rounded-full shadow-sm bg-white ${
+                  selectedCategoryId  === category.id ? "border-2 border-primary shadow-lg" : "border-2 border-transparent"
                 }`}
               >
-<img src={`https://api.turkish-kebab-pizza-house.co.uk${category.image}`} alt={category.name} className="w-full h-full object-contain" />
+<img src={`${IMAGE_URL}${category.image}`} alt={category.name} className="w-full h-full object-contain" />
 </div>
-              <span className={`mt-2 text-xs sm:text-sm font-medium text-center truncate ${activeCategory === category.id ? "text-primary" : "text-gray-700"}`} style={{ maxWidth: "5rem" }}>
+              <span className={`mt-2 text-xs sm:text-sm font-medium text-center truncate ${selectedCategoryId  === category.id ? "text-primary" : "text-gray-700"}`} style={{ maxWidth: "5rem" }}>
                 {category.name}
               </span>
             </motion.div>

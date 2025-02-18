@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../../services/api"; // ✅ Import API from centralized API file
+import api from "../../services/api"; // ✅ Centralized API import
 
 // ✅ Fetch menu categories
 export const fetchMenuData = createAsyncThunk("menu/fetchMenu", async () => {
   try {
-    const response = await api.get("/menu/menu"); // ✅ Fetch data from API
+    const response = await api.get("/menu/menu");
     return response.data.status ? response.data.data : [];
   } catch (error) {
     console.error("Error fetching menu:", error);
@@ -12,13 +12,20 @@ export const fetchMenuData = createAsyncThunk("menu/fetchMenu", async () => {
   }
 });
 
-// ✅ Fetch menu items dynamically
-export const fetchMenuItems = createAsyncThunk("menu/fetchMenuItems", async () => {
+// ✅ Fetch menu items dynamically based on selected category & vegOnly filter
+export const fetchMenuItems = createAsyncThunk("menu/fetchMenuItems", async (_, { getState }) => {
+  const state = getState().menu;
+  const categoryId = state.selectedCategoryId;
+  const foodType = state.vegOnly ? true : false; // ✅ Pass vegOnly state
+
+  console.log("Fetching menu items for categoryId:", categoryId, "VegOnly:", foodType);
+
   try {
     const response = await api.post("/menu/menu_item", {
-      id: 1,
-      food_type: true,
+      id: categoryId, 
+      food_type: foodType,
     });
+
     return response.data.status ? response.data.data : [];
   } catch (error) {
     console.error("Error fetching menu items:", error);
@@ -30,11 +37,23 @@ const menuSlice = createSlice({
   name: "menu",
   initialState: {
     menu: [],
-    menuItems: [], // ✅ Added missing menuItems state
-    status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
-    error: null, // ✅ Added missing error state
+    menuItems: [],
+    selectedCategoryId: null, // ✅ Track the selected category ID globally
+    vegOnly: false, // ✅ Store vegOnly toggle in Redux
+    status: "idle",
+    error: null,
   },
-  reducers: {},
+  reducers: {
+    // ✅ Update selected category
+    setSelectedCategoryId: (state, action) => {
+      state.selectedCategoryId = action.payload;
+    },
+
+    // ✅ Toggle vegOnly and re-fetch menu items
+    toggleVegOnly: (state) => {
+      state.vegOnly = !state.vegOnly;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // ✅ Handling menu categories
@@ -44,6 +63,9 @@ const menuSlice = createSlice({
       .addCase(fetchMenuData.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.menu = action.payload;
+        if (!state.selectedCategoryId && action.payload.length > 0) {
+          state.selectedCategoryId = action.payload[0].id; // ✅ Auto-select first category
+        }
       })
       .addCase(fetchMenuData.rejected, (state, action) => {
         state.status = "failed";
@@ -61,8 +83,9 @@ const menuSlice = createSlice({
       .addCase(fetchMenuItems.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-      }); // ✅ Removed extra period
+      });
   },
 });
 
+export const { setSelectedCategoryId, toggleVegOnly } = menuSlice.actions; // ✅ Export actions
 export default menuSlice.reducer;
