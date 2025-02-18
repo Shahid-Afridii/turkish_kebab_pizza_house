@@ -151,12 +151,12 @@ const handleAddOnSelect = (addOnId, itemId, isMultiSelect, selectUpto) => {
 };
 
 const clearSelectedAddOns = (addOnId) => {
-  setSelectedAddOns((prev) => {
-    const newSelection = { ...prev };
-    delete newSelection[addOnId];
-    return newSelection;
-  });
+  setSelectedAddOns((prev) => ({
+    ...prev,
+    [addOnId]: [], // ✅ Only clear the specific add-on category
+  }));
 };
+
 // Add to Cart Handler
 const handleAddToCart = () => {
   if (selectedItem) {
@@ -229,9 +229,27 @@ const handleRemoveAddon = (addOnId, itemId) => {
                   {selectedItem?.name}
                 </h3>
                 {/* Selection Limit Condition */}
-   {selectedItem?.description &&   <p className="text-xs md:text-sm text-gray-500 mt-1">
-                  {selectedItem?.description}
-                </p> }
+   {/* Show Selected Add-ons or Description */}
+   <p className="text-xs md:text-sm capitalize text-gray-500 mt-1">
+  {selectedItem?.add_ons
+    ?.map((addOn) => {
+      const selectedIds = selectedAddOns[addOn.id] || []; // ✅ Get selected IDs for this add-on
+      const selectedNames = selectedIds
+        .map((id) => addOn.items.find((item) => item.id === id)?.name) // ✅ Get item names
+        .filter(Boolean) // ✅ Remove undefined values
+        .join(", "); // ✅ Separate names with commas
+
+      return selectedNames ? (
+        <span key={addOn.id}>
+          <strong >{addOn.name} :</strong> {selectedNames}
+        </span>
+      ) : null; // ✅ Format text with bold category name
+    })
+    .filter(Boolean) // ✅ Remove empty categories
+    .reduce((prev, curr) => (prev.length ? [prev, " | ", curr] : [curr]), []) || selectedItem?.description}
+</p>
+
+
               
                 {selectedItem?.rating &&   <p className="text-xs md:text-lg text-green-600 font-medium mt-1">
                   {selectedItem?.rating} ⭐ • 30 min
@@ -256,7 +274,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 animate="visible"
               >
 {selectedItem?.add_ons?.length > 0 && selectedItem.add_ons.map((addOn) => (
-  <div key={addOn.id} className="mb-6">
+  <div key={addOn.id} className="mb-6 capitalize">
     {/* Add-on Name */}
     <h4 className="font-semibold text-gray-800 mb-2">{addOn.name}</h4>
 
@@ -277,7 +295,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
             onClick={() => handleAddOnSelect(addOn.id, item.id, addOn.is_multi_select, addOn.select_upto)}
             disabled={isLimitReached && !isSelected} // Disable button if limit is reached
             className={`px-3 py-1 rounded border transition ${
-              isSelected ? "bg-red-500 text-white border-red-500" : "bg-gray-100 text-gray-800 border-gray-300"
+              isSelected ? "bg-primary text-white border-primary" : "bg-gray-100 text-gray-800 border-gray-300"
             } ${isLimitReached && !isSelected ? "opacity-50 cursor-not-allowed" : ""}`} // Gray out extra selections
           >
             {item.name} (+{formatPrice(item.price)})
@@ -298,7 +316,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
             </span>
           );
         })}
-        <button onClick={() => clearSelectedAddOns(addOn.id)} className="text-red-500 underline text-sm">
+        <button onClick={() => clearSelectedAddOns(addOn.id)} className="text-primary underline text-sm">
           Clear
         </button>
       </div>

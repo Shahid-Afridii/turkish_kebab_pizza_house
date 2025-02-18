@@ -135,7 +135,7 @@ const Products = forwardRef((props, ref) => {
             >
               <div className="relative">
                 {item.popular && (
-                  <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  <span className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
                     Popular
                   </span>
                 )}
@@ -180,12 +180,12 @@ const Products = forwardRef((props, ref) => {
 
 
                 <div className="flex justify-between items-center mt-4">
-                  <span className="text-red-500 font-bold text-lg">
+                  <span className="text-primary font-bold text-lg">
                     {formatPrice(item.price)}
                   </span>
                   <button
                     onClick={() => handleAddItem(item)}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition flex items-center"
+                    className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition flex items-center"
                   >
                     <FaPlus className="mr-2" />
                     Add Item
@@ -199,7 +199,7 @@ const Products = forwardRef((props, ref) => {
         <div className="flex justify-center mt-8">
           <button
             onClick={handleShowMore}
-            className="bg-red-500 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-600 flex items-center"
+            className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-600 flex items-center"
           >
             Show more
             <FaChevronDown className="ml-2" />
