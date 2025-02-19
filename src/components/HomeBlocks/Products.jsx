@@ -175,13 +175,22 @@ const Products = forwardRef((props, ref) => {
               }}
             ></span>
           </span>
-
           <img
-            src={`${IMAGE_URL}${item.image}`}
-            alt={item.name}
-            className="w-full h-48 object-cover"
-            onError={(e) => (e.target.src = "/public/assets/noimage.png")} // Handle broken images
-          />
+  src={item.image ? `${IMAGE_URL}${item.image}` : "/assets/noimage.png"}
+  alt={item.name}
+  className="w-full h-48 object-cover transition-opacity duration-500 opacity-0"
+  onLoad={(e) => {
+    e.target.classList.remove("opacity-0"); // ✅ Smooth fade-in effect
+    e.target.classList.remove("animate-pulse"); // ✅ Remove shimmer when image loads
+  }}
+  onError={(e) => {
+    e.target.onerror = null; // Prevent infinite loop
+    e.target.src = "/assets/noimage.png"; // ✅ Fallback image
+    e.target.classList.remove("animate-pulse"); // ✅ Remove shimmer on error
+  }}
+/>
+ 
+
         </div>
         <div className="p-4 flex flex-col">
           <h3 className="text-md lg:text-lg font-bold text-gray-800">{item.name}</h3>
