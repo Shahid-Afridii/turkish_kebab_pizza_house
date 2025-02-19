@@ -88,7 +88,19 @@ const items = [
       drinks: ["Coca Cola", "Diet Coke", "Sprite", "Fanta Orange"],
     },
   ];
-
+  const SkeletonLoader = () => {
+    return (
+      <div className="bg-white animate-pulse rounded-lg shadow-lg overflow-hidden border border-gray-200">
+        <div className="relative w-full h-48 bg-gray-200"></div>
+        <div className="p-4">
+          <div className="w-3/4 h-4 bg-gray-300 rounded mb-2"></div>
+          <div className="w-1/2 h-4 bg-gray-300 rounded mb-4"></div>
+          <div className="w-full h-6 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  };
+  
 const Products = forwardRef((props, ref) => {
   const [visibleItems, setVisibleItems] = useState(6);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -121,92 +133,105 @@ const Products = forwardRef((props, ref) => {
       {/* <h2 ref={ref} className="text-lg md:text-2xl font-bold mb-6 text-gray-800">
         Meals
       </h2> */}
-      <motion.div
+<motion.div
   className="grid grid-cols-1 p-2 lg:p-0 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6"
   initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-{menuItems.slice(0, visibleItems).map((item) => (
-            <motion.div
-              key={item.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 transition-transform duration-300 hover:scale-105"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="relative">
-                {item.popular && (
-                  <span className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
-                    Popular
-                  </span>
-                )}
-                    {/* Food Type Indicator */}
-                    <span
-  className={`absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full border border-gray-300 shadow-md bg-white`}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.5 }}
 >
-  <span
-    className={`w-3 h-3 rounded-full`}
-    style={{
-      backgroundColor: item.food_type === "non-veg" ? "#D32F2F" : "#388E3C",
-    }}
-  ></span>
-</span>
+  {status === "loading" ? (
+    [...Array(4)].map((_, index) => <SkeletonLoader key={index} />)
+  ) : status === "error" ? (
+    <div className="col-span-full flex flex-col items-center justify-center text-red-600">
+      <p className="text-lg font-bold">Oops! Something went wrong.</p>
+      <p className="text-sm text-gray-500">We couldn't load the menu items. Please try again.</p>
+    </div>
+  ) : menuItems.length === 0 ? (
+    <div className="col-span-full flex flex-col items-center justify-center text-gray-600">
+      <p className="text-lg font-bold">No items available.</p>
+      <p className="text-sm text-gray-500">Please select a different category.</p>
+    </div>
+  ) : (
+    menuItems.slice(0, visibleItems).map((item) => (
+      <motion.div
+        key={item.id}
+        className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 transition-transform duration-300 hover:scale-105"
+        whileHover={{ scale: 1.05 }}
+      >
+        <div className="relative">
+          {item.popular && (
+            <span className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
+              Popular
+            </span>
+          )}
+          {/* Food Type Indicator */}
+          <span
+            className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full border border-gray-300 shadow-md bg-white"
+          >
+            <span
+              className="w-3 h-3 rounded-full"
+              style={{
+                backgroundColor: item.food_type === "non-veg" ? "#D32F2F" : "#388E3C",
+              }}
+            ></span>
+          </span>
 
-                <img
-                  src={`${IMAGE_URL}${item.image}`}
-                  alt={item.name}
-                  className="w-full h-48 object-cover"
+          <img
+            src={`${IMAGE_URL}${item.image}`}
+            alt={item.name}
+            className="w-full h-48 object-cover"
+            onError={(e) => (e.target.src = "/public/assets/noimage.png")} // Handle broken images
+          />
+        </div>
+        <div className="p-4 flex flex-col">
+          <h3 className="text-md lg:text-lg font-bold text-gray-800">{item.name}</h3>
+          <div className="flex items-center text-sm text-gray-500 mt-2">
+            {[...Array(5)].map((_, i) => (
+              <svg
+                key={i}
+                xmlns="http://www.w3.org/2000/svg"
+                fill={i < Math.round(item.rating) ? "currentColor" : "none"}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className={`w-4 h-4 ${
+                  i < Math.round(item.rating) ? "text-yellow-400" : "text-gray-300"
+                }`}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.027 6.254a1 1 0 00.95.69h6.614c.969 0 1.371 1.24.588 1.81l-5.351 3.89a1 1 0 00-.364 1.118l2.027 6.254c.3.921-.755 1.688-1.54 1.118l-5.351-3.89a1 1 0 00-1.175 0l-5.351 3.89c-.784.57-1.84-.197-1.54-1.118l2.027-6.254a1 1 0 00-.364-1.118l-5.351-3.89c-.783-.57-.38-1.81.588-1.81h6.614a1 1 0 00.95-.69l2.027-6.254z"
                 />
-              </div>
-              <div className="p-4 flex flex-col">
-                <h3 className="text-md lg:text-lg font-bold text-gray-800">{item.name}</h3>
-                <div className="flex items-center text-sm text-gray-500 mt-2">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill={i < Math.round(item.rating) ? "currentColor" : "none"}
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      className={`w-4 h-4 ${
-                        i < Math.round(item.rating) ? "text-yellow-400" : "text-gray-300"
-                      }`}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.027 6.254a1 1 0 00.95.69h6.614c.969 0 1.371 1.24.588 1.81l-5.351 3.89a1 1 0 00-.364 1.118l2.027 6.254c.3.921-.755 1.688-1.54 1.118l-5.351-3.89a1 1 0 00-1.175 0l-5.351 3.89c-.784.57-1.84-.197-1.54-1.118l2.027-6.254a1 1 0 00-.364-1.118l-5.351-3.89c-.783-.57-.38-1.81.588-1.81h6.614a1 1 0 00.95-.69l2.027-6.254z"
-                      />
-                    </svg>
-                  ))}
-                  <span className="ml-2 text-md lg:text-lg text-green-600 font-semibold">
-                    {item.rating}
-                  </span>
-                  <span className="ml-2 text-md lg:text-lg text-gray-500">{item.reviews}</span>
-                </div>
-                {item.add_ons && item.add_ons.length > 0 && (
-  <p className="text-xs lg:text-lg text-gray-600 mt-2 truncate">
-    {item.add_ons.map((addon) => addon.name).join(", ")}
-  </p>
-)}
-
-
-                <div className="flex justify-between items-center mt-4">
-                  <span className="text-primary font-bold text-lg">
-                    {formatPrice(item.price)}
-                  </span>
-                  <button
-                    onClick={() => handleAddItem(item)}
-                    className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition flex items-center"
-                  >
-                    <FaPlus className="mr-2" />
-                    Add Item
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              </svg>
+            ))}
+            <span className="ml-2 text-md lg:text-lg text-green-600 font-semibold">
+              {item.rating}
+            </span>
+            <span className="ml-2 text-md lg:text-lg text-gray-500">{item.reviews}</span>
+          </div>
+          {item.add_ons && item.add_ons.length > 0 && (
+            <p className="text-xs lg:text-lg text-gray-600 mt-2 truncate">
+              {item.add_ons.map((addon) => addon.name).join(", ")}
+            </p>
+          )}
+          <div className="flex justify-between items-center mt-4">
+            <span className="text-primary font-bold text-lg">{formatPrice(item.price)}</span>
+            <button
+              onClick={() => handleAddItem(item)}
+              className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition flex items-center"
+            >
+              <FaPlus className="mr-2" />
+              Add Item
+            </button>
+          </div>
+        </div>
       </motion.div>
+    ))
+  )}
+</motion.div>
+
+
       {visibleItems < items.length && (
         <div className="flex justify-center mt-8">
           <button
