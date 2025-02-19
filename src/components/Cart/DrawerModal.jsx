@@ -273,56 +273,67 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 initial="hidden"
                 animate="visible"
               >
-{selectedItem?.add_ons?.length > 0 && selectedItem.add_ons.map((addOn) => (
-  <div key={addOn.id} className="mb-6 capitalize">
-    {/* Add-on Name */}
-    <h4 className="font-semibold text-gray-800 mb-2">{addOn.name}</h4>
+{selectedItem?.add_ons?.length > 0 && selectedItem.add_ons.map((addOn) => {
+  const isLimitReached = addOn.is_multi_select && selectedAddOns[addOn.id]?.length >= addOn.select_upto;
 
-    {/* Selection Limit Condition */}
-    <p className="text-xs md:text-sm text-gray-500 mb-3">
-      {addOn.is_multi_select ? `Select up to ${addOn.select_upto} ${addOn.name}` : `Select 1 ${addOn.name}`}
-    </p>
+  return (
+    <div key={addOn.id} className="mb-6 capitalize">
+      {/* Add-on Name */}
+      <h4 className="font-semibold text-gray-800 mb-2">{addOn.name}</h4>
 
-    {/* Add-on Options */}
-    <div className="flex flex-wrap gap-2">
-      {addOn.items.map((item) => {
-        const isSelected = selectedAddOns[addOn.id]?.includes(item.id);
-        const isLimitReached = addOn.is_multi_select && selectedAddOns[addOn.id]?.length >= addOn.select_upto;
+      {/* Selection Limit Condition with Animation */}
+      <motion.p
+        className={`text-xs md:text-sm mb-3 transition-all ${
+          isLimitReached ? "text-red-600 font-semibold" : "text-gray-500"
+        }`}
+        animate={isLimitReached ? { x: [-3, 3, -3, 0] } : {}}
+        transition={{ duration: 0.3 }}
+      >
+        {addOn.is_multi_select
+          ? `Select up to ${addOn.select_upto} ${addOn.name}`
+          : `Select 1 ${addOn.name}`}
+      </motion.p>
 
-        return (
-          <button
-            key={item.id}
-            onClick={() => handleAddOnSelect(addOn.id, item.id, addOn.is_multi_select, addOn.select_upto)}
-            disabled={isLimitReached && !isSelected} // Disable button if limit is reached
-            className={`px-3 py-1 rounded border transition ${
-              isSelected ? "bg-primary text-white border-primary" : "bg-gray-100 text-gray-800 border-gray-300"
-            } ${isLimitReached && !isSelected ? "opacity-50 cursor-not-allowed" : ""}`} // Gray out extra selections
-          >
-            {item.name} (+{formatPrice(item.price)})
-          </button>
-        );
-      })}
-    </div>
+      {/* Add-on Options */}
+      <div className="flex flex-wrap gap-2">
+        {addOn.items.map((item) => {
+          const isSelected = selectedAddOns[addOn.id]?.includes(item.id);
 
-    {/* Display Selected Add-ons */}
-    {selectedAddOns[addOn.id]?.length > 0 && (
-      <div className="mt-2 flex flex-wrap gap-2">
-        {selectedAddOns[addOn.id].map((id) => {
-          const selectedItem = addOn.items.find((i) => i.id === id);
           return (
-            <span key={id} className="px-2 py-1 bg-red-100 text-red-600 rounded-full flex items-center">
-              {selectedItem.name}
-              <FaTimes className="ml-1 cursor-pointer" onClick={() => handleRemoveAddon(addOn.id, id)} />
-            </span>
+            <button
+              key={item.id}
+              onClick={() => handleAddOnSelect(addOn.id, item.id, addOn.is_multi_select, addOn.select_upto)}
+              disabled={isLimitReached && !isSelected}
+              className={`px-3 py-1 rounded border transition-all ${
+                isSelected ? "bg-primary text-white border-primary" : "bg-gray-100 text-gray-800 border-gray-300"
+              } ${isLimitReached && !isSelected ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              {item.name} (+{formatPrice(item.price)})
+            </button>
           );
         })}
-        <button onClick={() => clearSelectedAddOns(addOn.id)} className="text-primary underline text-sm">
-          Clear
-        </button>
       </div>
-    )}
-  </div>
-))}
+
+      {/* Display Selected Add-ons */}
+      {selectedAddOns[addOn.id]?.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {selectedAddOns[addOn.id].map((id) => {
+            const selectedItem = addOn.items.find((i) => i.id === id);
+            return (
+              <span key={id} className="px-2 py-1 bg-red-100 text-red-600 rounded-full flex items-center">
+                {selectedItem.name}
+                <FaTimes className="ml-1 cursor-pointer" onClick={() => handleRemoveAddon(addOn.id, id)} />
+              </span>
+            );
+          })}
+          <button onClick={() => clearSelectedAddOns(addOn.id)} className="text-primary underline text-sm">
+            Clear
+          </button>
+        </div>
+      )}
+    </div>
+  );
+})}
 
                 {/* Notes Section */}
                 <div className="mb-6 text-sm md:text-lg ">
