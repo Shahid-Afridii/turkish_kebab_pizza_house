@@ -129,7 +129,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-      {status === "loading" ? (
+    {menu.length === 0 ? (
   [...Array(6)].map((_, index) => (
     <motion.div
       key={index}
@@ -143,7 +143,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
     </motion.div>
   ))
 ) : status === "error" ? (
-  // 🔥 Attractive Error UI
+  // 🔥 Error UI
   <div className="flex flex-col items-center justify-center w-full text-center py-6">
     <span className="text-red-500 text-lg font-semibold">
       ⚠ Oops! Something went wrong.
@@ -156,46 +156,49 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
       Retry 🔄
     </button>
   </div>
-) : menu.length > 0 ? (
-  menu.map((category) => (
-    <motion.div
-      key={category.id}
-      onClick={() => handleCategoryClick(category.id)}
-      className="flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full"
-      whileHover={{ scale: 1.05 }}
-    >
-      <div
-        className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-32 lg:h-32 overflow-hidden rounded-full shadow-sm bg-white ${
-          selectedCategoryId === category.id
-            ? "border-2 border-primary shadow-lg"
-            : "border-2 border-transparent"
-        }`}
+) : menu.filter((category) => category.status === "active").length > 0 ? (
+  // ✅ Render only active categories
+  menu
+    .filter((category) => category.status === "active")
+    .map((category) => (
+      <motion.div
+        key={category.id}
+        onClick={() => handleCategoryClick(category.id)}
+        className="flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full"
+        whileHover={{ scale: 1.05 }}
       >
-        <img
-          src={category.image ? `${IMAGE_URL}${category.image}` : "/assets/noimage.png"}
-          alt={category.name}
-          className="w-full h-full object-contain transition-opacity duration-500 opacity-0 border border-gray-300 rounded-full"
-          onLoad={(e) => e.target.classList.remove("opacity-0")}
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = "/assets/noimage.png";
-          }}
-        />
-      </div>
-      <span
-        className={`mt-2 text-xs sm:text-sm font-medium text-center truncate ${
-          selectedCategoryId === category.id ? "text-primary" : "text-gray-700"
-        }`}
-        style={{ maxWidth: "5rem" }}
-      >
-        {category.name}
-      </span>
-    </motion.div>
-  ))
+        <div
+          className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-32 lg:h-32 overflow-hidden rounded-full shadow-sm bg-white ${
+            selectedCategoryId === category.id
+              ? "border-2 border-primary shadow-lg"
+              : "border-2 border-transparent"
+          }`}
+        >
+          <img
+            src={category.image ? `${IMAGE_URL}${category.image}` : "/assets/noimage.png"}
+            alt={category.name}
+            className="w-full h-full object-contain transition-opacity duration-500 opacity-0 border border-gray-300 rounded-full"
+            onLoad={(e) => e.target.classList.remove("opacity-0")}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/assets/noimage.png";
+            }}
+          />
+        </div>
+        <span
+          className={`mt-2 text-xs sm:text-sm font-medium text-center truncate ${
+            selectedCategoryId === category.id ? "text-primary" : "text-gray-700"
+          }`}
+          style={{ maxWidth: "5rem" }}
+        >
+          {category.name}
+        </span>
+      </motion.div>
+    ))
 ) : (
-  // 🔥 No Data UI (If API returns empty)
+  // 🔥 No Active Categories UI
   <div className="flex flex-col items-center justify-center w-full text-center py-6">
-    <span className="text-gray-500 text-lg font-semibold">📂 No Categories Found</span>
+    <span className="text-gray-500 text-lg font-semibold">📂 No Active Categories Found</span>
     <p className="text-gray-400 text-sm mt-1">Check back later for more updates.</p>
   </div>
 )}
