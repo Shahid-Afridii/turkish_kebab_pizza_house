@@ -274,6 +274,8 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 animate="visible"
               >
 {selectedItem?.add_ons?.length > 0 && selectedItem.add_ons.map((addOn) => {
+    if (!addOn.items.length) return null; // ✅ Don't render if no items exist in this add-on
+
   const isLimitReached = addOn.is_multi_select && selectedAddOns[addOn.id]?.length >= addOn.select_upto;
 
   return (
