@@ -135,7 +135,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
       key={index}
       className="flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full"
     >
-      {/* Skeleton for the Category Image */}
+      {/* Skeleton for the Category Image -  */}
       <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-24 lg:h-24 rounded-full shadow-sm bg-gray-200 animate-pulse border border-gray-300"></div>
 
       {/* Skeleton for the Category Name */}
