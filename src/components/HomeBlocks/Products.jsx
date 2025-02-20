@@ -154,6 +154,7 @@ const Products = forwardRef((props, ref) => {
   ) : (
     menuItems.slice(0, visibleItems).map((item) => (
       <motion.div
+  
         key={item.id}
         className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 transition-transform duration-300 hover:scale-105"
         whileHover={{ scale: 1.05 }}

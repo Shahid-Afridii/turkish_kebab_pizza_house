@@ -136,7 +136,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
       className="flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full"
     >
       {/* Skeleton for the Category Image */}
-      <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-32 lg:h-32 rounded-full shadow-sm bg-gray-200 animate-pulse border border-gray-300"></div>
+      <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-24 lg:h-24 rounded-full shadow-sm bg-gray-200 animate-pulse border border-gray-300"></div>
 
       {/* Skeleton for the Category Name */}
       <span className="mt-2 text-xs sm:text-sm font-medium text-gray-400 w-10 h-4 bg-gray-200 animate-pulse rounded"></span>
@@ -164,11 +164,11 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
       <motion.div
         key={category.id}
         onClick={() => handleCategoryClick(category.id)}
-        className="flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full"
+        className="flex flex-col items-center p-1 justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full"
         whileHover={{ scale: 1.05 }}
       >
         <div
-          className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-32 lg:h-32 overflow-hidden rounded-full shadow-sm bg-white ${
+          className={`flex items-center p-2 justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-24 lg:h-24 overflow-hidden rounded-full shadow-sm  ${
             selectedCategoryId === category.id
               ? "border-2 border-primary shadow-lg"
               : "border-2 border-transparent"
@@ -177,7 +177,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
           <img
             src={category.image ? `${IMAGE_URL}${category.image}` : "/assets/noimage.png"}
             alt={category.name}
-            className="w-full h-full object-contain transition-opacity duration-500 opacity-0 border border-gray-300 rounded-full"
+            className="w-full h-full object-contain transition-opacity duration-500 opacity-0  rounded-full"
             onLoad={(e) => e.target.classList.remove("opacity-0")}
             onError={(e) => {
               e.target.onerror = null;
