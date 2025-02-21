@@ -64,8 +64,15 @@ const menuSlice = createSlice({
         state.status = "succeeded";
         state.menu = action.payload;
         if (!state.selectedCategoryId && action.payload.length > 0) {
-          state.selectedCategoryId = action.payload[0].id; // ✅ Auto-select first category
+          const firstActiveCategory = action.payload.find((category) => category.status === "active");
+        
+          if (firstActiveCategory) {
+            state.selectedCategoryId = firstActiveCategory.id; // ✅ Auto-select first active category
+          } else {
+            state.selectedCategoryId = action.payload[0].id; // ✅ Fallback to first category if no active category exists
+          }
         }
+        
       })
       .addCase(fetchMenuData.rejected, (state, action) => {
         state.status = "failed";

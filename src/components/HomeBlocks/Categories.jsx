@@ -18,7 +18,7 @@ import withErrorBoundary from "../../components/ErrorBoundary/withErrorBoundary"
 
 const CategoryCarousel = () => {
   const [isScrollable, setIsScrollable] = useState(false);
-  const [activeCategory, setActiveCategory] = useState(null); // Track the active category
+  
   const carouselRef = useRef(null);
   const isFetched = useRef(false);
   const dispatch = useDispatch();
