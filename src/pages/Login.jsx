@@ -52,7 +52,18 @@ const closePopup = () => {
 };
 
   const otpRefs = [useRef(), useRef(), useRef(), useRef()];
-
+ // Reset form fields when the modal opens
+ useEffect(() => {
+  if (isOpen) {
+    setFormData({
+      mobileNumber: "",
+      otp: ["", "", "", ""],
+      name: "",
+      email: "",
+    });
+    setOtpSent(false);
+  }
+}, [isOpen]);
   useEffect(() => {
     if (otpSent) {
       otpRefs[0].current.focus();
