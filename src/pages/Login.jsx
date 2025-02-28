@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
 import { signup, login, signupVerify, verifyOtp } from "../redux/slices/authSlice";
 import CustomPopup from "../components/CustomPopup";
+import withErrorBoundary from "../components/ErrorBoundary/withErrorBoundary"; // Import HOC
 
 const drawerVariants = {
   hidden: { x: "100%", opacity: 0 },
@@ -371,4 +372,4 @@ const closePopup = () => {
   );
 };
 
-export default AuthDrawer;
+export default withErrorBoundary(AuthDrawer);

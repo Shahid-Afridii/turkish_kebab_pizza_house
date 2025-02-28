@@ -8,7 +8,6 @@ const Menu = lazy(() => import('../pages/Menu'));
 const Cart = lazy(() => import('../pages/Cart'));
 const Checkout = lazy(() => import('../pages/Checkout'));
 const Login = lazy(() => import('../pages/Login'));
-const Signup = lazy(() => import('../pages/Signup'));
 
 const AppRoutes = () => (
   
@@ -19,7 +18,6 @@ const AppRoutes = () => (
       <Route path="/info" element={<RestaurantInfo />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
     </Routes>
 
 );
