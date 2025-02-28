@@ -5,6 +5,8 @@ import { useDispatch,useSelector } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
 import BottomCartBar from "./BottomCartBar";
 import { formatPrice } from "../../utils/formatPrice";
+import CustomPopup from "../../components/CustomPopup";
+import withErrorBoundary from "../../components/ErrorBoundary/withErrorBoundary"; // Import HOC
 
 const drawerVariants = {
   hidden: {
@@ -112,7 +114,9 @@ const [selectedDips, setSelectedDips] = useState(existingItem?.dips || []);
 const [selectedDrinks, setSelectedDrinks] = useState(existingItem?.drinks || []);
 const [instructions, setInstructions] = useState(existingItem?.instructions || "");
 const [showCartBar, setShowCartBar] = useState(false);
-
+// State for custom popup
+ const [isPopupOpen, setPopupOpen] = useState(false);
+ const [popupConfig, setPopupConfig] = useState({});
 // Reset states when `selectedItem` changes
 useEffect(() => {
   setQuantity(existingItem ? existingItem.quantity : 1);
@@ -149,7 +153,18 @@ const handleAddOnSelect = (addOnId, itemId, isMultiSelect, selectUpto) => {
     }
   });
 };
+const openPopup = (config) => {
+  setPopupConfig(config);
+  setPopupOpen(true);
+};
 
+// Update the closePopup function to handle redirection
+const closePopup = () => {
+  setPopupOpen(false);
+  if (popupConfig.redirectOnClose) {
+    router.push(popupConfig.redirectOnClose);
+  }
+};
 const clearSelectedAddOns = (addOnId) => {
   setSelectedAddOns((prev) => ({
     ...prev,
@@ -159,20 +174,51 @@ const clearSelectedAddOns = (addOnId) => {
 
 // Add to Cart Handler
 const handleAddToCart = () => {
-  if (selectedItem) {
-    const updatedItem = {
-      ...selectedItem,
-      quantity,
-      toppings: selectedToppings,
-      dips: selectedDips,
-      drinks: selectedDrinks,
-      instructions,
-    };
-    dispatch(addToCart(updatedItem));
-    setShowCartBar(true);
-    onClose(); // Close the drawer
-  }
+  if (!selectedItem) return;
+
+  const cartData = {
+    menu_item_id: selectedItem.id,
+    quantity,
+    cart_id: existingItem ? existingItem.cart_id : 1,
+    addons: Object.keys(selectedAddOns).map((addOnId) => ({
+      addon_id: parseInt(addOnId),
+      addon_item_id: selectedAddOns[addOnId],
+    })),
+  };
+
+  dispatch(addToCart(cartData))
+    .unwrap()
+    .then(() => {
+      setShowCartBar(true);
+      onClose();
+    })
+    .catch((error) => {
+      console.error("Add to Cart Error:", error);
+
+      // ✅ Extract exact error message from API response
+      let errorMessage = "Something went wrong. Please try again."; // Default message
+
+      if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message; // ✅ Get exact message from API
+      } else if (typeof error === "string") {
+        errorMessage = error; // ✅ If Redux stored a string error
+      }
+
+      // ✅ Show error popup with exact message
+      openPopup({
+        type: "error",
+        title: "Error",
+        subText: errorMessage, // ✅ Displays dynamic backend error message
+        onClose: closePopup,
+        autoClose: 2, // Auto-close in 2 seconds
+        showConfirmButton: false,
+        showCancelButton: false,
+      });
+    });
 };
+
+
+
 
 
 const handleCloseCartBar = () => {
@@ -419,9 +465,22 @@ const handleRemoveAddon = (addOnId, itemId) => {
         </>
       )}
             <BottomCartBar isVisible={showCartBar} onClose={handleCloseCartBar} />
-
+            <CustomPopup
+        isOpen={isPopupOpen}
+        type={popupConfig.type}
+        title={popupConfig.title}
+        subText={popupConfig.subText}
+        onConfirm={closePopup}
+        onClose={closePopup}
+        autoClose={popupConfig.autoClose}
+        confirmLabel={popupConfig.confirmLabel}
+        cancelLabel={popupConfig.cancelLabel}
+        showConfirmButton={popupConfig.showConfirmButton}
+        showCancelButton={popupConfig.showCancelButton}
+        showCloseIcon={popupConfig.showCloseIcon}
+      />
     </AnimatePresence>
   );
 };
 
-export default DrawerModal;
+export default withErrorBoundary(DrawerModal);
