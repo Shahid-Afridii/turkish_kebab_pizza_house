@@ -189,7 +189,8 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
           className={`mt-2 text-xs sm:text-sm font-medium text-center truncate ${
             selectedCategoryId === category.id ? "text-primary" : "text-gray-700"
           }`}
-          style={{ maxWidth: "5rem" }}
+          title={category.name}
+          style={{ maxWidth: "6rem" }}
         >
           {category.name}
         </span>
