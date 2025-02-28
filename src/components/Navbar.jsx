@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FiUser,
   FiMapPin,
@@ -11,13 +11,19 @@ import {
   FiShoppingCart,
 } from "react-icons/fi"; // React Icons
 import { motion } from "framer-motion"; // Import Framer Motion
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Login from "../pages/Login";
+import { logout } from "../redux/slices/authSlice";
+import CustomPopup from "../components/CustomPopup";
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const [isLoginDrawerOpen, setIsLoginDrawerOpen] = useState(false);
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+   // ✅ Get authentication state from Redux
+   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const toggleLoginDrawer = (e) => {
     e.preventDefault(); // Prevent the default link behavior
     setIsLoginDrawerOpen(true);
@@ -37,7 +43,11 @@ const Navbar = () => {
   };
 
   const isActive = (path) => location.pathname === path;
-
+// ✅ Handle Logout
+const handleLogout = () => {
+  dispatch(logout());
+  navigate("/"); // Redirect to home after logout
+};
   return (
     <header className="bg-gray-50 relative z-[9999]">
       <div className="container mx-auto flex justify-between items-center px-2 py-4 lg:px-6">
@@ -97,11 +107,27 @@ const Navbar = () => {
   </div>
 
 
-          {/* Login Button */}
-          <Link to="#login" // Prevents navigation by React Router
-            onClick={toggleLoginDrawer} className="button-primary">
-            Login
-          </Link>
+  {isAuthenticated ? (
+            <div className="flex items-center space-x-4">
+              <Link
+                to="/account"
+                className="flex items-center space-x-2 border p-2 rounded-md hover:bg-gray-100 transition"
+              >
+                <FiUser className="text-primary" size={20} />
+                <span className="text-sm font-medium">{user?.name || "Profile"}</span>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-sm text-red-500 font-semibold hover:underline"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link to="#login" onClick={toggleLoginDrawer} className="button-primary">
+              Login
+            </Link>
+          )}
         </div>
 
         {/* Mobile Icons */}
@@ -244,13 +270,28 @@ const Navbar = () => {
 
       {/* Sign-Out Button */}
       <div className="mt-6">
-        <button
-          className="flex items-center justify-center w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition text-sm"
-          onClick={closeMenu}
-        >
-          <FiLogOut className="mr-2" size={18} />
-          Sign-out
-        </button>
+      {isAuthenticated ? (
+              <div className="flex flex-col items-center space-y-2 border-b pb-4">
+                {/* User Icon */}
+              
+              
+                <button
+                  onClick={handleLogout}
+                  className="text-sm text-red-500 font-semibold hover:underline"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="text-center">
+                <button
+                  onClick={toggleLoginDrawer}
+                  className="text-primary font-semibold text-lg"
+                >
+                  Login
+                </button>
+              </div>
+            )}
       </div>
     </motion.div>
   </div>

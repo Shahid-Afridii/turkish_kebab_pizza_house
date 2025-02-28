@@ -133,18 +133,29 @@ const AuthDrawer = ({ isOpen, onClose }) => {
                   </p>
 
                   <form>
-                    {/* Mobile Number */}
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
-                      <input
-                        name="mobileNumber"
-                        type="text"
-                        value={formData.mobileNumber}
-                        onChange={handleInputChange}
-                        placeholder="Enter mobile number"
-                        className="w-full px-4 py-2 border rounded-lg text-sm text-gray-800 outline-none transition duration-300 focus:ring-1 focus:ring-red-500 focus:border-red-500"
-                      />
-                    </div>
+
+                     {/* Mobile Number Field */}
+                <div className="mb-4">
+                  <label
+                    htmlFor="mobile-number"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Mobile Number
+                  </label>
+                  <div className="flex items-center border rounded-lg px-4 py-2 mt-1 transition duration-300 focus-within:ring-2 focus-within:ring-red-500">
+                    <span className="text-gray-500 pr-2 border-r">+44</span>
+                    <input
+                      id="mobile-number"
+                      name="mobileNumber"
+                      type="text"
+                      value={formData.mobileNumber}
+                      onChange={handleInputChange}
+                      placeholder="117 2345678"
+                      className="flex-1 outline-none px-2 text-sm text-gray-800 bg-transparent focus:ring-0"
+                    />
+                  </div>
+                </div>
+                   
 
                     {/* Sign-up Fields */}
                     {isSignUp && (
