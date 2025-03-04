@@ -1,5 +1,8 @@
 export const formatPrice = (price, locale = "en-GB", currency = "GBP") => {
-  if (!price || typeof price !== "number" || isNaN(price)) {
+  // ✅ Convert price string to a number safely
+  const numericPrice = typeof price === "string" ? parseFloat(price) : price;
+
+  if (!numericPrice || isNaN(numericPrice)) {
     return "No Price Available"; // ✅ Handle invalid/missing price
   }
 
@@ -8,7 +11,7 @@ export const formatPrice = (price, locale = "en-GB", currency = "GBP") => {
     style: "currency",
     currency,
     minimumFractionDigits: 2,
-  }).formatToParts(price);
+  }).formatToParts(numericPrice);
 
   // ✅ Manually insert space after the currency symbol
   return formattedParts

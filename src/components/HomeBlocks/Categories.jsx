@@ -130,7 +130,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
         onTouchEnd={handleTouchEnd}
       >
     {menu.length === 0 ? (
-  [...Array(6)].map((_, index) => (
+  [...Array].map((_, index) => (
     <motion.div
       key={index}
       className="flex flex-col items-center justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full"
