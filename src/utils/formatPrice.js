@@ -3,7 +3,7 @@ export const formatPrice = (price, locale = "en-GB", currency = "GBP") => {
   const numericPrice = typeof price === "string" ? parseFloat(price) : price;
 
   if (!numericPrice || isNaN(numericPrice)) {
-    return "No Price Available"; // ✅ Handle invalid/missing price
+    return " "; // ✅ Handle invalid/missing price
   }
 
   // ✅ Use `formatToParts()` to control spacing properly
