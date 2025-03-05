@@ -62,14 +62,14 @@ const handleLogout = () => {
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link
+          {/* <Link
             to="/menu"
             className={`nav-link ${
               isActive("/menu") ? "border-b-2 border-primary text-primary" : ""
             }`}
           >
             View Menu
-          </Link>
+          </Link> */}
           <Link
             to="/info"
             className={`nav-link ${
@@ -228,7 +228,7 @@ const handleLogout = () => {
 
       {/* Navigation Links */}
       <div className="mt-6 flex justify-center items-center flex-col space-y-2">
-        <Link
+        {/* <Link
           to="/menu"
           className={`nav-link text-sm ${
             isActive("/menu")
@@ -239,7 +239,7 @@ const handleLogout = () => {
           onClick={closeMenu}
         >
           View Menu
-        </Link>
+        </Link> */}
         <Link
           to="/info"
           className={`nav-link text-sm ${

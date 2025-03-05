@@ -111,14 +111,14 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
         <Products ref={productsHeadingRef} selectedCategoryId={selectedCategoryId} />
       </motion.div>
       {/* slider Products Section */}
-      <motion.div
+      {/* <motion.div
         className="relative"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <SliderProducts  />
-      </motion.div>
+      </motion.div> */}
     </div>
   );
 };
