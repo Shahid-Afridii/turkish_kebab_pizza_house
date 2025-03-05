@@ -9,23 +9,15 @@ const validateResponse = (response) => {
   throw new Error(response.data?.message || "Unexpected response from server");
 };
 
-// ✅ Add to Cart
+// ✅ Add to Cart (API Call)
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async (cartData, { rejectWithValue }) => {
     try {
       const response = await api.post("/client/cart/add", cartData);
-
-      // ✅ Check response, return message from backend
-      if (response.status === 200 && response.data?.status) {
-        return response.data;
-      }
-
-      return rejectWithValue(response.data?.message || "Something went wrong.");
+      return validateResponse(response); // ✅ Using validateResponse
     } catch (error) {
       console.error("Add to Cart Error:", error);
-
-      // ✅ Ensure the exact error message from the API is returned
       return rejectWithValue(
         error.response?.data?.message || "Failed to add to cart"
       );
@@ -33,7 +25,7 @@ export const addToCart = createAsyncThunk(
   }
 );
 
-// ✅ Cart Slice
+// ✅ Cart Slice (Handles everything locally for quantity update & removal)
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -45,8 +37,17 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
     },
-    removeCartItem: (state, action) => {
+    // ✅ Remove an item from the cart (Local state only, no API)
+    removeFromCart: (state, action) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
+    },
+    // ✅ Update item quantity (Local state only, no API)
+    updateQuantity: (state, action) => {
+      const { id, quantity } = action.payload;
+      const item = state.items.find((item) => item.id === id);
+      if (item) {
+        item.quantity = quantity; // ✅ Update only in Redux state
+      }
     },
   },
   extraReducers: (builder) => {
@@ -59,7 +60,6 @@ const cartSlice = createSlice({
         state.isLoading = false;
         const newItem = action.payload.data;
 
-        // Check if item already exists, update quantity
         const existingIndex = state.items.findIndex(
           (item) => item.menu_item_id === newItem.menu_item_id
         );
@@ -71,12 +71,10 @@ const cartSlice = createSlice({
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.isLoading = false;
-
-        // ✅ Store the exact error message from API in Redux state
         state.error = action.payload;
       });
   },
 });
 
-export const { clearCart, removeCartItem } = cartSlice.actions;
+export const { clearCart, removeFromCart, updateQuantity } = cartSlice.actions;
 export default cartSlice.reducer;
