@@ -91,7 +91,7 @@ const items = [
   const SkeletonLoader = () => {
     return (
       <div className="bg-white animate-pulse rounded-lg shadow-lg overflow-hidden border border-gray-200">
-        <div className="relative w-full h-48 bg-gray-200"></div>
+        <div className="relative w-full h-64 bg-gray-200"></div>
         <div className="p-4">
           <div className="w-3/4 h-4 bg-gray-300 rounded mb-2"></div>
           <div className="w-1/2 h-4 bg-gray-300 rounded mb-4"></div>
@@ -177,7 +177,7 @@ const Products = forwardRef((props, ref) => {
           <img
   src={item.image ? `${IMAGE_URL}${item.image}` : "/assets/noimage.png"}
   alt={item.name}
-  className="w-full h-48 object-cover transition-opacity duration-500 opacity-0"
+  className="w-full h-64 object-cover transition-opacity duration-500 opacity-0"
   onLoad={(e) => {
     e.target.classList.remove("opacity-0"); // ✅ Smooth fade-in effect
     e.target.classList.remove("animate-pulse"); // ✅ Remove shimmer when image loads
