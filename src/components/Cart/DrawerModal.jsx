@@ -358,7 +358,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
           isSelected ? "bg-primary text-white border-primary" : "bg-gray-100 text-gray-800 border-gray-300"
         } ${isLimitReached && !isSelected ? "opacity-50 cursor-not-allowed" : ""}`}
       >
-        {item.name} (+{formatPrice(item.price)})
+        {item.name} {item.price > 0 && `(+${formatPrice(item.price)})`}
       </button>
     );
   })}
