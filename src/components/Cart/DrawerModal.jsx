@@ -340,8 +340,8 @@ const handleRemoveAddon = (addOnId, itemId) => {
   transition={{ duration: 0.3 }}
 >
   {addOn.is_multi_select
-    ? `Select up to ${addOn.select_upto} ${addOn.name}`
-    : `Select 1 ${addOn.name}`}
+    ? `Select up to ${addOn.select_upto}`
+    : `Select 1`}
 </motion.p>
 
       {/* Add-on Options */}
