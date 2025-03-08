@@ -5,6 +5,7 @@ import {
   FiMapPin,
   FiClock,
   FiSearch,
+  FiLogIn,
   FiLogOut,
   FiMenu,
   FiX,
@@ -50,12 +51,7 @@ const Navbar = () => {
 
   const isActive = (path) => location.pathname === path;
 // ✅ Handle Logout
-const handleLogout = () => {
-  dispatch(logout());  // ✅ Clear authentication state
-  dispatch(clearCart()); // ✅ Clear cart data
-  dispatch({ type: "RESET" }); // ✅ Reset other Redux states if needed
-  navigate("/"); // ✅ Redirect to home page
-};
+
  
 useEffect(() => {
   if (isAuthenticated && !user) {
@@ -128,14 +124,9 @@ useEffect(() => {
                 className="flex items-center space-x-2 cursor-pointer border p-2 rounded-md hover:bg-gray-100 transition"
               >
                 <FiUser className="text-primary" size={20} />
-                <span className="text-sm font-medium">{user?.name || "Profile"}</span>
+                <span className="text-sm font-medium">{user?.name || ""}</span>
               </div>
-              {/* <button
-                onClick={handleLogout}
-                className="text-sm text-red-500 font-semibold hover:underline"
-              >
-                Logout
-              </button> */}
+             
             </div>
           ) : (
             <Link to="#login" onClick={toggleLoginDrawer} className="button-primary">
@@ -182,63 +173,21 @@ useEffect(() => {
       </div>
 
       {/* User Info */}
-      <div className="flex flex-col items-center space-y-2 border-b pb-4">
+      {isAuthenticated ?   <div onClick={() => setIsProfileOpen(true)} className="flex flex-col items-center space-y-2 border-b pb-4">
         {/* User Icon */}
-        <div className="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center">
+        <div  className="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center">
           <FiUser size={30} className="text-gray-600" />
         </div>
-        <span className="font-title text-base text-black">Suresh</span>
-      </div>
+        <span className="text-sm font-medium">{user?.name || ""}</span>
+        </div>:  <div  onClick={toggleLoginDrawer} className="flex flex-col items-center space-y-2 border-b pb-4">
+        {/* User Icon */}
+        <div className="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center">
+          <FiLogIn size={30} className="text-gray-600" />
+        </div>
+        <span className="text-sm font-medium">Login</span>
+        </div>}
+     
 
-      {/* Account Options */}
-      <div className="flex flex-col border-gray-300 mt-6">
-        {/* My Account */}
-        <Link
-          to="/account"
-          className="flex font-link items-center py-3 w-full text-black hover:text-primary border-b border-gray-300 text-sm"
-          onClick={closeMenu}
-        >
-          <FiUser size={20} className="text-black flex-shrink-0" />
-          <div className="ml-4">
-            <span className="font-medium text-black block text-sm">My Account</span>
-            <span className="text-xs text-gray-500 block">
-              Edit Name, Number
-            </span>
-          </div>
-        </Link>
-
-        {/* Address */}
-        <Link
-          to="/address"
-          className="flex font-link items-center py-3 w-full text-black hover:text-primary border-b border-gray-300 text-sm"
-          onClick={closeMenu}
-        >
-          <FiMapPin size={20} className="text-gray-600 flex-shrink-0" />
-          <div className="ml-4">
-            <span className="font-medium text-black block text-sm">Address</span>
-            <span className="text-xs text-gray-500 block">
-              Edit Address, Add Address
-            </span>
-          </div>
-        </Link>
-
-        {/* Order History */}
-        <Link
-          to="/orders"
-          className="flex font-link items-center py-3 w-full text-black hover:text-primary text-sm"
-          onClick={closeMenu}
-        >
-          <FiClock size={20} className="text-black flex-shrink-0" />
-          <div className="ml-4">
-            <span className="font-medium text-black block text-sm">
-              Order History
-            </span>
-            <span className="text-xs text-gray-500 block">
-              Re-order, Rate Orders
-            </span>
-          </div>
-        </Link>
-      </div>
 
       {/* Navigation Links */}
       <div className="mt-6 flex justify-center items-center flex-col space-y-2">
@@ -282,31 +231,7 @@ useEffect(() => {
         </Link>
       </div>
 
-      {/* Sign-Out Button */}
-      <div className="mt-6">
-      {isAuthenticated ? (
-              <div className="flex flex-col items-center space-y-2 border-b pb-4">
-                {/* User Icon */}
-              
-              
-                {/* <button
-                  onClick={handleLogout}
-                  className="text-sm text-red-500 font-semibold hover:underline"
-                >
-                  Logout
-                </button> */}
-              </div>
-            ) : (
-              <div className="text-center">
-                <button
-                  onClick={toggleLoginDrawer}
-                  className="text-primary font-semibold text-lg"
-                >
-                  Login
-                </button>
-              </div>
-            )}
-      </div>
+     
     </motion.div>
   </div>
 )}

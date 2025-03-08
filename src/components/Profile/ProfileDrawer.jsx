@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes, FaEdit, FaSignOutAlt } from "react-icons/fa";
 import { FiUser, FiMail, FiPhone, FiMapPin,FiMoreVertical,FiEdit,FiTrash2  } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/slices/authSlice";
+import { clearCart } from "../../redux/slices/cartSlice";
 
 const drawerVariants = {
     hidden: { x: "100%", opacity: 0 },
@@ -21,13 +24,16 @@ const drawerVariants = {
 
 const ProfileDrawer = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("orders");
+  const dispatch = useDispatch();
 
+  // **Get user data from Redux store**
+  const { user, isLoading } = useSelector((state) => state.auth);
   // ✅ Static User Data
-  const user = {
-    name: "Suresh",
-    email: "mail@gmail.com",
-    phone: "+44 117 2345678",
-  };
+//   const user = {
+//     name: "Suresh",
+//     email: "mail@gmail.com",
+//     phone: "+44 117 2345678",
+//   };
   const addresses = [
     { id: 1, title: "Home", address: "1111 Brookvale Ave, BT15 3AR", isPrimary: true },
     { id: 2, title: "Office", address: "2534 Brookvale Ave, BT15 3AR" },
@@ -61,7 +67,12 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     },
   ];
   const [showOptions, setShowOptions] = useState(null);
-
+const handleLogout = () => {
+  dispatch(logout());  // ✅ Clear authentication state
+  dispatch(clearCart()); // ✅ Clear cart data
+  onClose(); 
+  navigate("/"); // ✅ Redirect to home page
+};
   return (
     <AnimatePresence>
       {isOpen && (
@@ -114,22 +125,26 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
 
         {/* **User Details** */}
         <h2 className="text-xl font-bold text-gray-800 mt-2">{user.name}</h2>
-        <div className="flex flex-row justify-center text-gray-600 text-sm mt-2 space-x-6">
-  <div className="flex items-center space-x-2">
+        <div className="p-2 flex flex-wrap justify-center text-gray-600 text-sm mt-2 gap-x-6 gap-y-2 w-full">
+  {/* Phone Number */}
+  <div className="flex items-center space-x-2 w-full md:w-auto">
     <FiPhone className="text-gray-600 text-lg" />
-    <span>{user.phone}</span>
+    <span className="break-all">{user.mobile}</span>
   </div>
-  <div className="flex items-center space-x-2">
+
+  {/* Email */}
+  <div className="flex items-center space-x-2 w-full md:w-auto">
     <FiMail className="text-gray-600 text-lg" />
-    <span>{user.email}</span>
+    <span className="break-all">{user.email}</span>
   </div>
 </div>
+
 
       </div>
 
       {/* **Buttons Section** */}
       <div className="mt-4 flex justify-center space-x-4 px-6 pb-4">
-        <button className="flex items-center bg-red-500 text-white px-5 py-2 rounded-md text-sm font-semibold hover:bg-red-600 shadow-md">
+        <button onClick={handleLogout} className="flex items-center bg-red-500 text-white px-5 py-2 rounded-md text-sm font-semibold hover:bg-red-600 shadow-md">
           <FaSignOutAlt className="mr-2" /> Sign-out
         </button>
         <button className="flex items-center border border-red-500 text-red-500 px-5 py-2 rounded-md text-sm font-semibold bg-red-100 hover:bg-red-200 shadow-md">
