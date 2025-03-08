@@ -71,9 +71,10 @@ export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (otpData, { re
 export const getProfile = createAsyncThunk("auth/getProfile", async (_, { rejectWithValue }) => {
   try {
     const response = await api.get("/client/user/get_profile");
-    return validateResponse(response);
+    const data = validateResponse(response);
+
+    return data.data; // ✅ Return only `data` to store correctly in `user`
   } catch (error) {
-    console.error("Get Profile Error:", error);
     return rejectWithValue(error.response?.data?.message || "Failed to fetch profile");
   }
 });

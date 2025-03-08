@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FiUser,
@@ -13,16 +13,20 @@ import {
 import { motion } from "framer-motion"; // Import Framer Motion
 import { useSelector, useDispatch } from "react-redux";
 import Login from "../pages/Login";
-import { logout } from "../redux/slices/authSlice";
+import { logout,getProfile } from "../redux/slices/authSlice";
 import CustomPopup from "../components/CustomPopup";
 import { clearCart } from "../redux/slices/cartSlice";
+import ProfileDrawer from "../components/Profile/ProfileDrawer";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   const location = useLocation();
   const [isLoginDrawerOpen, setIsLoginDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
    // ✅ Get authentication state from Redux
    const { user, isAuthenticated } = useSelector((state) => state.auth);
   const toggleLoginDrawer = (e) => {
@@ -52,6 +56,12 @@ const handleLogout = () => {
   dispatch({ type: "RESET" }); // ✅ Reset other Redux states if needed
   navigate("/"); // ✅ Redirect to home page
 };
+ 
+useEffect(() => {
+  if (isAuthenticated && !user) {
+    dispatch(getProfile()); // ✅ Fetch profile if authenticated but no user data
+  }
+}, [isAuthenticated, user, dispatch]);
   return (
     <header className="bg-gray-50 relative z-[9999]">
       <div className="container mx-auto flex justify-between items-center px-2 py-4 lg:px-6">
@@ -113,19 +123,19 @@ const handleLogout = () => {
 
   {isAuthenticated ? (
             <div className="flex items-center space-x-4">
-              <Link
-                to="/account"
-                className="flex items-center space-x-2 border p-2 rounded-md hover:bg-gray-100 transition"
+              <div
+                onClick={() => setIsProfileOpen(true)} 
+                className="flex items-center space-x-2 cursor-pointer border p-2 rounded-md hover:bg-gray-100 transition"
               >
                 <FiUser className="text-primary" size={20} />
                 <span className="text-sm font-medium">{user?.name || "Profile"}</span>
-              </Link>
-              <button
+              </div>
+              {/* <button
                 onClick={handleLogout}
                 className="text-sm text-red-500 font-semibold hover:underline"
               >
                 Logout
-              </button>
+              </button> */}
             </div>
           ) : (
             <Link to="#login" onClick={toggleLoginDrawer} className="button-primary">
@@ -279,12 +289,12 @@ const handleLogout = () => {
                 {/* User Icon */}
               
               
-                <button
+                {/* <button
                   onClick={handleLogout}
                   className="text-sm text-red-500 font-semibold hover:underline"
                 >
                   Logout
-                </button>
+                </button> */}
               </div>
             ) : (
               <div className="text-center">
@@ -302,6 +312,8 @@ const handleLogout = () => {
 )}
 
             <Login from="checkout" isOpen={isLoginDrawerOpen} onClose={closeLoginDrawer} />
+            <ProfileDrawer isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
+
 
     </header>
   );
