@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Login from "../pages/Login";
 import { logout } from "../redux/slices/authSlice";
 import CustomPopup from "../components/CustomPopup";
+import { clearCart } from "../redux/slices/cartSlice";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,7 +34,8 @@ const Navbar = () => {
     setIsLoginDrawerOpen(false);
   };
   const cartItems = useSelector((state) => state.cart.items); // Fetch cart items from Redux store
-  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0); // Calculate total items in the cart
+  const totalItems = useSelector((state) => state.cart.totalItems) || 0; 
+  console.log("totalItems", totalItems);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -45,8 +47,10 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 // ✅ Handle Logout
 const handleLogout = () => {
-  dispatch(logout());
-  navigate("/"); // Redirect to home after logout
+  dispatch(logout());  // ✅ Clear authentication state
+  dispatch(clearCart()); // ✅ Clear cart data
+  dispatch({ type: "RESET" }); // ✅ Reset other Redux states if needed
+  navigate("/"); // ✅ Redirect to home page
 };
   return (
     <header className="bg-gray-50 relative z-[9999]">
@@ -94,7 +98,7 @@ const handleLogout = () => {
            {/* Cart Icon with Badge */}
   <div className="relative flex items-center">
     <Link
-      to="/cart"
+      to="/checkout"
       className="flex items-center justify-center rounded-full h-12 w-12  transition"
     >
       <img src="assets/cart.png" alt="Cart" className="w-12 h-12" />
@@ -297,7 +301,7 @@ const handleLogout = () => {
   </div>
 )}
 
-            <Login isOpen={isLoginDrawerOpen} onClose={closeLoginDrawer} />
+            <Login from="checkout" isOpen={isLoginDrawerOpen} onClose={closeLoginDrawer} />
 
     </header>
   );

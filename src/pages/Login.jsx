@@ -188,7 +188,7 @@ const closePopup = () => {
         onClose();
         setOtpSent(false);
         setFormData({ mobileNumber: "", otp: ["", "", "", ""], name: "", email: "" });
-        navigate("/");
+        window.location.href="/";
       } else {
         openPopup({
           type: "error",

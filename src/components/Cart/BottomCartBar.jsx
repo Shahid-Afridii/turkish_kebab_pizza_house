@@ -1,8 +1,10 @@
 import React, { useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { getCart } from "../../redux/slices/cartSlice"; // ✅ Import getCart
+
 const waveAnimation = {
   hidden: {
     y: "100%", // Start from below the screen
@@ -34,15 +36,20 @@ const waveAnimation = {
 };
 
 const BottomCartBar = ({ isVisible, onClose }) => {
+  const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
+  const isLoading = useSelector((state) => state.cart.isLoading);
+  const totalAmount = useSelector((state) => state.cart.totalAmount) || 0; // ✅ Get total from API response
+console.log("totalAmount bar", totalAmount);
+  useEffect(() => {
+    dispatch(getCart()); // ✅ Fetch cart items when component mounts
+  }, []);
 
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + parseFloat(item.price.replace("£", "")) * item.quantity,
-    0
-  );
+  console.log("cartItems bar", cartItems);
+  
 
   const discountThreshold = 16; // Minimum total for discount
-  const amountNeeded = Math.max(0, discountThreshold - totalPrice);
+  const amountNeeded = Math.max(0, discountThreshold - totalAmount);
 
   const containerRef = useRef(null);
 
@@ -83,7 +90,7 @@ const BottomCartBar = ({ isVisible, onClose }) => {
       <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5">
         {/* Items Count Button */}
         <Link  to="/checkout" className="flex font-Montserrat_Alternates items-center justify-center bg-green-600 hover:bg-green-500 text-white px-4 py-2 sm:px-6 sm:py-2 lg:px-8 lg:py-3 rounded-lg font-bold text-xs sm:text-sm lg:text-lg">
-          {cartItems.length} Item{cartItems.length !== 1 ? "s" : ""}
+        {cartItems.length} Item{cartItems.length !== 1 ? "s" : ""}
         </Link>
 
         {/* Cart Details */}
@@ -100,7 +107,7 @@ const BottomCartBar = ({ isVisible, onClose }) => {
           </Link>
           <div className="h-4 sm:h-6 lg:h-8 w-[2px] bg-white opacity-70"></div>
           <span className="font-bold text-sm sm:text-lg lg:text-xl">
-            £{totalPrice.toFixed(2)}
+          £{totalAmount.toFixed(2)}
           </span>
         </div>
 

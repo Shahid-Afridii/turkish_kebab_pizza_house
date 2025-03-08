@@ -173,49 +173,45 @@ const clearSelectedAddOns = (addOnId) => {
 };
 
 // Add to Cart Handler
-const handleAddToCart = () => {
-  if (!selectedItem) return;
+  const handleAddToCart = () => {
+    if (!selectedItem) return;
 
-  const cartData = {
-    menu_item_id: selectedItem.id,
-    quantity,
-    cart_id: existingItem ? existingItem.cart_id : 1,
-    addons: Object.keys(selectedAddOns).map((addOnId) => ({
-      addon_id: parseInt(addOnId),
-      addon_item_id: selectedAddOns[addOnId],
-    })),
+    const cartData = {
+      menu_item_id: selectedItem.id,
+      quantity,
+      addons:
+        Object.keys(selectedAddOns).length > 0
+          ? Object.keys(selectedAddOns).map((addOnId) => ({
+              addon_id: parseInt(addOnId),
+              addon_item_id: selectedAddOns[addOnId],
+            }))
+          : [], // ✅ Ensure addons are handled correctly
+    };
+
+    dispatch(addToCart(cartData))
+      .unwrap()
+      .then(() => {
+        console.log("✅ Add to Cart Success");
+        setShowCartBar(true);
+        onClose();
+      })
+      .catch((error) => {
+        console.error("Add to Cart Error:", error);
+
+        let errorMessage = error || "Something went wrong. Please try again.";
+
+        openPopup({
+          type: "error",
+          title: "Error",
+          subText: errorMessage, 
+          onClose: closePopup,
+          autoClose: 2,
+          showConfirmButton: false,
+          showCancelButton: false,
+        });
+      });
   };
 
-  dispatch(addToCart(cartData))
-    .unwrap()
-    .then(() => {
-      setShowCartBar(true);
-      onClose();
-    })
-    .catch((error) => {
-      console.error("Add to Cart Error:", error);
-
-      // ✅ Extract exact error message from API response
-      let errorMessage = "Something went wrong. Please try again."; // Default message
-
-      if (error?.response?.data?.message) {
-        errorMessage = error.response.data.message; // ✅ Get exact message from API
-      } else if (typeof error === "string") {
-        errorMessage = error; // ✅ If Redux stored a string error
-      }
-
-      // ✅ Show error popup with exact message
-      openPopup({
-        type: "error",
-        title: "Error",
-        subText: errorMessage, // ✅ Displays dynamic backend error message
-        onClose: closePopup,
-        autoClose: 2, // Auto-close in 2 seconds
-        showConfirmButton: false,
-        showCancelButton: false,
-      });
-    });
-};
 
 
 
