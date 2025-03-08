@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaTimes, FaEdit, FaSignOutAlt } from "react-icons/fa";
+import { FaTimes, FaEdit, FaSignOutAlt,FaPlus } from "react-icons/fa";
 import { FiUser, FiMail, FiPhone, FiMapPin,FiMoreVertical,FiEdit,FiTrash2  } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
 import { clearCart } from "../../redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getAddresses, deleteAddress,addAddress } from "../../redux/slices/userAddressSlice";
 
 const drawerVariants = {
     hidden: { x: "100%", opacity: 0 },
@@ -24,21 +25,47 @@ const drawerVariants = {
 
 const ProfileDrawer = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("orders");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newAddress, setNewAddress] = useState({
+    name: "",
+    address: "",
+    landmark: "",
+    city: "",
+    state: "",
+    country: "",
+    pincode: "",
+    phone: "",
+  });
   const dispatch = useDispatch();
 
+ 
   // **Get user data from Redux store**
-  const { user, isLoading } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   // ✅ Static User Data
 //   const user = {
 //     name: "Suresh",
 //     email: "mail@gmail.com",
 //     phone: "+44 117 2345678",
 //   };
-  const addresses = [
-    { id: 1, title: "Home", address: "1111 Brookvale Ave, BT15 3AR", isPrimary: true },
-    { id: 2, title: "Office", address: "2534 Brookvale Ave, BT15 3AR" },
-    { id: 3, title: "Friends Home", address: "3321 Brookvale Ave, BT15 3AR" },
-  ];
+  // const addresses = [
+  //   { id: 1, title: "Home", address: "1111 Brookvale Ave, BT15 3AR", isPrimary: true },
+  //   { id: 2, title: "Office", address: "2534 Brookvale Ave, BT15 3AR" },
+  //   { id: 3, title: "Friends Home", address: "3321 Brookvale Ave, BT15 3AR" },
+  // ];
+  const { addresses, isLoading } = useSelector((state) => state.userAddress);
+  const handleChange = (e) => {
+    setNewAddress({ ...newAddress, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(addAddress(newAddress));
+    setNewAddress({ name: "", address: "", landmark: "", city: "", state: "", country: "", pincode: "", phone: "" });
+    setShowAddForm(false); // Hide form after submitting
+  };
+  useEffect(() => {
+    dispatch(getAddresses());
+  }, [dispatch]);
   // ✅ Static Order History (Precise Fix)
   const orders = [
     {
@@ -237,56 +264,101 @@ const handleLogout = () => {
              
               ) : (
                 <div className="">
-  {addresses.length > 0 ? (
-    addresses.map((item) => (
-      <div key={item.id} className="relative border-b pb-4 mb-4">
-        {/* **Address Title & Primary Label (Smaller on Mobile)** */}
-        <div className="flex justify-between items-center">
-          <h3 className="text-sm md:text-lg font-semibold">
-            {item.title} {item.isPrimary && <span className="text-xs md:text-sm text-gray-500">(Primary address)</span>}
-          </h3>
+ {addresses.length > 0 ? (
+  addresses.map((item) => (
+    <div key={item.address_id} className="flex justify-between items-center border-b pb-4 mb-4">
+      
+      {/* **Address Details (Single Line Layout) ** */}
+      <div className="flex flex-wrap items-center space-x-2 text-sm md:text-base text-gray-700 w-full">
+        <span className="font-semibold">{item.name},</span>
+        <span>{item.phone},</span>
+        <span>{item.address},</span>
+        <span>{item.city},</span>
+        <span>{item.state},</span>
+        <span>{item.country},</span>
+        <span className="font-semibold">{item.pincode}</span>
 
-          {/* **Three Dots Menu Button (Smaller on Mobile)** */}
-          <button onClick={() => setShowOptions(showOptions === item.id ? null : item.id)}>
-            <FiMoreVertical className="text-gray-500 text-base md:text-lg" />
-          </button>
-        </div>
-
-        {/* **Address Description (Smaller on Mobile)** */}
-        <p className="text-xs md:text-sm text-gray-600">{item.address}</p>
-
-        {/* **Dropdown Menu (Edit, Delete, Set Primary) - Scaled Down on Mobile** */}
-        {showOptions === item.id && (
-          <div className="absolute right-6 top-10 bg-white shadow-md rounded-md py-2 w-36 md:w-40 border z-10">
-            <button className="flex items-center px-3 py-1 text-xs md:text-sm hover:bg-gray-100 w-full">
-              <FiEdit className="mr-2 text-gray-600" /> Edit
-            </button>
-            <button className="flex items-center px-3 py-1 text-xs md:text-sm text-red-500 hover:bg-gray-100 w-full">
-              <FiTrash2 className="mr-2" /> Delete
-            </button>
-            {!item.isPrimary && (
-              <button className="flex items-center px-3 py-1 text-xs md:text-sm text-red-600 font-semibold hover:bg-gray-100 w-full">
-                Set as Primary
-              </button>
-            )}
-          </div>
+        {/* **Primary Address Badge** */}
+        {item.isPrimary && (
+          <span className="bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-md ml-2">
+            Primary
+          </span>
         )}
       </div>
-    ))
-  ) : (
-    // **No Addresses Available UI (Smaller Font for Mobile)**
-    <div className="flex flex-col items-center justify-center h-40 text-gray-500">
-      <FiMapPin className="text-2xl md:text-3xl text-gray-400 mb-2" />
-      <p className="text-xs md:text-sm">No addresses available</p>
+
+      {/* **Dropdown Menu Button** */}
+      <button onClick={() => setShowOptions(showOptions === item.address_id ? null : item.address_id)}>
+        <FiMoreVertical className="text-gray-500 text-lg" />
+      </button>
+
+      {/* **Dropdown Menu (Edit/Delete/Set Primary)** */}
+      {showOptions === item.address_id && (
+        <div className="absolute right-6 top-10 bg-white shadow-md rounded-md py-2 w-36 md:w-40 border z-10">
+          <button className="flex items-center px-3 py-1 text-xs md:text-sm hover:bg-gray-100 w-full">
+            <FiEdit className="mr-2 text-gray-600" /> Edit
+          </button>
+          <button className="flex items-center px-3 py-1 text-xs md:text-sm text-red-500 hover:bg-gray-100 w-full">
+            <FiTrash2 className="mr-2" /> Delete
+          </button>
+          {!item.isPrimary && (
+            <button className="flex items-center px-3 py-1 text-xs md:text-sm text-blue-600 font-semibold hover:bg-gray-100 w-full">
+              Set as Primary
+            </button>
+          )}
+        </div>
+      )}
     </div>
-  )}
+  ))
+) : (
+  // No addresses available UI
+  <div className="flex flex-col items-center justify-center h-40 text-gray-500">
+    <FiMapPin className="text-3xl text-gray-400 mb-2" />
+    <p className="text-sm">No addresses available</p>
+  </div>
+)}
+
 
   {/* **Add Address Button (Smaller on Mobile)** */}
   <div className="flex justify-center mt-4">
-    <button className="bg-red-500 text-white px-4 py-2 rounded-md text-xs md:text-sm font-semibold hover:bg-red-600">
-      Add Address
-    </button>
-  </div>
+                    <button
+                      onClick={() => setShowAddForm(!showAddForm)}
+                      className="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-600 flex items-center"
+                    >
+                      <FaPlus className="mr-2" /> Add Address
+                    </button>
+                  </div>
+
+     {/* Address Form (Hidden until clicked) */}
+     <AnimatePresence>
+                    {showAddForm && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="mt-4 p-4 border rounded-lg bg-gray-100"
+                      >
+                        <h3 className="text-lg font-semibold mb-2">New Address</h3>
+                        <form onSubmit={handleSubmit} className="grid gap-2">
+                          {Object.keys(newAddress).map((field) => (
+                            <input
+                              key={field}
+                              type="text"
+                              name={field}
+                              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                              value={newAddress[field]}
+                              onChange={handleChange}
+                              className="w-full px-3 py-2 border rounded-md"
+                              required
+                            />
+                          ))}
+                          <button type="submit" className="w-full bg-red-500 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-600">
+                            Save Address
+                          </button>
+                        </form>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+ 
 </div>
 
               )}
