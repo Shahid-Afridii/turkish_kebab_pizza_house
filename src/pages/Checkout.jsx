@@ -287,6 +287,7 @@ useEffect(() => {
           {/* Product Details */}
           <div className="flex-1 ml-3">
             <h4 className="font-semibold text-xs md:text-sm">{item.name}</h4>
+            <h4 className="font-semibold text-xs md:text-sm">{formatPrice(item.price)}</h4>
             <div className="text-xs text-gray-500 space-y-1">
              {/* Add-on Items */}
              {item.add_on_items.length > 0 && (
