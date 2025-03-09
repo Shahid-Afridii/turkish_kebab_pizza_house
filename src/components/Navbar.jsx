@@ -34,7 +34,7 @@ const Navbar = () => {
     e.preventDefault(); // Prevent the default link behavior
     setIsLoginDrawerOpen(true);
   };
-
+console.log("isAuthenticated", isAuthenticated);
   const closeLoginDrawer = () => {
     setIsLoginDrawerOpen(false);
   };

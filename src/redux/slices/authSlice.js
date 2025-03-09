@@ -29,6 +29,7 @@ export const signupVerify = createAsyncThunk("auth/signupVerify", async (otpData
     if (data.data) {
       localStorage.setItem("authToken", data.data);
       setAuthToken(data.data);
+      startAutoLogout(); // Start auto-logout timer
     }
 
     return data;
@@ -58,6 +59,7 @@ export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (otpData, { re
     if (data.data) {
       localStorage.setItem("authToken", data.data);
       setAuthToken(data.data);
+      startAutoLogout(); // Start auto-logout timer
     }
 
     return data;
@@ -72,12 +74,22 @@ export const getProfile = createAsyncThunk("auth/getProfile", async (_, { reject
   try {
     const response = await api.get("/client/user/get_profile");
     const data = validateResponse(response);
-
-    return data.data; // ✅ Return only `data` to store correctly in `user`
+    return data.data;
   } catch (error) {
     return rejectWithValue(error.response?.data?.message || "Failed to fetch profile");
   }
 });
+
+// ✅ Auto Logout Timer Function
+const AUTO_LOGOUT_TIME = 24 * 60 * 60 * 1000; // 24 hours (1 day)
+
+const startAutoLogout = () => {
+  setTimeout(() => {
+    localStorage.removeItem("authToken");
+    setAuthToken(null);
+    window.location.reload(); // Reload page to reflect logout state
+  }, AUTO_LOGOUT_TIME);
+};
 
 // ✅ Authentication Slice
 const authSlice = createSlice({
@@ -87,7 +99,7 @@ const authSlice = createSlice({
     token: localStorage.getItem("authToken") || null,
     isLoading: false,
     error: null,
-    isAuthenticated: !!localStorage.getItem("authToken"),
+    isAuthenticated: !!localStorage.getItem("authToken"), // Check if authToken exists
   },
   reducers: {
     logout: (state) => {
@@ -106,7 +118,11 @@ const authSlice = createSlice({
       .addCase(signup.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 
       .addCase(signupVerify.pending, (state) => { state.isLoading = true; })
-      .addCase(signupVerify.fulfilled, (state, action) => { state.isLoading = false; state.token = action.payload.data; state.isAuthenticated = true; })
+      .addCase(signupVerify.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.token = action.payload.data;
+        state.isAuthenticated = true; // ✅ Ensure isAuthenticated is set to true
+      })
       .addCase(signupVerify.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 
       .addCase(login.pending, (state) => { state.isLoading = true; })
@@ -114,7 +130,11 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 
       .addCase(verifyOtp.pending, (state) => { state.isLoading = true; })
-      .addCase(verifyOtp.fulfilled, (state, action) => { state.isLoading = false; state.token = action.payload.data; state.isAuthenticated = true; })
+      .addCase(verifyOtp.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.token = action.payload.data;
+        state.isAuthenticated = true; // ✅ Ensure isAuthenticated is set to true
+      })
       .addCase(verifyOtp.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 
       .addCase(getProfile.pending, (state) => { state.isLoading = true; })

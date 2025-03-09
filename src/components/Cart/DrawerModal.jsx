@@ -109,9 +109,8 @@ const existingItem = useSelector((state) =>
 
 // States
 const [quantity, setQuantity] = useState(existingItem ? existingItem.quantity : 1);
-const [selectedToppings, setSelectedToppings] = useState(existingItem?.toppings || []);
-const [selectedDips, setSelectedDips] = useState(existingItem?.dips || []);
-const [selectedDrinks, setSelectedDrinks] = useState(existingItem?.drinks || []);
+const [validationErrors, setValidationErrors] = useState({});
+
 const [instructions, setInstructions] = useState(existingItem?.instructions || "");
 const [showCartBar, setShowCartBar] = useState(false);
 // State for custom popup
@@ -120,13 +119,25 @@ const [showCartBar, setShowCartBar] = useState(false);
 // Reset states when `selectedItem` changes
 useEffect(() => {
   setQuantity(existingItem ? existingItem.quantity : 1);
-  setSelectedToppings(existingItem?.toppings || []);
-  setSelectedDips(existingItem?.dips || []);
+ 
   setSelectedAddOns({});
 
-  setSelectedDrinks(existingItem?.drinks || []);
   setInstructions(existingItem?.instructions || "");
 }, [selectedItem, existingItem]);
+
+useEffect(() => {
+  if (!selectedItem) return;
+
+  const errors = {};
+  selectedItem.add_ons.forEach((addOn) => {
+    if (addOn.is_required && (!selectedAddOns[addOn.id] || selectedAddOns[addOn.id].length === 0)) {
+      errors[addOn.id] = "(Required)"; // ✅ Add validation error
+    }
+  });
+
+  setValidationErrors(errors);
+}, [selectedItem, selectedAddOns]); // ✅ Runs every time selected add-ons change
+
 
 // Quantity change handler
 const handleQuantityChange = (type) => {
@@ -136,23 +147,36 @@ const handleAddOnSelect = (addOnId, itemId, isMultiSelect, selectUpto) => {
   setSelectedAddOns((prev) => {
     const currentSelections = prev[addOnId] || [];
 
+    let newSelections;
     if (isMultiSelect) {
       // If already selected, remove it
       if (currentSelections.includes(itemId)) {
-        return { ...prev, [addOnId]: currentSelections.filter((id) => id !== itemId) };
+        newSelections = currentSelections.filter((id) => id !== itemId);
+      } else {
+        // If limit reached, prevent adding more
+        if (currentSelections.length >= selectUpto) return prev;
+
+        // Add new selection
+        newSelections = [...currentSelections, itemId];
       }
-      // If limit reached, prevent adding more
-      if (currentSelections.length >= selectUpto) {
-        return prev;
-      }
-      // Add new selection
-      return { ...prev, [addOnId]: [...currentSelections, itemId] };
     } else {
-      // If single select, replace the selection
-      return { ...prev, [addOnId]: [itemId] };
+      // Single select, replace selection
+      newSelections = [itemId];
     }
+
+    // ✅ Remove error once selection is valid
+    setValidationErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      if (newSelections.length > 0) {
+        delete newErrors[addOnId]; // Remove validation error
+      }
+      return newErrors;
+    });
+
+    return { ...prev, [addOnId]: newSelections };
   });
 };
+
 const openPopup = (config) => {
   setPopupConfig(config);
   setPopupOpen(true);
@@ -178,6 +202,7 @@ const clearSelectedAddOns = (addOnId) => {
 
     const cartData = {
       menu_item_id: selectedItem.id,
+      instructions,
       quantity,
       addons:
         Object.keys(selectedAddOns).length > 0
@@ -324,8 +349,17 @@ const handleRemoveAddon = (addOnId, itemId) => {
     <div key={addOn.id} className="mb-6 capitalize">
       {/* Add-on Name */}
       <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
-  {addOn.name}
+  {addOn.name} {validationErrors[addOn.id] && (
+            <motion.span
+              className="text-xs sm:text-sm text-red-600 font-semibold"
+              animate={{ x: [-3, 3, -3, 0] }}
+              transition={{ duration: 0.3 }}
+            >
+              {validationErrors[addOn.id]}
+            </motion.span>
+          )}
 </h4>
+
       {/* Selection Limit Condition with Animation */}
       {/* Selection Limit Condition with Animation */}
 <motion.p
@@ -446,15 +480,18 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 </div>
 
                 <motion.button
-                  className="bg-primary text-white px-2 md:px-5 py-3 rounded-lg font-bold text-xs md:text-sm hover:bg-opacity-90 shadow-lg transition"
-                  onClick={handleAddToCart}
-                  variants={buttonVariants}
-                  whileHover="hover"
-                  whileTap="tap"
-                >
-                   Add to Cart • {formatPrice(selectedItem?.price * quantity)}
-               
-                </motion.button>
+  className={`bg-primary text-white px-2 md:px-5 py-3 rounded-lg font-bold text-xs md:text-sm hover:bg-opacity-90 shadow-lg transition ${
+    Object.keys(validationErrors).length > 0 ? "opacity-50 cursor-not-allowed" : ""
+  }`}
+  onClick={handleAddToCart}
+  disabled={Object.keys(validationErrors).length > 0}
+  variants={buttonVariants}
+  whileHover="hover"
+  whileTap="tap"
+>
+  Add to Cart • {formatPrice(selectedItem?.price * quantity)}
+</motion.button>
+
               </motion.div>
             </div>
           </motion.div>
