@@ -161,6 +161,8 @@ useEffect(() => {
           type: "error",
           title: "Payment Method Required",
           subText: "Please select a payment method before placing your order.",
+          showConfirmButton: false,
+          showCancelButton: false,
           autoClose: 3,
         });
         setPopupOpen(true);
