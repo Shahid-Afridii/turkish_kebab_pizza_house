@@ -109,9 +109,9 @@ useEffect(() => {
     >
       <img src="assets/cart.png" alt="Cart" className="w-12 h-12" />
     </Link>
-    {totalItems > 0 && (
+    {cartItems.length > 0 && (
       <span className="absolute -bottom-2 -right-2 bg-primary text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
-        {totalItems}
+        {cartItems.length}
       </span>
     )}
   </div>
