@@ -58,16 +58,24 @@ const userAddressSlice = createSlice({
   name: "userAddress",
   initialState: {
     addresses: [],
+    selectedAddressId: null, // Store first address ID dynamically
     isLoading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setSelectedAddressId: (state, action) => {
+      state.selectedAddressId = action.payload;
+    },
+  },
+
   extraReducers: (builder) => {
     builder
       .addCase(getAddresses.pending, (state) => { state.isLoading = true; })
       .addCase(getAddresses.fulfilled, (state, action) => {
         state.isLoading = false;
         state.addresses = action.payload;
+        state.selectedAddressId = action.payload.length > 0 ? action.payload[0].address_id : null;
+
       })
       .addCase(getAddresses.rejected, (state, action) => {
         state.isLoading = false;
@@ -97,5 +105,5 @@ const userAddressSlice = createSlice({
       });
   },
 });
-
+export const { setSelectedAddressId } = userAddressSlice.actions;
 export default userAddressSlice.reducer;

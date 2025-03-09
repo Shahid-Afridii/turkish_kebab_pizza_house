@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { FaCreditCard, FaGoogle, FaPaypal, FaMoneyBillWave, FaPercent } from "react-icons/fa";
 
-const PaymentSection = () => {
+const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod }) => {
   const [promotionVisible, setPromotionVisible] = useState(false);
   const [promotionCode, setPromotionCode] = useState("");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
 
   const handleApplyPromotionCode = () => {
     if (promotionCode) {
@@ -15,7 +14,9 @@ const PaymentSection = () => {
   };
 
   const handlePaymentMethodSelect = (method) => {
-    setSelectedPaymentMethod(method);
+    // Convert "Pay with Cash" to "COD"
+    const paymentValue = method === "Pay with Cash" ? "COD" : method;
+    setSelectedPaymentMethod(paymentValue);
   };
 
   return (
@@ -62,61 +63,22 @@ const PaymentSection = () => {
           Select Payment Method
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
-          {/* Credit/Debit Card */}
-          <button
-            onClick={() => handlePaymentMethodSelect("Credit/Debit Card")}
-            className={`flex items-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition ${
-              selectedPaymentMethod === "Credit/Debit Card"
-                ? "bg-red-500 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            <FaCreditCard className="text-sm sm:text-2xl" />
-            <span className="text-xs sm:text-sm font-medium">
-              Credit/Debit Card
-            </span>
-          </button>
-
-          {/* PayPal */}
-          <button
-            onClick={() => handlePaymentMethodSelect("PayPal")}
-            className={`flex items-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition ${
-              selectedPaymentMethod === "PayPal"
-                ? "bg-red-500 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            <FaPaypal className="text-sm sm:text-2xl" />
-            <span className="text-xs sm:text-sm font-medium">PayPal</span>
-          </button>
-
-          {/* Google Pay */}
-          <button
-            onClick={() => handlePaymentMethodSelect("Google Pay")}
-            className={`flex items-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition ${
-              selectedPaymentMethod === "Google Pay"
-                ? "bg-red-500 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            <FaGoogle className="text-sm sm:text-2xl" />
-            <span className="text-xs sm:text-sm font-medium">Google Pay</span>
-          </button>
-
-          {/* Pay with Cash */}
-          <button
-            onClick={() => handlePaymentMethodSelect("Pay with Cash")}
-            className={`flex items-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition ${
-              selectedPaymentMethod === "Pay with Cash"
-                ? "bg-red-500 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            <FaMoneyBillWave className="text-sm sm:text-2xl" />
-            <span className="text-xs sm:text-sm font-medium">
-              Pay with Cash
-            </span>
-          </button>
+          {[
+            { label: "Credit/Debit Card", value: "Credit/Debit Card" },
+            { label: "PayPal", value: "PayPal" },
+            { label: "Google Pay", value: "Google Pay" },
+            { label: "Pay with Cash", value: "COD" }, // Map "Pay with Cash" to "COD"
+          ].map(({ label, value }) => (
+            <button
+              key={value}
+              onClick={() => handlePaymentMethodSelect(value)}
+              className={`flex items-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition ${
+                selectedPaymentMethod === value ? "bg-red-500 text-white" : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
     </div>

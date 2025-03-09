@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt } from "react-icons/fa";
 
-const DeliveryPickupSection = () => {
-  const [mode, setMode] = useState("delivery"); // 'delivery' or 'pickup'
+const DeliveryPickupSection = ({mode,setMode}) => {
+  // const [mode, setMode] = useState("delivery"); // 'delivery' or 'pickup'
 
   return (
     <div className="bg-white p-4 sm:p-6">

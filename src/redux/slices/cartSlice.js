@@ -84,6 +84,9 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
       state.totalItems = 0;
+      state.totalAmount = 0;
+      state.taxAmount = 0;
+      state.taxableAmount = 0;
       state.cartFetched = false;
     },
     removeFromCart: (state, action) => {

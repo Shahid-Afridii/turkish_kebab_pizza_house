@@ -1,6 +1,10 @@
 import React, { useState,useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getCart,updateQuantity, removeFromCart } from "../redux/slices/cartSlice";
+import { submitOrder } from "../redux/slices/orderSlice"; // Import API call
+import { getAddresses } from "../redux/slices/userAddressSlice"; // Fetch addresses
+import { clearCart } from "../redux/slices/cartSlice"; // ✅ Import clearCart
+
 import {
   FaUser,
   FaMapMarkerAlt,
@@ -9,6 +13,7 @@ import {
   FaChevronUp,
   FaMinus,
   FaPlus,
+  FaShoppingCart,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import AccountSection from "../components/Checkout/AccountSection";
@@ -28,7 +33,15 @@ const Checkout = () => {
   const cartFetched = useSelector((state) => state.cart.cartFetched); // ✅ Track API call status
   const taxAmount = useSelector((state) => state.cart.taxAmount);
   const taxableAmount = useSelector((state) => state.cart.taxableAmount);
+   // ✅ Dynamic state for order
+   const [selectedMode, setSelectedMode] = useState("delivery"); // Default to delivery
+   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(""); // Store payment mode
+   const [selectedAddress, setSelectedAddress] = useState(1); // Default address (Make this dynamic)
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { addresses, selectedAddressId, isLoading: isAddressLoading } = useSelector((state) => state.userAddress);
+
+  const { isLoading, error } = useSelector((state) => state.order);
+
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // ✅ Track login modal state
   const navigate = useNavigate(); // ✅ Initialize navigation
 
@@ -42,6 +55,8 @@ const Checkout = () => {
   const toggleAccordion = (index) => {
     setActiveAccordion(activeAccordion === index ? null : index);
   };
+console.log("selectedAddress", selectedAddressId);
+console.log("First Address ID:", selectedAddressId);
 
   const openPopup = (config) => {
     setPopupConfig(config);
@@ -58,7 +73,17 @@ const closePopup = () => {
   }
 };
  
+  // ✅ Fetch addresses on component mount
+  useEffect(() => {
+    dispatch(getAddresses());
+  }, [dispatch]);
 
+   // ✅ Set the first address dynamically when addresses are fetched
+useEffect(() => {
+  if (selectedAddressId !== null) {
+    setSelectedAddress(selectedAddressId);
+  }
+}, [selectedAddressId]);
 
   useEffect(() => {
     if (!cartFetched) {
@@ -90,7 +115,71 @@ const closePopup = () => {
         });
       }
     }, [isAuthenticated]);
-    
+    const handleOrderSubmit = async () => {
+      setPopupOpen(false); // Close popup before submission
+      
+      const orderData = {
+        address_id: selectedAddress, // Make sure this comes dynamically
+        mode: selectedMode,
+        payment_mode: selectedPaymentMethod,
+      };
+  
+      try {
+        await dispatch(submitOrder(orderData)).unwrap();
+        
+        // ✅ Show success popup
+        setPopupConfig({
+          type: "success",
+          title: "Order Placed!",
+          subText: "Your order has been successfully placed.",
+          autoClose: 3,
+          showConfirmButton: false,
+          showCancelButton: false,
+          onClose: () => navigate("/orders"), // Redirect after success
+        });
+        // ✅ Clear Cart After Successful Order
+    dispatch(clearCart());
+        setPopupOpen(true);
+      } catch (err) {
+        // ✅ Show error popup
+        setPopupConfig({
+          type: "error",
+          title: "Order Failed",
+          subText: err || "There was an issue placing your order.",
+          autoClose: 3,
+          showConfirmButton: false,
+          showCancelButton: false,
+        });
+        setPopupOpen(true);
+      }
+    };
+  
+    // ✅ Open Confirmation Popup
+    const openOrderPopup = () => {
+      if (!selectedPaymentMethod) {
+        setPopupConfig({
+          type: "error",
+          title: "Payment Method Required",
+          subText: "Please select a payment method before placing your order.",
+          autoClose: 3,
+        });
+        setPopupOpen(true);
+        return;
+      }
+  
+      setPopupConfig({
+        type: "warning",
+        title: "Confirm Your Order",
+        subText: `Are you sure you want to place this order with ${selectedMode} and ${selectedPaymentMethod}?`,
+        confirmLabel: "Yes, Place Order",
+        cancelLabel: "Cancel",
+        showConfirmButton: true,
+        showCancelButton: true,
+        onConfirm: handleOrderSubmit,
+      });
+      setPopupOpen(true);
+    };
+  
    
   return (
     <div className="container mx-auto p-2 lg:p-0 bg-gray-50 min-h-screen">
@@ -136,7 +225,7 @@ const closePopup = () => {
                 <FaChevronDown className="text-gray-600" />
               )}
             </div>
-            {activeAccordion === 2 && <DeliveryPickupSection />}
+            {activeAccordion === 2 && <DeliveryPickupSection mode={selectedMode} setMode={setSelectedMode} />}
           </div>
 
           {/* Payment Section */}
@@ -155,8 +244,20 @@ const closePopup = () => {
       <FaChevronDown className="text-gray-600" />
     )}
   </div>
-  {activeAccordion === 3 && <PaymentSection />}
+  {activeAccordion === 3 && <PaymentSection  selectedPaymentMethod={selectedPaymentMethod}
+        setSelectedPaymentMethod={setSelectedPaymentMethod}/>}
 </div>
+{/* Order Button */}
+<div className="flex justify-center mt-6">
+        <button
+          onClick={openOrderPopup}
+          className="flex items-center px-6 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90"
+          disabled={isLoading}
+        >
+          <FaShoppingCart className="mr-2" />
+          {isLoading ? "Processing..." : "Place Order"}
+        </button>
+      </div>
         </div>
 
         {/* Right Section */}
@@ -261,7 +362,7 @@ const closePopup = () => {
         type={popupConfig.type}
         title={popupConfig.title}
         subText={popupConfig.subText}
-        onConfirm={closePopup}
+        onConfirm={popupConfig.onConfirm}
         onClose={closePopup}
         autoClose={popupConfig.autoClose}
         confirmLabel={popupConfig.confirmLabel}
