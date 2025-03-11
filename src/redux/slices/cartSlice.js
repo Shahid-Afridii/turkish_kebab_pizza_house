@@ -115,9 +115,13 @@ const cartSlice = createSlice({
       .addCase(getCart.fulfilled, (state, action) => {
         state.isLoading = false;
         state.items = action.payload.data || [];
+        state.totalAmount = action.payload.total_amount || 0; // ✅ Fix: Assign totalAmount
+        state.taxableAmount = action.payload.taxable_amount || 0;
+        state.taxAmount = action.payload.tax_amount || 0;
         state.totalItems = state.items.reduce((total, item) => total + (item.qty || 0), 0);
         state.cartFetched = true;
       })
+    
       .addCase(getCart.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;

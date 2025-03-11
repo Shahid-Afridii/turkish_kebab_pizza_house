@@ -31,6 +31,7 @@ const Checkout = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const totalAmount = useSelector((state) => state.cart.totalAmount) || 0; //
+  console.log("totalAmount", totalAmount);
   const cartFetched = useSelector((state) => state.cart.cartFetched); // ✅ Track API call status
   const taxAmount = useSelector((state) => state.cart.taxAmount);
   const taxableAmount = useSelector((state) => state.cart.taxableAmount);
