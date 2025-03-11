@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-
+import { useSelector } from "react-redux";
+import { FaUser, FaCheckCircle } from "react-icons/fa";
 const AccountSection = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState(1); // Step 1: Enter Mobile, Step 2: Enter OTP
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const handleSendOtp = () => {
     if (mobileNumber) {
@@ -23,9 +25,21 @@ const AccountSection = () => {
   };
 
   return (
-    <div className="bg-white  p-4 md:p-6">
-     
-      {step === 1 ? (
+    <div className="bg-white p-4 md:p-6">
+      {isAuthenticated ? (
+        <div className="bg-red-600 text-white p-4 md:p-6 rounded-lg flex items-center gap-4">
+          {/* <div className="bg-red-800 p-3 md:p-4 rounded-lg flex items-center justify-center">
+            <FaUser className="h-8 w-8 text-white" />
+          </div> */}
+          <div>
+            {/* <h2 className="text-lg md:text-xl font-semibold">Account</h2> */}
+            <p className="text-sm md:text-base flex items-center gap-2">
+              Mobile Number Verified
+              <FaCheckCircle className="h-5 w-5 text-green-400" />
+            </p>
+          </div>
+        </div>
+      ) : step === 1 ? (
         <div>
           <p className="text-xs md:text-sm text-gray-600 mb-4">
             Login with your mobile number
