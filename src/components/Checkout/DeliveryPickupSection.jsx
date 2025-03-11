@@ -17,9 +17,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
   const [newAddress, setNewAddress] = useState({
     name: "",
     address: "",
-    landmark: "",
     city: "",
-    state: "",
     country: "",
     pincode: "",
     phone: "",
@@ -45,7 +43,6 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
     if (!newAddress.name.trim()) newErrors.name = "Name is required.";
     if (!newAddress.address.trim()) newErrors.address = "Address is required.";
     if (!newAddress.city.trim()) newErrors.city = "City is required.";
-    if (!newAddress.state.trim()) newErrors.state = "State is required.";
     if (!newAddress.country.trim()) newErrors.country = "Country is required.";
     if (!newAddress.phone.trim() || !/^\d{10}$/.test(newAddress.phone.trim())) {
       newErrors.phone = "Enter a valid 10-digit phone number.";
@@ -107,9 +104,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
           setNewAddress({
             name: "",
             address: "",
-            landmark: "",
             city: "",
-            state: "",
             country: "",
             pincode: "",
             phone: "",
@@ -260,7 +255,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
                   {address.address}
                 </p>
                 <p className={`text-xs ${selectedAddressId === address.address_id ? "text-white/80" : "text-gray-600"}`}>
-                  {address.state} - {address.country}
+                  {address.pincode} - {address.country}
                 </p>
               </div>
               <input
@@ -284,7 +279,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
         <button
           onClick={() => {
             setShowAddForm(true);
-            setNewAddress({ name: "", address: "", landmark: "", city: "", state: "", country: "", pincode: "", phone: "" });
+            setNewAddress({ name: "", address: "", city: "", country: "", pincode: "", phone: "" });
           }}
           className="bg-primary text-white px-4 py-2 rounded-md text-sm md:text-base font-semibold hover:bg-red-600 flex items-center justify-center w-full max-w-[220px]"
         >
@@ -345,7 +340,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
           onClick={() => {
             setIsModalOpen(false);
             setShowAddForm(false); // Hide form when modal is closed
-            setNewAddress({ name: "", address: "", landmark: "", city: "", state: "", country: "", pincode: "", phone: "" }); // Reset form
+            setNewAddress({ name: "", address: "", city: "", country: "", pincode: "", phone: "" }); // Reset form
           }}
         >
           Cancel

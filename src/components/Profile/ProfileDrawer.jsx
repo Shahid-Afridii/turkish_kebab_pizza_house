@@ -30,9 +30,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
   const [newAddress, setNewAddress] = useState({
     name: "",
     address: "",
-    landmark: "",
     city: "",
-    state: "",
     country: "",
     pincode: "",
     phone: "",
@@ -79,7 +77,6 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     if (!newAddress.name.trim()) newErrors.name = "Name is required.";
     if (!newAddress.address.trim()) newErrors.address = "Address is required.";
     if (!newAddress.city.trim()) newErrors.city = "City is required.";
-    if (!newAddress.state.trim()) newErrors.state = "State is required.";
     if (!newAddress.country.trim()) newErrors.country = "Country is required.";
   
     // ✅ Phone Validation (Ensure Exactly 10 Digits)
@@ -158,9 +155,7 @@ const handleChange = (e) => {
         setNewAddress({
           name: "",
           address: "",
-          landmark: "",
           city: "",
-          state: "",
           country: "",
           pincode: "",
           phone: "",
@@ -466,7 +461,7 @@ useEffect(() => {
         <span>{item.phone},</span>
         <span>{item.address},</span>
         <span>{item.city},</span>
-        <span>{item.state},</span>
+      
         <span>{item.country},</span>
         <span className="font-semibold">{item.pincode}</span>
 
