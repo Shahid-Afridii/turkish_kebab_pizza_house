@@ -15,7 +15,10 @@ const BannerWithErrorBoundary = withErrorBoundary(
   "Failed to load the banner."
 );
 const Home = () => {
-  const productsHeadingRef = useRef(null);
+
+  const productRef = useRef(null);
+
+
   const categoriesRef = useRef(null);
   const [isStickyVisible, setIsStickyVisible] = useState(false);
   const [isScrollingUp, setIsScrollingUp] = useState(false);
@@ -23,18 +26,21 @@ const Home = () => {
 // ✅ Store Selected Category ID Here
 const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
-  const scrollToProductsHeading = () => {
-    const stickyContainerHeight = document.querySelector(".sticky")?.offsetHeight || 0;
-
-    if (productsHeadingRef.current) {
-      const topPosition = productsHeadingRef.current.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: topPosition - stickyContainerHeight,
-        behavior: "smooth",
-      });
+ 
+  const scrollToProducts = () => {
+    console.log("Scrolling to product section:", productRef.current); // Debugging log
+  
+    if (productRef.current) {
+      // ✅ Get the exact position and add an offset
+      const yOffset = -100; // Adjust based on your layout (increase if hidden under navbar)
+      const y = productRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
+  
+      window.scrollTo({ top: y, behavior: "smooth" });
+    } else {
+      console.error("productRef is null");
     }
   };
-
+  
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -61,7 +67,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   return (
     <div className="relative">
       <div className="relative">
-      <BannerWithErrorBoundary onMenuClick={scrollToProductsHeading} />
+      <BannerWithErrorBoundary scrollToProducts={scrollToProducts}  />
       </div>
 
       {/* Sticky Search Section */}
@@ -108,7 +114,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <Products ref={productsHeadingRef} selectedCategoryId={selectedCategoryId} />
+        <Products productRef={productRef} selectedCategoryId={selectedCategoryId} />
       </motion.div>
       {/* slider Products Section */}
       {/* <motion.div
