@@ -147,7 +147,19 @@ useEffect(() => {
           {/* <button className="flex items-center justify-center h-10 w-10 text-primary border border-primary rounded-full hover:bg-primary hover:text-white transition">
             <FiSearch size={20} />
           </button> */}
-
+<div className="relative flex items-center">
+    <Link
+      to="/checkout"
+      className="flex items-center justify-center rounded-full h-12 w-12  transition"
+    >
+      <img src="assets/cart.png" alt="Cart" className="w-12 h-12" />
+    </Link>
+    {cartItems.length > 0 && (
+      <span className="absolute -bottom-2 -right-2 bg-primary text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
+        {cartItems.length}
+      </span>
+    )}
+  </div>
           {/* Hamburger Menu */}
           <button
             className="flex items-center justify-center h-10 w-10 text-primary border border-primary rounded-full hover:bg-primary hover:text-white transition"
