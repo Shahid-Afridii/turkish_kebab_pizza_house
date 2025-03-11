@@ -6,8 +6,6 @@ const validateResponse = (response) => {
     return response.data;
   }
 
-  // ❌ If status is not 200 or 201, clear token and reload
-  console.warn("Invalid API response, clearing token...");
   localStorage.removeItem("authToken");
   setAuthToken(null);
   window.location.reload(); // Reload page to reflect logout state
@@ -22,6 +20,8 @@ export const signup = createAsyncThunk("auth/signup", async (userData, { rejectW
     const response = await api.post("/client/user/signup", userData);
     return validateResponse(response);
   } catch (error) {
+    localStorage.removeItem("authToken");
+
     console.error("Signup Error:", error);
     return rejectWithValue(error.response?.data?.message || "Signup failed");
   }
@@ -41,6 +41,8 @@ export const signupVerify = createAsyncThunk("auth/signupVerify", async (otpData
 
     return data;
   } catch (error) {
+    localStorage.removeItem("authToken");
+
     console.error("Signup OTP Verification Error:", error);
     return rejectWithValue(error.response?.data?.message || "Invalid OTP");
   }
@@ -52,6 +54,8 @@ export const login = createAsyncThunk("auth/login", async (loginData, { rejectWi
     const response = await api.post("/client/user/login", loginData);
     return validateResponse(response);
   } catch (error) {
+    localStorage.removeItem("authToken");
+
     console.error("Login Error:", error);
     return rejectWithValue(error.response?.data?.message || "Login failed");
   }
@@ -71,6 +75,8 @@ export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (otpData, { re
 
     return data;
   } catch (error) {
+    localStorage.removeItem("authToken");
+
     console.error("OTP Verification Error:", error);
     return rejectWithValue(error.response?.data?.message || "Invalid OTP");
   }
@@ -83,6 +89,8 @@ export const getProfile = createAsyncThunk("auth/getProfile", async (_, { reject
     const data = validateResponse(response);
     return data.data;
   } catch (error) {
+    localStorage.removeItem("authToken");
+
     return rejectWithValue(error.response?.data?.message || "Failed to fetch profile");
   }
 });

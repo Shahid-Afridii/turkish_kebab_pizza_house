@@ -123,7 +123,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
         animate={inView ? { opacity: 1, y: 0 } : {}} // Move to its original position
         transition={{ duration: 0.5, ease: "easeOut" }}
         className={`flex ${
-          isScrollable ? "justify-start" : "justify-center"
+          isScrollable ? "justify-start" : "md:justify-center justify-start"
         } gap-4 pb-4 overflow-hidden w-full px-2 md:px-8`}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
