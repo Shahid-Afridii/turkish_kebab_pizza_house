@@ -252,7 +252,7 @@ useEffect(() => {
 
           onClick={handleLogout}
         >
-          Logout
+          Signout
         </Link>: false}
       </div>
      
