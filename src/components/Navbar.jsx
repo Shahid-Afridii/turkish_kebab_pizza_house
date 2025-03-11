@@ -8,6 +8,7 @@ import {
   FiLogIn,
   FiLogOut,
   FiMenu,
+  FiChevronRight,
   FiX,
   FiShoppingCart,
 } from "react-icons/fi"; // React Icons
@@ -52,7 +53,12 @@ console.log("isAuthenticated", isAuthenticated);
   const isActive = (path) => location.pathname === path;
 // ✅ Handle Logout
 
- 
+ const handleLogout = () => {
+   dispatch(logout());  // ✅ Clear authentication state
+   dispatch(clearCart()); // ✅ Clear cart data
+   onClose(); 
+   navigate("/"); // ✅ Redirect to home page
+ };
 useEffect(() => {
   if (isAuthenticated && !user) {
     dispatch(getProfile()); // ✅ Fetch profile if authenticated but no user data
@@ -138,9 +144,9 @@ useEffect(() => {
         {/* Mobile Icons */}
         <div className="md:hidden flex items-center space-x-4">
           {/* Search Icon */}
-          <button className="flex items-center justify-center h-10 w-10 text-primary border border-primary rounded-full hover:bg-primary hover:text-white transition">
+          {/* <button className="flex items-center justify-center h-10 w-10 text-primary border border-primary rounded-full hover:bg-primary hover:text-white transition">
             <FiSearch size={20} />
-          </button>
+          </button> */}
 
           {/* Hamburger Menu */}
           <button
@@ -179,7 +185,13 @@ useEffect(() => {
           <FiUser size={30} className="text-gray-600" />
         </div>
         <span className="text-sm font-medium">{user?.name || ""}</span>
-        </div>:  <div  onClick={toggleLoginDrawer} className="flex flex-col items-center space-y-2 border-b pb-4">
+ {/* View Profile Label with Bottom Dashed Border */}
+ <div className="flex items-center">
+        <span className="text-xs border-b-2 border-primary font-medium text-gray-600">View Profile</span>
+        <FiChevronRight className="text-gray-500" size={14} />
+
+        {/* Fix: Centered Bottom Border */}
+      </div>       </div>:  <div  onClick={toggleLoginDrawer} className="flex flex-col items-center space-y-2 border-b pb-4">
         {/* User Icon */}
         <div className="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center">
           <FiLogIn size={30} className="text-gray-600" />
@@ -229,14 +241,26 @@ useEffect(() => {
         >
           About Us
         </Link>
-      </div>
+{isAuthenticated ?  <Link
+          to="#"
+          className={`nav-link text-sm ${
+            isActive("/about")
+              ? "border-b-2 border-primary text-primary"
+              : ""
+          }`}
+          style={{fontSize: "16px"}}
 
+          onClick={handleLogout}
+        >
+          Logout
+        </Link>: false}
+      </div>
      
     </motion.div>
   </div>
 )}
 
-            <Login from="checkout" isOpen={isLoginDrawerOpen} onClose={closeLoginDrawer} />
+            <Login  isOpen={isLoginDrawerOpen} onClose={closeLoginDrawer} />
             <ProfileDrawer isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
 
 

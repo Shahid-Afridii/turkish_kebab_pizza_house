@@ -35,7 +35,8 @@ export const addToCart = createAsyncThunk(
 
       // ✅ Ensure latest cart is fetched
       await dispatch(getCart()).unwrap();
-
+ // ✅ Open BottomCartBar when an item is added
+ dispatch(setBottomBarVisible(true));
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -79,6 +80,8 @@ const cartSlice = createSlice({
     isLoading: false,
     error: null,
     cartFetched: false, 
+    isBottomBarVisible: false, // ✅ Default is hidden
+
   },
   reducers: {
     clearCart: (state) => {
@@ -88,10 +91,15 @@ const cartSlice = createSlice({
       state.taxAmount = 0;
       state.taxableAmount = 0;
       state.cartFetched = false;
+      state.isBottomBarVisible = false; // ✅ Hide bottom bar when cart is cleared
+
     },
     removeFromCart: (state, action) => {
       state.items = state.items.filter((item) => item.menu_item_id !== action.payload);
       state.totalItems = state.items.reduce((total, item) => total + (item.qty || 0), 0);
+    },
+    setBottomBarVisible: (state, action) => {
+      state.isBottomBarVisible = action.payload; // ✅ Control visibility from Redux
     },
   },
   extraReducers: (builder) => {
@@ -137,5 +145,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { clearCart, removeFromCart } = cartSlice.actions;
+export const { clearCart, removeFromCart,setBottomBarVisible } = cartSlice.actions;
 export default cartSlice.reducer;

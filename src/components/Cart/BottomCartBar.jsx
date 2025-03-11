@@ -1,9 +1,9 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect,useState } from "react";
 import { useSelector,useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { getCart } from "../../redux/slices/cartSlice"; // ✅ Import getCart
+import { Link,useLocation } from "react-router-dom";
+import { getCart,setBottomBarVisible } from "../../redux/slices/cartSlice"; // ✅ Import getCart
 
 const waveAnimation = {
   hidden: {
@@ -35,15 +35,21 @@ const waveAnimation = {
   },
 };
 
-const BottomCartBar = ({ isVisible, onClose }) => {
+const BottomCartBar = () => {
   const dispatch = useDispatch();
+  const location = useLocation(); // Get current route
   const cartItems = useSelector((state) => state.cart.items);
   const isLoading = useSelector((state) => state.cart.isLoading);
   const totalAmount = useSelector((state) => state.cart.totalAmount) || 0; // ✅ Get total from API response
+  const isVisible = useSelector((state) => state.cart.isBottomBarVisible); // ✅ Get visibility from Redux
+
+
 console.log("totalAmount bar", totalAmount);
   useEffect(() => {
     dispatch(getCart()); // ✅ Fetch cart items when component mounts
   }, []);
+// ✅ Prevent bar from closing when route changes
+// Only triggers when the route changes
 
   console.log("cartItems bar", cartItems);
   
@@ -53,20 +59,10 @@ console.log("totalAmount bar", totalAmount);
 
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
+  
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onClose]);
+  if (!isVisible || location.pathname === "/checkout") return null;
 
-  if (!isVisible) return null;
 
   return (
     <motion.div
@@ -113,7 +109,7 @@ console.log("totalAmount bar", totalAmount);
 
         {/* Close Button */}
         <button
-          onClick={onClose}
+         onClick={() => dispatch(setBottomBarVisible(false))}
           className="text-white px-3 py-2 rounded-lg font-bold text-xs sm:text-sm lg:text-lg flex items-center justify-center"
         >
           <FaTimes className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />

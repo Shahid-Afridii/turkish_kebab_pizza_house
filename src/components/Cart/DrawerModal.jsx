@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaPlus, FaMinus, FaTimes } from "react-icons/fa";
 import { useDispatch,useSelector } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
-import BottomCartBar from "./BottomCartBar";
 import { formatPrice } from "../../utils/formatPrice";
 import CustomPopup from "../../components/CustomPopup";
 import withErrorBoundary from "../../components/ErrorBoundary/withErrorBoundary"; // Import HOC
+import Login from "../../pages/Login";
 
 const drawerVariants = {
   hidden: {
@@ -101,6 +101,8 @@ const buttonVariants = {
 const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
 console.log("selectedItem", selectedItem)
   const dispatch = useDispatch();
+     // ✅ Get authentication state from Redux
+     const { isAuthenticated } = useSelector((state) => state.auth);
 // Fetch existing cart item details (if already added)
 const existingItem = useSelector((state) =>
   state.cart.items.find((item) => item.id === selectedItem?.id)
@@ -110,12 +112,15 @@ const existingItem = useSelector((state) =>
 // States
 const [quantity, setQuantity] = useState(existingItem ? existingItem.quantity : 1);
 const [validationErrors, setValidationErrors] = useState({});
+const [isLoginModalOpen, setLoginModalOpen] = useState(false);
 
 const [instructions, setInstructions] = useState(existingItem?.instructions || "");
 const [showCartBar, setShowCartBar] = useState(false);
 // State for custom popup
  const [isPopupOpen, setPopupOpen] = useState(false);
  const [popupConfig, setPopupConfig] = useState({});
+ const [isAddingToCart, setIsAddingToCart] = useState(false); // 🚀 Track API status
+
 // Reset states when `selectedItem` changes
 useEffect(() => {
   setQuantity(existingItem ? existingItem.quantity : 1);
@@ -199,7 +204,16 @@ const clearSelectedAddOns = (addOnId) => {
 // Add to Cart Handler
   const handleAddToCart = () => {
     if (!selectedItem) return;
+ // 🚀 If not authenticated, close drawer & open login modal
+ if (!isAuthenticated) {
+  onClose(); // Close cart modal
+  setLoginModalOpen(true); // Open login modal
+  return;
+}
 
+
+    // 🚀 Set loading state
+    setIsAddingToCart(true);
     const cartData = {
       menu_item_id: selectedItem.id,
       instructions,
@@ -234,6 +248,9 @@ const clearSelectedAddOns = (addOnId) => {
           showConfirmButton: false,
           showCancelButton: false,
         });
+      })
+      .finally(() => {
+        setIsAddingToCart(false); // ✅ Reset loading state
       });
   };
 
@@ -480,8 +497,8 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 </div>
 
                 <motion.button
-  className={`bg-primary text-white px-2 md:px-5 py-3 rounded-lg font-bold text-xs md:text-sm hover:bg-opacity-90 shadow-lg transition ${
-    Object.keys(validationErrors).length > 0 ? "opacity-50 cursor-not-allowed" : ""
+   className={`bg-primary text-white px-2 md:px-5 py-3 rounded-lg font-bold text-xs md:text-sm hover:bg-opacity-90 shadow-lg transition ${
+    isAddingToCart || Object.keys(validationErrors).length > 0 ? "opacity-50 cursor-not-allowed" : ""
   }`}
   onClick={handleAddToCart}
   disabled={Object.keys(validationErrors).length > 0}
@@ -489,7 +506,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
   whileHover="hover"
   whileTap="tap"
 >
-  Add to Cart • {formatPrice(selectedItem?.price * quantity)}
+{isAddingToCart ? "Processing..." : `Add to Cart • ${formatPrice(selectedItem?.price * quantity)}`}
 </motion.button>
 
               </motion.div>
@@ -497,7 +514,6 @@ const handleRemoveAddon = (addOnId, itemId) => {
           </motion.div>
         </>
       )}
-            <BottomCartBar isVisible={showCartBar} onClose={handleCloseCartBar} />
             <CustomPopup
         isOpen={isPopupOpen}
         type={popupConfig.type}
@@ -512,6 +528,9 @@ const handleRemoveAddon = (addOnId, itemId) => {
         showCancelButton={popupConfig.showCancelButton}
         showCloseIcon={popupConfig.showCloseIcon}
       />
+                  <Login   isOpen={isLoginModalOpen} 
+      onClose={() => setLoginModalOpen(false)}  />
+      
     </AnimatePresence>
   );
 };
