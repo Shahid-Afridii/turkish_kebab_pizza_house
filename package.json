@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",
+    "@stripe/react-stripe-js": "^3.4.0",
+    "@stripe/stripe-js": "^6.0.0",
     "axios": "^1.7.9",
     "food-delivery-app": "file:",
     "framer-motion": "^11.16.0",
