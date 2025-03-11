@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getCart,updateQuantity, removeFromCart } from "../redux/slices/cartSlice";
+import { getCart,updateQuantity,removeCartItem} from "../redux/slices/cartSlice";
 import { submitOrder } from "../redux/slices/orderSlice"; // Import API call
 import { getAddresses } from "../redux/slices/userAddressSlice"; // Fetch addresses
 import { clearCart } from "../redux/slices/cartSlice"; // ✅ Import clearCart
@@ -13,6 +13,7 @@ import {
   FaChevronUp,
   FaMinus,
   FaPlus,
+  FaTrash,
   FaShoppingCart,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -39,6 +40,7 @@ const Checkout = () => {
    const [selectedAddress, setSelectedAddress] = useState(1); // Default address (Make this dynamic)
   const { isAuthenticated } = useSelector((state) => state.auth);
   const { addresses, selectedAddressId, isLoading: isAddressLoading } = useSelector((state) => state.userAddress);
+  const [itemToRemove, setItemToRemove] = useState(null);
 
   const { isLoading, error } = useSelector((state) => state.order);
 
@@ -115,6 +117,55 @@ useEffect(() => {
         });
       }
     }, [isAuthenticated]);
+
+      // ✅ Open Confirmation Popup
+ // ✅ Open Confirmation Popup
+const openDeletePopup = (item) => {
+  console.log(item, "item");
+
+  setPopupConfig({
+    type: "warning",
+    title: "Remove Item",
+    subText: `Are you sure you want to remove ${item.name} from the cart?`,
+    confirmLabel: "Yes, Remove",
+    cancelLabel: "Cancel",
+    showConfirmButton: true,
+    showCancelButton: true,
+    onConfirm: () => handleRemoveItem(item), // ✅ Pass function reference instead of calling it
+  });
+
+  setPopupOpen(true);
+};
+
+// ✅ Handle Remove Item
+const handleRemoveItem = async (item) => {
+  try {
+    await dispatch(removeCartItem(item.cart_id)).unwrap();
+    
+    // ✅ Show Success Popup
+    setPopupConfig({
+      type: "success",
+      title: "Removed",
+      subText: "Item removed from the cart successfully!",
+      autoClose: 2,
+      showConfirmButton: false,
+      showCancelButton: false,
+    });
+  } catch (err) {
+    // ✅ Show Error Popup
+    setPopupConfig({
+      type: "error",
+      title: "Failed to Remove",
+      subText: err?.message || "Could not remove the item from cart.",
+      autoClose: 3,
+      showConfirmButton: false,
+      showCancelButton: false,
+    });
+  }
+
+  setPopupOpen(true);
+};
+
     const handleOrderSubmit = async () => {
       setPopupOpen(false); // Close popup before submission
       
@@ -265,79 +316,83 @@ useEffect(() => {
         {/* Right Section */}
         <div>
         <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-        <h2 className="text-sm md:text-lg font-semibold mb-4">Items in your cart</h2>
-        <div className="flex-grow overflow-y-auto pr-2" style={{ maxHeight: "400px" }}>
+  <h2 className="text-sm md:text-lg font-semibold mb-4">Items in your cart</h2>
+  <div className="flex-grow overflow-y-auto pr-2" style={{ maxHeight: "400px" }}>
     <ul className="space-y-4">
       {cartItems.map((item) => (
-        <li
-          key={item.id}
-          className="flex items-center justify-between border-b pb-4"
-        >
+        <li key={item.id} className="flex items-center justify-between border-b pb-4 relative">
           {/* Product Image */}
           <img
-  src={item.image ? `${IMAGE_URL}${item.image}` : "/assets/noimage.png"}
-  alt={item.name}
-  className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-lg transition-opacity duration-500 opacity-0"
-  onLoad={(e) => e.target.classList.remove("opacity-0")}
-  onError={(e) => {
-    e.target.onerror = null;
-    e.target.src = "/assets/noimage.png";
-  }}
-/>
-
+            src={item.image ? `${IMAGE_URL}${item.image}` : "/assets/noimage.png"}
+            alt={item.name}
+            className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-lg transition-opacity duration-500 opacity-0"
+            onLoad={(e) => e.target.classList.remove("opacity-0")}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/assets/noimage.png";
+            }}
+          />
 
           {/* Product Details */}
           <div className="flex-1 ml-3">
             <h4 className="font-semibold text-xs md:text-sm">{item.name}</h4>
-            <h4 className="font-semibold text-xs md:text-sm">{formatPrice(item.price)}</h4>
+            <h4 className="font-semibold text-xs md:text-sm">{formatPrice(item.price)}
+
+            <button
+            onClick={() => openDeletePopup(item)}
+            className="ml-2 mb-2 p-2 text-red-500 hover:text-red-700"
+          >
+            <FaTrash size={12} />
+          </button>
+            </h4>
             <div className="text-xs text-gray-500 space-y-1">
-             {/* Add-on Items */}
-             {item.add_on_items.length > 0 && (
-                      <p className="text-xs text-gray-500">
-                        <span className="font-semibold text-gray-700">Add-ons:</span>{" "}
-                        {item.add_on_items.map((addOn) => `${addOn.name} (£${addOn.price})`).join(", ")}
-                      </p>
-                    )}
-           
+              {/* Add-on Items */}
+              {item.add_on_items.length > 0 && (
+                <p className="text-xs text-gray-500">
+                  <span className="font-semibold text-gray-700">Add-ons:</span>{" "}
+                  {item.add_on_items.map((addOn) => `${addOn.name} (£${addOn.price})`).join(", ")}
+
+                  
+                </p>
+              )}
              
-              {/* Fallback to Description */}
-              {!item.toppings?.length &&
-                !item.dips?.length &&
-                !item.drinks?.length && (
-                  <p className="line-clamp-2">{item.description}</p>
+              {/* Description Fallback */}
+              {!item.toppings?.length && !item.dips?.length && !item.drinks?.length && (
+                <p className="line-clamp-2">{item.description}</p>
               )}
             </div>
           </div>
 
           {/* Quantity Buttons */}
           <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => {
-                        if (item.qty > 1) {
-                          dispatch(updateQuantity({ menu_item_id: item.menu_item_id, quantity: item.qty - 1 }));
-                        } else {
-                          dispatch(removeFromCart({ menu_item_id: item.menu_item_id }));
-                        }
-                      }}
-                      className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
-                    >
-                      <FaMinus size={10} />
-                    </button>
-                    <span className="px-2 py-1 text-xs md:text-sm font-medium text-gray-800 bg-gray-100 rounded-md border border-gray-300">
-                      {item.qty}
-                    </span>
-                    <button
-                      onClick={() => dispatch(updateQuantity({ menu_item_id: item.menu_item_id, quantity: item.qty + 1 }))}
-                      className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
-                    >
-                      <FaPlus size={10} />
-                    </button>
-                  </div>
+            <button
+              onClick={() => {
+                if (item.qty > 1) {
+                  dispatch(updateQuantity({ menu_item_id: item.menu_item_id, quantity: item.qty - 1 }));
+                }
+              }}
+              className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
+            >
+              <FaMinus size={10} />
+            </button>
+            <span className="px-2 py-1 text-xs md:text-sm font-medium text-gray-800 bg-gray-100 rounded-md border border-gray-300">
+              {item.qty}
+            </span>
+            <button
+              onClick={() => dispatch(updateQuantity({ menu_item_id: item.menu_item_id, quantity: item.qty + 1 }))}
+              className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
+            >
+              <FaPlus size={10} />
+            </button>
+          </div>
+
+          {/* Delete Icon (Bottom Right) */}
+          
         </li>
       ))}
     </ul>
-</div>
   </div>
+</div>
 
   <div className="bg-white rounded-lg shadow p-4 mt-4 md:mt-6">
     <h2 className="text-sm md:text-lg font-semibold mb-4">Order Summary</h2>

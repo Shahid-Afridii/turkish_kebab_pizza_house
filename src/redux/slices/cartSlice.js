@@ -17,10 +17,7 @@ export const getCart = createAsyncThunk(
       const response = await api.get("/client/cart/get");
       return validateResponse(response);
     } catch (error) {
-      console.error("Get Cart Error:", error);
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch cart"
-      );
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch cart");
     }
   }
 );
@@ -35,36 +32,51 @@ export const addToCart = createAsyncThunk(
 
       // ✅ Ensure latest cart is fetched
       await dispatch(getCart()).unwrap();
- // ✅ Open BottomCartBar when an item is added
- dispatch(setBottomBarVisible(true));
+      dispatch(setBottomBarVisible(true)); // ✅ Show BottomCartBar when item is added
       return data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to add to cart"
-      );
+      return rejectWithValue(error.response?.data?.message || "Failed to add to cart");
     }
   }
 );
 
-// ✅ Update Quantity (Triggers Add to Cart)
+// ✅ Remove Cart Item (DELETE Request)
+export const removeCartItem = createAsyncThunk(
+  "cart/removeCartItem",
+  async (cartId, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await api.post(`/client/cart/del`, {
+        data: { cart_id: cartId }, // ✅ Send cart_id in request body
+      });
+
+      validateResponse(response);
+
+      // ✅ Fetch updated cart after deletion
+      await dispatch(getCart()).unwrap();
+      return cartId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to remove item");
+    }
+  }
+);
+
+// ✅ Update Quantity
 export const updateQuantity = createAsyncThunk(
   "cart/updateQuantity",
   async ({ menu_item_id, quantity }, { dispatch, getState, rejectWithValue }) => {
     try {
-      // ✅ Find the item from the store
       const item = getState().cart.items.find((i) => i.menu_item_id === menu_item_id);
       if (!item) return rejectWithValue("Item not found in cart");
 
-      // ✅ Prepare payload for `addToCart`
+      // ✅ Update Cart Data
       const updatedCartData = {
         menu_item_id,
         quantity,
         addons: item.addons || [],
       };
 
-      // ✅ Dispatch `addToCart` with updated quantity
+      // ✅ Dispatch Add to Cart with updated quantity
       await dispatch(addToCart(updatedCartData)).unwrap();
-
       return { menu_item_id, quantity };
     } catch (error) {
       return rejectWithValue(error?.message || "Failed to update quantity");
@@ -72,34 +84,26 @@ export const updateQuantity = createAsyncThunk(
   }
 );
 
+// ✅ Cart Slice
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
     items: [],
-    totalItems: 0, 
+    totalItems: 0,
     isLoading: false,
     error: null,
-    cartFetched: false, 
-    isBottomBarVisible: false, // ✅ Default is hidden
-
+    cartFetched: false,
+    isBottomBarVisible: false,
   },
   reducers: {
     clearCart: (state) => {
       state.items = [];
       state.totalItems = 0;
-      state.totalAmount = 0;
-      state.taxAmount = 0;
-      state.taxableAmount = 0;
       state.cartFetched = false;
-      state.isBottomBarVisible = false; // ✅ Hide bottom bar when cart is cleared
-
-    },
-    removeFromCart: (state, action) => {
-      state.items = state.items.filter((item) => item.menu_item_id !== action.payload);
-      state.totalItems = state.items.reduce((total, item) => total + (item.qty || 0), 0);
+      state.isBottomBarVisible = false;
     },
     setBottomBarVisible: (state, action) => {
-      state.isBottomBarVisible = action.payload; // ✅ Control visibility from Redux
+      state.isBottomBarVisible = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -109,12 +113,8 @@ const cartSlice = createSlice({
         state.error = null;
       })
       .addCase(getCart.fulfilled, (state, action) => {
-        console.log("✅ Fetched Cart Data:", action.payload);
         state.isLoading = false;
         state.items = action.payload.data || [];
-        state.totalAmount = action.payload.total_amount || 0;
-        state.taxAmount = action.payload.tax_amount || 0;
-        state.taxableAmount = action.payload.taxable_amount || 0;
         state.totalItems = state.items.reduce((total, item) => total + (item.qty || 0), 0);
         state.cartFetched = true;
       })
@@ -124,10 +124,8 @@ const cartSlice = createSlice({
       })
       .addCase(addToCart.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
       })
       .addCase(addToCart.fulfilled, (state) => {
-        console.log("✅ Add to Cart Success");
         state.isLoading = false;
       })
       .addCase(addToCart.rejected, (state, action) => {
@@ -141,9 +139,21 @@ const cartSlice = createSlice({
           item.qty = quantity;
           state.totalItems = state.items.reduce((total, i) => total + (i.qty || 0), 0);
         }
+      })
+      .addCase(removeCartItem.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(removeCartItem.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.items = state.items.filter((item) => item.cart_id !== action.payload);
+        state.totalItems = state.items.reduce((total, item) => total + (item.qty || 0), 0);
+      })
+      .addCase(removeCartItem.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { clearCart, removeFromCart,setBottomBarVisible } = cartSlice.actions;
+export const { clearCart, setBottomBarVisible } = cartSlice.actions;
 export default cartSlice.reducer;
