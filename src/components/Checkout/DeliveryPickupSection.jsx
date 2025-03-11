@@ -183,7 +183,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
               className="w-full border rounded-md px-3 py-2 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
-          <div className="flex items-center space-x-2">
+          {/* <div className="flex items-center space-x-2">
             <button
               className="text-primary text-xs sm:text-sm font-medium flex items-center gap-1 hover:underline"
               onClick={() => alert("Locating address...")}
@@ -191,8 +191,8 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
               <FaMapMarkerAlt />
               Locate me
             </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          </div> */}
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="flex items-center gap-2">
               <FaCalendarAlt className="text-gray-500" />
               <input
@@ -207,7 +207,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
                 className="w-full border rounded-md px-3 py-2 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
-          </div>
+          </div> */}
           <div className="flex justify-between mt-4">
             <button className="text-primary text-xs sm:text-sm font-medium hover:underline">
               Delivery Instructions
@@ -219,11 +219,11 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
               Select Address
             </button>
           </div>
-          <div className="flex justify-center mt-4">
+          {/* <div className="flex justify-center mt-4">
             <button className="bg-primary text-white w-40 py-2 rounded-md text-xs sm:text-sm font-medium hover:bg-primary/90">
               Save & Continue
             </button>
-          </div>
+          </div> */}
         </div>
       )}
 
@@ -357,7 +357,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
 
 
       {/* Pick-up Form */}
-      {mode === "pickup" && (
+      {/* {mode === "pickup" && (
         <div className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="flex items-center gap-2">
@@ -382,7 +382,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
           </div>
 
         </div>
-      )}
+      )} */}
       <CustomPopup
         isOpen={isPopupOpen}
         type={popupConfig.type}
