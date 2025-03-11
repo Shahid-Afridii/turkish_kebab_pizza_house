@@ -1,13 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api, { setAuthToken } from "../../services/api";
 
-// ✅ Helper function to validate API response
 const validateResponse = (response) => {
-  if (response.status === 200 && response.data?.status) {
+  if (response.status === 200 || response.status === 201) {
     return response.data;
   }
+
+  // ❌ If status is not 200 or 201, clear token and reload
+  console.warn("Invalid API response, clearing token...");
+  localStorage.removeItem("authToken");
+  setAuthToken(null);
+  window.location.reload(); // Reload page to reflect logout state
+
   throw new Error(response.data?.message || "Unexpected response from server");
 };
+
 
 // ✅ Sign Up
 export const signup = createAsyncThunk("auth/signup", async (userData, { rejectWithValue }) => {

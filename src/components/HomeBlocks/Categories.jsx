@@ -20,8 +20,6 @@ const CategoryCarousel = () => {
   const [isScrollable, setIsScrollable] = useState(false);
   
   const carouselRef = useRef(null);
-  const firstCategoryRef = useRef(null); // Reference for first category
-
   const isFetched = useRef(false);
   const dispatch = useDispatch();
   const { menu, selectedCategoryId, status } = useSelector((state) => state.menu);// ✅ Load API & Image URLs from Vite environment variables
@@ -102,21 +100,6 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
     dispatch(setSelectedCategoryId(id)); // ✅ Update Redux state with selected category
     dispatch(fetchMenuItems()); // ✅ Fetch menu items for the new category
   };
-  useEffect(() => {
-    if (menu.length > 0 && carouselRef.current) {
-      // Ensure the carousel starts at the beginning
-      carouselRef.current.scrollLeft = 0;
-  
-      setTimeout(() => {
-        requestAnimationFrame(() => {
-          if (firstCategoryRef.current) {
-            firstCategoryRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
-          }
-        });
-      }, 300); // Small delay to ensure proper rendering
-    }
-  }, [menu]);
-  
 
   return (
     <div
@@ -141,7 +124,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
         transition={{ duration: 0.5, ease: "easeOut" }}
         className={`flex ${
           isScrollable ? "justify-start" : "justify-center"
-        } gap-4 pb-4 overflow-x-auto scroll-smooth w-full px-2 md:px-8`}
+        } gap-4 pb-4 overflow-hidden w-full px-2 md:px-8`}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -177,11 +160,9 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
   // ✅ Render only active categories
   menu
     .filter((category) => category.status === "active")
-    .map((category,index) => (
+    .map((category) => (
       <motion.div
         key={category.id}
-        ref={index === 0 ? firstCategoryRef : null}  // Assign ref to the first category
-
         onClick={() => handleCategoryClick(category.id)}
         className="flex flex-col items-center p-1 justify-center w-20 sm:w-32 lg:w-32 cursor-pointer rounded-full"
         whileHover={{ scale: 1.05 }}
