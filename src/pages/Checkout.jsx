@@ -416,10 +416,10 @@ console.log("displayedCartItems", displayedCartItems);
                   </h4>
                   <div className="text-xs text-gray-500 space-y-1">
                     {/* Add-on Items */}
-                    {item.add_on_items?.length > 0 && (
+                    {(item.add_on_items || item.addons)?.length > 0 && (
                       <p className="text-xs text-gray-500">
                         <span className="font-semibold text-gray-700">Add-ons:</span>{" "}
-                        {item.add_on_items.map((addOn) => `${addOn.name} (£${addOn.price})`).join(", ")}
+                        {(item.add_on_items || item.addons).map((addOn) => `${addOn.name || addOn.addon_name} (${formatPrice(addOn.addon_price) || formatPrice(addOn.price)})`).join(", ")}
                       </p>
                     )}
 

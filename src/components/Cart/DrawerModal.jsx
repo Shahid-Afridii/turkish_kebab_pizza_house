@@ -217,32 +217,83 @@ const handleAddToCart = () => {
       : [],
   };
 
-  if (!isAuthenticated) {
-    // ✅ Store cart data in localStorage for unauthenticated users
-    const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
-    const updatedCart = [
-      ...existingCart,
-      { ...cartData, price: selectedItem.price,
-        image: selectedItem.image || "", // ✅ Store image only in localStorage
-      }, 
-    ];
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+ if (!isAuthenticated) {
+  // ✅ Retrieve existing cart from localStorage
+  const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
 
-    // ✅ Trigger cart update event
-    window.dispatchEvent(new Event("storage")); // 🔥 Forces re-render of BottomCartBar
+  // ✅ Check if the item already exists in the cart (matching menu_item_id & add-ons)
+  const isDuplicate = existingCart.some((item) => 
+    item.menu_item_id === selectedItem.id &&
+    JSON.stringify(item.addons) === JSON.stringify(Object.keys(selectedAddOns).flatMap((addOnId) =>
+      selectedAddOns[addOnId].map((addonItemId) => ({
+        addon_id: parseInt(addOnId),
+        addon_item_id: parseInt(addonItemId),
+      }))
+    ))
+  );
 
-    // ✅ Update Redux state (without calling API)
-    dispatch({
-      type: "cart/addItem",
-      payload: cartData,
+  if (isDuplicate) {
+    // 🚨 Show error popup if duplicate entry is detected
+    openPopup({
+      type: "error",
+      title: "Duplicate Item",
+      subText: "This item is already in your cart.",
+      onClose: closePopup,
+      autoClose: 2,
+      showConfirmButton: false,
+      showCancelButton: false,
     });
-
-    // ✅ Open bottom cart bar
-    dispatch(setBottomBarVisible(true));
-    onClose();
-    console.log("🛒 Added to local storage (Guest Cart):", cartData);
     return;
   }
+
+  // ✅ If it's NOT a duplicate, add it to the cart
+  const newItem = {
+    ...cartData,
+    price: selectedItem.price,
+    name: selectedItem.name || "",
+    image: selectedItem.image || "", // ✅ Store image
+    addons: Object.keys(selectedAddOns).flatMap((addOnId) =>
+      selectedAddOns[addOnId].map((addonItemId) => {
+        // ✅ Find the add-on category
+        const addOnCategory = selectedItem.add_ons.find(
+          (category) => category.id === parseInt(addOnId)
+        );
+
+        // ✅ Find the selected add-on item
+        const addOnItem = addOnCategory?.items.find(
+          (item) => item.id === parseInt(addonItemId)
+        );
+
+        return {
+          addon_id: parseInt(addOnId),
+          addon_item_id: parseInt(addonItemId),
+          addon_name: addOnItem?.name || "Unknown Add-on", // ✅ Store add-on name
+          addon_price: addOnItem?.price || "0.00", // ✅ Store add-on price
+        };
+      })
+    ),
+  };
+
+  const updatedCart = [...existingCart, newItem];
+
+  localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+
+  // ✅ Trigger cart update event
+  window.dispatchEvent(new Event("storage")); // 🔥 Forces re-render of BottomCartBar
+
+  // ✅ Update Redux state (without calling API)
+  dispatch({
+    type: "cart/addItem",
+    payload: cartData,
+  });
+
+  // ✅ Open bottom cart bar
+  dispatch(setBottomBarVisible(true));
+  onClose();
+  console.log("🛒 Added to local storage (Guest Cart):", updatedCart);
+  return;
+}
+
 
   // ✅ If user is authenticated, send cart data to API
   setIsAddingToCart(true);
