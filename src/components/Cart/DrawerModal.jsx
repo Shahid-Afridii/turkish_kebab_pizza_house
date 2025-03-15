@@ -222,7 +222,9 @@ const handleAddToCart = () => {
     const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
     const updatedCart = [
       ...existingCart,
-      { ...cartData, price: selectedItem.price }, // ✅ Store price only in localStorage
+      { ...cartData, price: selectedItem.price,
+        image: selectedItem.image || "", // ✅ Store image only in localStorage
+      }, 
     ];
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
 
