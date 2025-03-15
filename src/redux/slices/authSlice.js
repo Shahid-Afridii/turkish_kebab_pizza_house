@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api, { setAuthToken } from "../../services/api";
-import { addToCart } from "../slices/cartSlice"; // Import the addToCart action
 
 
 const validateResponse = (response) => {
@@ -46,15 +45,7 @@ export const signupVerify = createAsyncThunk("auth/signupVerify", async (otpData
       setAuthToken(data.data);
   
     }
-// ✅ Retrieve stored cart data after login verification
-const localCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-if (localCartItems.length > 0) {
-  console.log("🛒 Syncing local cart items to API...");
-  for (const item of localCartItems) {
-    await dispatch(addToCart(item)).unwrap();
-  }
-  localStorage.removeItem("cartItems"); // ✅ Clear local storage after syncing
-}
+
     return data;
   } catch (error) {
     localStorage.removeItem("authToken");
@@ -87,15 +78,6 @@ export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (otpData, { di
       localStorage.setItem("authToken", data.data);
       setAuthToken(data.data);
     }
-    // ✅ Retrieve stored cart data after login verification
- const localCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
- if (localCartItems.length > 0) {
-   console.log("🛒 Syncing local cart items to API...");
-   for (const item of localCartItems) {
-     await dispatch(addToCart(item)).unwrap();
-   }
-   localStorage.removeItem("cartItems"); // ✅ Clear local storage after syncing
- }
 
     return data;
   } catch (error) {
@@ -165,17 +147,7 @@ const authSlice = createSlice({
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.isLoading = false;
         state.token = action.payload.data;
-        state.isAuthenticated = !!action.payload.data;
-         // ✅ Retrieve stored cart data after login verification
-         const localCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-      
-         if (localCartItems.length > 0) {
-           console.log("🛒 Syncing local cart items to API...");
-           for (const item of localCartItems) {
-             dispatch(addToCart(item)).unwrap();
-           }
-           localStorage.removeItem("cartItems"); // ✅ Clear local storage after syncing
-         } 
+        state.isAuthenticated = !!action.payload.data; 
       })
       .addCase(verifyOtp.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 
