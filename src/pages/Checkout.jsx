@@ -35,6 +35,14 @@ const Checkout = () => {
   const cartFetched = useSelector((state) => state.cart.cartFetched); // ✅ Track API call status
   const taxAmount = useSelector((state) => state.cart.taxAmount);
   const taxableAmount = useSelector((state) => state.cart.taxableAmount);
+
+  // ✅ Fetch from LocalStorage (For Guests)
+  const [localCartItems, setLocalCartItems] = useState([]);
+  const [localTotalAmount, setLocalTotalAmount] = useState(0);
+  const [localTaxAmount, setLocalTaxAmount] = useState(0);
+  const [localTaxableAmount, setLocalTaxableAmount] = useState(0);
+
+
    // ✅ Dynamic state for order
    const [selectedMode, setSelectedMode] = useState("delivery"); // Default to delivery
    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(""); // Store payment mode
@@ -54,13 +62,44 @@ const Checkout = () => {
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [activeAccordion, setActiveAccordion] = useState(1);
   const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
-
+console.log("isAuthenticated", isAuthenticated);
   const toggleAccordion = (index) => {
     setActiveAccordion(activeAccordion === index ? null : index);
   };
 console.log("selectedAddress", selectedAddressId);
 console.log("First Address ID:", selectedAddressId);
 
+// ✅ Fetch Cart: API for Authenticated | LocalStorage for Guests
+const loadLocalCart = () => {
+  if (!isAuthenticated) {
+    const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    setLocalCartItems(storedCart);
+
+    // ✅ Calculate totals dynamically
+    const total = storedCart.reduce((sum, item) => sum + (item.quantity * (item.price || 0)), 0);
+    const tax = total * 0.05; // Example tax calculation (5%)
+    const taxable = total - tax;
+
+    setLocalTotalAmount(total);
+    setLocalTaxAmount(tax);
+    setLocalTaxableAmount(taxable);
+  }
+};
+
+useEffect(() => {
+  if (isAuthenticated) {
+    if (!cartFetched) {
+      dispatch(getCart());
+    }
+  } else {
+    loadLocalCart();
+  }
+
+  window.addEventListener("storage", loadLocalCart);
+  return () => {
+    window.removeEventListener("storage", loadLocalCart);
+  };
+}, [isAuthenticated, dispatch, cartFetched]);
   const openPopup = (config) => {
     setPopupConfig(config);
     setPopupOpen(true);
@@ -103,21 +142,28 @@ useEffect(() => {
     const handlePaymentCompletion = () => {
       setPaymentCompleted(true);
     };
-    useEffect(() => {
-      if (!isAuthenticated) {
-        openPopup({
-          type: "error",
-          title: "Login Required",
-          subText: "You need to log in to proceed to checkout.",
-          onClose: () => {
-            setTimeout(() => setIsLoginModalOpen(true), 800); // ✅ Open login modal after redirect
-            navigate("/"); // ✅ Redirect to home page
-          },          autoClose: 2,
-          showConfirmButton: false,
-          showCancelButton: false,
-        });
-      }
-    }, [isAuthenticated]);
+  
+// ✅ Function to remove item from localStorage for guests
+const handleRemoveLocalItem = (itemId) => {
+  
+    const updatedCart = localCartItems.filter((item) => item.menu_item_id !== itemId);
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    loadLocalCart();
+  
+};
+
+// ✅ Function to update quantity in localStorage for guests
+const handleUpdateLocalQuantity = (itemId, newQuantity) => {
+  if (!isAuthenticated) {
+    const updatedCart = localCartItems.map((item) =>
+      item.menu_item_id === itemId ? { ...item, quantity: newQuantity } : item
+    );
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    loadLocalCart();
+  } else {
+    dispatch(updateQuantity({ menu_item_id: itemId, quantity: newQuantity }));
+  }
+};
 
       // ✅ Open Confirmation Popup
  // ✅ Open Confirmation Popup
@@ -234,7 +280,11 @@ const handleRemoveItem = async (item) => {
       setPopupOpen(true);
     };
   
-   
+    const displayedCartItems = isAuthenticated ? cartItems : localCartItems;
+    const displayedTotalAmount = isAuthenticated ? totalAmount : localTotalAmount;
+    const displayedTaxAmount = isAuthenticated ? taxAmount : localTaxAmount;
+    const displayedTaxableAmount = isAuthenticated ? taxableAmount : localTaxableAmount;
+console.log("displayedCartItems", displayedCartItems);
   return (
     <div className="container mx-auto p-2 lg:p-0 bg-gray-50 min-h-screen">
       <h1 className="text-md md:text-xl font-bold mb-8 text-center text-gray-800">
@@ -318,7 +368,7 @@ const handleRemoveItem = async (item) => {
         <div>
         <div className="bg-white rounded-lg shadow p-4 flex flex-col">
   <h2 className="text-sm md:text-lg font-semibold mb-4">Items in your cart</h2>
-  {cartItems.length === 0 ? (
+  {displayedCartItems?.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center py-10">
           <p className="text-gray-500 mb-4">No items in cart</p>
           <button
@@ -331,7 +381,7 @@ const handleRemoveItem = async (item) => {
       ) : (
         <div className="flex-grow overflow-y-auto pr-2" style={{ maxHeight: "400px" }}>
           <ul className="space-y-4">
-            {cartItems.map((item) => (
+            {displayedCartItems.map((item) => (
               <li key={item.id} className="flex items-center justify-between border-b pb-4 relative">
                 {/* Product Image */}
                 <img
@@ -351,15 +401,22 @@ const handleRemoveItem = async (item) => {
                   <h4 className="font-semibold text-xs md:text-sm">
                     {formatPrice(item.price)}
                     <button
-                      onClick={() => openDeletePopup(item)}
-                      className="ml-2 mb-2 p-2 text-red-500 hover:text-red-700"
-                    >
-                      <FaTrash size={12} />
-                    </button>
+  onClick={() => {
+    console.log("isAuthenticated", isAuthenticated);
+    isAuthenticated == false ? handleRemoveLocalItem(item.menu_item_id) : openDeletePopup(item);
+    window.dispatchEvent(new Event("storage")); // 🔥 Forces re-render of BottomCartBar
+
+    // !isAuthenticated ? openDeletePopup(item) : handleRemoveLocalItem(item.menu_item_id);
+  }}
+  className="ml-2 mb-2 p-2 text-red-500 hover:text-red-700"
+>
+  <FaTrash size={12} />
+</button>
+
                   </h4>
                   <div className="text-xs text-gray-500 space-y-1">
                     {/* Add-on Items */}
-                    {item.add_on_items.length > 0 && (
+                    {item.add_on_items?.length > 0 && (
                       <p className="text-xs text-gray-500">
                         <span className="font-semibold text-gray-700">Add-ons:</span>{" "}
                         {item.add_on_items.map((addOn) => `${addOn.name} (£${addOn.price})`).join(", ")}
@@ -378,20 +435,16 @@ const handleRemoveItem = async (item) => {
                 {/* Quantity Buttons */}
                 <div className="flex items-center space-x-2">
                   <button
-                    onClick={() => {
-                      if (item.qty > 1) {
-                        dispatch(updateQuantity({ menu_item_id: item.menu_item_id, quantity: item.qty - 1 }));
-                      }
-                    }}
+                   onClick={() => handleUpdateLocalQuantity(item.menu_item_id, item.quantity - 1)}
                     className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
                   >
                     <FaMinus size={10} />
                   </button>
                   <span className="px-2 py-1 text-xs md:text-sm font-medium text-gray-800 bg-gray-100 rounded-md border border-gray-300">
-                    {item.qty}
+                    {item.qty || item.quantity}
                   </span>
                   <button
-                    onClick={() => dispatch(updateQuantity({ menu_item_id: item.menu_item_id, quantity: item.qty + 1 }))}
+                   onClick={() => handleUpdateLocalQuantity(item.menu_item_id, item.quantity + 1)}
                     className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
                   >
                     <FaPlus size={10} />
@@ -408,15 +461,15 @@ const handleRemoveItem = async (item) => {
     <h2 className="text-sm md:text-lg font-semibold mb-4">Order Summary</h2>
     <div className="flex justify-between text-xs md:text-sm mb-2">
       <span>Item Total</span>
-      <span>{formatPrice(taxableAmount) || 0}</span>
+      <span>{formatPrice(displayedTaxableAmount) || 0}</span>
       </div>
     <div className="flex justify-between text-xs md:text-sm mb-4">
       <span>Service Fee</span>
-      <span>{formatPrice(taxAmount) || 0} </span>
+      <span>{formatPrice(displayedTaxAmount) || 0} </span>
     </div>
     <div className="flex justify-between text-sm md:text-lg font-bold">
       <span>TO PAY</span>
-      <span>{formatPrice(totalAmount)}</span>
+      <span>{formatPrice(displayedTotalAmount)}</span>
       </div>
   </div>
 </div>

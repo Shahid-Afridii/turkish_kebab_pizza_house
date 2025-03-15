@@ -26,6 +26,8 @@ const Navbar = () => {
 
   const location = useLocation();
   const [isLoginDrawerOpen, setIsLoginDrawerOpen] = useState(false);
+  const [localCartCount, setLocalCartCount] = useState(0); // ✅ Local cart count state
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -64,6 +66,25 @@ useEffect(() => {
     dispatch(getProfile()); // ✅ Fetch profile if authenticated but no user data
   }
 }, [isAuthenticated, user, dispatch]);
+
+  // ✅ Update localCartCount when localStorage changes
+  const updateLocalCartCount = () => {
+    if (!isAuthenticated) {
+      const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+      setLocalCartCount(storedCart.length);
+    }
+  };
+
+  useEffect(() => {
+    updateLocalCartCount(); // ✅ Load local cart initially
+
+    // ✅ Listen for cart updates in localStorage
+    window.addEventListener("storage", updateLocalCartCount);
+
+    return () => {
+      window.removeEventListener("storage", updateLocalCartCount);
+    };
+  }, [isAuthenticated]);
   return (
     <header className="bg-gray-50 relative z-[9999]">
       <div className="container mx-auto flex justify-between items-center px-2 py-4 lg:px-6">
@@ -115,10 +136,10 @@ useEffect(() => {
     >
       <img src="assets/cart.png" alt="Cart" className="w-12 h-12" />
     </Link>
-    {cartItems.length > 0 && (
+    {(isAuthenticated ? cartItems.length : localCartCount) > 0&& (
       <span className="absolute -bottom-2 -right-2 bg-primary text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
-        {cartItems.length}
-      </span>
+                {isAuthenticated ? cartItems.length : localCartCount}
+                </span>
     )}
   </div>
 
@@ -154,10 +175,10 @@ useEffect(() => {
     >
       <img src="assets/cart.png" alt="Cart" className="w-12 h-12" />
     </Link>
-    {cartItems.length > 0 && (
+    {(isAuthenticated ? cartItems.length : localCartCount) > 0 && (
       <span className="absolute -bottom-2 -right-2 bg-primary text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
-        {cartItems.length}
-      </span>
+                {isAuthenticated ? cartItems.length : localCartCount}
+                </span>
     )}
   </div>
           {/* Hamburger Menu */}

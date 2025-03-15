@@ -46,15 +46,16 @@ export const signupVerify = createAsyncThunk("auth/signupVerify", async (otpData
       setAuthToken(data.data);
   
     }
-// ✅ Retrieve stored cart data after login verification
-const localCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-if (localCartItems.length > 0) {
-  console.log("🛒 Syncing local cart items to API...");
-  for (const item of localCartItems) {
-    await dispatch(addToCart(item)).unwrap();
-  }
-  localStorage.removeItem("cartItems"); // ✅ Clear local storage after syncing
-}
+
+    // ✅ Retrieve stored cart data after signup verification
+    const localCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    if (localCartItems.length > 0) {
+      console.log("🛒 Syncing local cart items to API...");
+      for (const item of localCartItems) {
+        await dispatch(addToCart(item)).unwrap();
+      }
+      localStorage.removeItem("cartItems"); // ✅ Clear local storage after syncing
+    }
     return data;
   } catch (error) {
     localStorage.removeItem("authToken");
@@ -87,7 +88,7 @@ export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (otpData, { di
       localStorage.setItem("authToken", data.data);
       setAuthToken(data.data);
     }
-    // ✅ Retrieve stored cart data after login verification
+ // ✅ Retrieve stored cart data after login verification
  const localCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
  if (localCartItems.length > 0) {
    console.log("🛒 Syncing local cart items to API...");
@@ -96,7 +97,6 @@ export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (otpData, { di
    }
    localStorage.removeItem("cartItems"); // ✅ Clear local storage after syncing
  }
-
     return data;
   } catch (error) {
     localStorage.removeItem("authToken");
@@ -150,10 +150,21 @@ const authSlice = createSlice({
       .addCase(signup.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 
       .addCase(signupVerify.pending, (state) => { state.isLoading = true; })
-      .addCase(signupVerify.fulfilled, (state, action) => {
+      .addCase(signupVerify.fulfilled, async (state, action) => {
         state.isLoading = false;
         state.token = action.payload.data;
-        state.isAuthenticated = !!action.payload.data; 
+        state.isAuthenticated = !!action.payload.data;
+      
+        // ✅ Retrieve stored cart data after signup verification
+        const localCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      
+        if (localCartItems.length > 0) {
+          console.log("🛒 Syncing local cart items to API...");
+          for (const item of localCartItems) {
+            await dispatch(addToCart(item)).unwrap();
+          }
+          localStorage.removeItem("cartItems"); // ✅ Clear local storage after syncing
+        }
       })
       .addCase(signupVerify.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 
@@ -162,20 +173,21 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 
       .addCase(verifyOtp.pending, (state) => { state.isLoading = true; })
-      .addCase(verifyOtp.fulfilled, (state, action) => {
+      .addCase(verifyOtp.fulfilled, async (state, action) => {
         state.isLoading = false;
         state.token = action.payload.data;
         state.isAuthenticated = !!action.payload.data;
-         // ✅ Retrieve stored cart data after login verification
-         const localCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
       
-         if (localCartItems.length > 0) {
-           console.log("🛒 Syncing local cart items to API...");
-           for (const item of localCartItems) {
-             dispatch(addToCart(item)).unwrap();
-           }
-           localStorage.removeItem("cartItems"); // ✅ Clear local storage after syncing
-         } 
+        // ✅ Retrieve stored cart data after login verification
+        const localCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      
+        if (localCartItems.length > 0) {
+          console.log("🛒 Syncing local cart items to API...");
+          for (const item of localCartItems) {
+            await dispatch(addToCart(item)).unwrap();
+          }
+          localStorage.removeItem("cartItems"); // ✅ Clear local storage after syncing
+        }
       })
       .addCase(verifyOtp.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 

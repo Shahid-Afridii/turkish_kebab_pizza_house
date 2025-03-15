@@ -2,7 +2,7 @@ import React, { useState,useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaPlus, FaMinus, FaTimes } from "react-icons/fa";
 import { useDispatch,useSelector } from "react-redux";
-import { addToCart,setBottomBarVisible } from "../../redux/slices/cartSlice";
+import { addToCart } from "../../redux/slices/cartSlice";
 import { formatPrice } from "../../utils/formatPrice";
 import CustomPopup from "../../components/CustomPopup";
 import withErrorBoundary from "../../components/ErrorBoundary/withErrorBoundary"; // Import HOC
@@ -115,7 +115,7 @@ const [validationErrors, setValidationErrors] = useState({});
 const [isLoginModalOpen, setLoginModalOpen] = useState(false);
 
 const [instructions, setInstructions] = useState(existingItem?.instructions || "");
-
+const [showCartBar, setShowCartBar] = useState(false);
 // State for custom popup
  const [isPopupOpen, setPopupOpen] = useState(false);
  const [popupConfig, setPopupConfig] = useState({});
@@ -220,14 +220,8 @@ const handleAddToCart = () => {
   if (!isAuthenticated) {
     // ✅ Store cart data in localStorage for unauthenticated users
     const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
-    const updatedCart = [
-      ...existingCart,
-      { ...cartData, price: selectedItem.price }, // ✅ Store price only in localStorage
-    ];
+    const updatedCart = [...existingCart, cartData];
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-
-    // ✅ Trigger cart update event
-    window.dispatchEvent(new Event("storage")); // 🔥 Forces re-render of BottomCartBar
 
     // ✅ Update Redux state (without calling API)
     dispatch({
@@ -236,8 +230,8 @@ const handleAddToCart = () => {
     });
 
     // ✅ Open bottom cart bar
-    dispatch(setBottomBarVisible(true));
-    onClose();
+    setShowCartBar(true);
+    
     console.log("🛒 Added to local storage (Guest Cart):", cartData);
     return;
   }
@@ -248,10 +242,7 @@ const handleAddToCart = () => {
     .unwrap()
     .then(() => {
       console.log("✅ Add to Cart Success");
-
-      // ✅ Open bottom cart bar
-      dispatch(setBottomBarVisible(true));
-
+      setShowCartBar(true);
       onClose();
     })
     .catch((error) => {
@@ -270,7 +261,6 @@ const handleAddToCart = () => {
       setIsAddingToCart(false);
     });
 };
-
 
 
 

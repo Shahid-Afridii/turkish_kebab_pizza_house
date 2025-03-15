@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
 import { Link,useLocation } from "react-router-dom";
 import { getCart,setBottomBarVisible } from "../../redux/slices/cartSlice"; // ✅ Import getCart
+import { formatPrice } from "../../utils/formatPrice";
 
 const waveAnimation = {
   hidden: {
@@ -38,22 +39,55 @@ const waveAnimation = {
 const BottomCartBar = () => {
   const dispatch = useDispatch();
   const location = useLocation(); // Get current route
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
   const cartItems = useSelector((state) => state.cart.items);
   const isLoading = useSelector((state) => state.cart.isLoading);
   const totalAmount = useSelector((state) => state.cart.totalAmount) || 0; // ✅ Get total from API response
   const isVisible = useSelector((state) => state.cart.isBottomBarVisible); // ✅ Get visibility from Redux
-
+  const [localCartItems, setLocalCartItems] = useState([]);
+  const [localTotalAmount, setLocalTotalAmount] = useState(0);
+ // ✅ Function to load local cart
+ const loadLocalCart = () => {
+  const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+  setLocalCartItems(storedCart);
+  const total = storedCart.reduce((sum, item) => sum + (item.quantity * (item.price || 0)), 0);
+  setLocalTotalAmount(total);
+};
 
 console.log("totalAmount bar", totalAmount);
-  useEffect(() => {
-    dispatch(getCart()); // ✅ Fetch cart items when component mounts
-  }, []);
+
+useEffect(() => {
+  if (isAuthenticated) {
+    dispatch(getCart()); // ✅ Fetch cart from API if logged in
+  } else {
+    loadLocalCart();
+  }
+
+  // ✅ Listen for localStorage changes
+  const handleStorageChange = () => loadLocalCart();
+  window.addEventListener("storage", handleStorageChange);
+  
+  return () => {
+    window.removeEventListener("storage", handleStorageChange);
+  };
+}, [isAuthenticated, dispatch]);
+
+// ✅ Update state whenever a new item is added
+useEffect(() => {
+  if (!isAuthenticated) {
+    loadLocalCart();
+  }
+}, []);
+
+
 // ✅ Prevent bar from closing when route changes
 // Only triggers when the route changes
 
-  console.log("cartItems bar", cartItems);
+  console.log("cartItems bar", localCartItems);
   
-
+  const displayedCartItems = isAuthenticated ? cartItems : localCartItems;
+  const displayedTotalAmount = isAuthenticated ? totalAmount : localTotalAmount;
   const discountThreshold = 16; // Minimum total for discount
   const amountNeeded = Math.max(0, discountThreshold - totalAmount);
 
@@ -86,7 +120,7 @@ console.log("totalAmount bar", totalAmount);
       <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5">
         {/* Items Count Button */}
         <Link  to="/checkout" className="flex font-Montserrat_Alternates items-center justify-center bg-green-600 hover:bg-green-500 text-white px-4 py-2 sm:px-6 sm:py-2 lg:px-8 lg:py-3 rounded-lg font-bold text-xs sm:text-sm lg:text-lg">
-        {cartItems.length} Item{cartItems.length !== 1 ? "s" : ""}
+        {displayedCartItems.length} Item{displayedCartItems.length !== 1 ? "s" : ""}
         </Link>
 
         {/* Cart Details */}
@@ -103,7 +137,7 @@ console.log("totalAmount bar", totalAmount);
           </Link>
           <div className="h-4 sm:h-6 lg:h-8 w-[2px] bg-white opacity-70"></div>
           <span className="font-bold text-sm sm:text-lg lg:text-xl">
-          £{totalAmount.toFixed(2)}
+          {formatPrice(displayedTotalAmount)}
           </span>
         </div>
 
