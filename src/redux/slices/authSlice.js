@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api, { setAuthToken } from "../../services/api";
 
+
 const validateResponse = (response) => {
   if (response.status === 200 || response.status === 201) {
     return response.data;
@@ -8,17 +9,23 @@ const validateResponse = (response) => {
 
   localStorage.removeItem("authToken");
   setAuthToken(null);
+
+  if (dispatch) {
+    dispatch(logout()); // ✅ Now, `logout` is dispatched properly
+  }
+
   window.location.reload(); // Reload page to reflect logout state
 
   throw new Error(response.data?.message || "Unexpected response from server");
 };
 
 
+
 // ✅ Sign Up
-export const signup = createAsyncThunk("auth/signup", async (userData, { rejectWithValue }) => {
+export const signup = createAsyncThunk("auth/signup", async (userData, { dispatch,rejectWithValue }) => {
   try {
     const response = await api.post("/client/user/signup", userData);
-    return validateResponse(response);
+    return validateResponse(response,dispatch);
   } catch (error) {
     localStorage.removeItem("authToken");
 
@@ -28,10 +35,10 @@ export const signup = createAsyncThunk("auth/signup", async (userData, { rejectW
 });
 
 // ✅ Sign Up OTP Verification (Stores Token)
-export const signupVerify = createAsyncThunk("auth/signupVerify", async (otpData, { rejectWithValue }) => {
+export const signupVerify = createAsyncThunk("auth/signupVerify", async (otpData, { dispatch,rejectWithValue }) => {
   try {
     const response = await api.post("/client/user/signup_verify", otpData);
-    const data = validateResponse(response);
+    const data = validateResponse(response,dispatch);
 
     if (data.data) {
       localStorage.setItem("authToken", data.data);
@@ -49,10 +56,10 @@ export const signupVerify = createAsyncThunk("auth/signupVerify", async (otpData
 });
 
 // ✅ Login (Generate OTP)
-export const login = createAsyncThunk("auth/login", async (loginData, { rejectWithValue }) => {
+export const login = createAsyncThunk("auth/login", async (loginData, { dispatch,rejectWithValue }) => {
   try {
     const response = await api.post("/client/user/login", loginData);
-    return validateResponse(response);
+    return validateResponse(response,dispatch);
   } catch (error) {
     localStorage.removeItem("authToken");
 
@@ -62,10 +69,10 @@ export const login = createAsyncThunk("auth/login", async (loginData, { rejectWi
 });
 
 // ✅ Verify OTP for Login (Stores Token)
-export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (otpData, { rejectWithValue }) => {
+export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (otpData, { dispatch,rejectWithValue }) => {
   try {
     const response = await api.post("/client/user/verify_otp", otpData);
-    const data = validateResponse(response);
+    const data = validateResponse(response,dispatch);
 
     if (data.data) {
       localStorage.setItem("authToken", data.data);
@@ -83,10 +90,10 @@ export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (otpData, { re
 });
 
 // ✅ Fetch User Profile
-export const getProfile = createAsyncThunk("auth/getProfile", async (_, { rejectWithValue }) => {
+export const getProfile = createAsyncThunk("auth/getProfile", async (_, { dispatch,rejectWithValue }) => {
   try {
     const response = await api.get("/client/user/get_profile");
-    const data = validateResponse(response);
+    const data = validateResponse(response,dispatch);
     return data.data;
   } catch (error) {
     localStorage.removeItem("authToken");
@@ -114,7 +121,7 @@ const authSlice = createSlice({
     token: localStorage.getItem("authToken") || null,
     isLoading: false,
     error: null,
-    isAuthenticated: !!localStorage.getItem("authToken"), // Check if authToken exists
+    isAuthenticated: !!localStorage.getItem("authToken"), 
   },
   reducers: {
     logout: (state) => {
@@ -136,7 +143,7 @@ const authSlice = createSlice({
       .addCase(signupVerify.fulfilled, (state, action) => {
         state.isLoading = false;
         state.token = action.payload.data;
-        state.isAuthenticated = true; // ✅ Ensure isAuthenticated is set to true
+        state.isAuthenticated = !!action.payload.data; 
       })
       .addCase(signupVerify.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 
@@ -148,14 +155,17 @@ const authSlice = createSlice({
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.isLoading = false;
         state.token = action.payload.data;
-        state.isAuthenticated = true; // ✅ Ensure isAuthenticated is set to true
+        state.isAuthenticated = !!action.payload.data; 
       })
       .addCase(verifyOtp.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })
 
       .addCase(getProfile.pending, (state) => { state.isLoading = true; })
       .addCase(getProfile.fulfilled, (state, action) => { state.isLoading = false; state.user = action.payload; })
-      .addCase(getProfile.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; });
-  },
+      .addCase(getProfile.rejected, (state, action) => { 
+        state.isLoading = false;
+        state.error = action.payload;
+        state.isAuthenticated = false; 
+      });  },
 });
 
 // ✅ Export Actions & Reducer
