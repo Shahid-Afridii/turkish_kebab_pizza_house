@@ -11,7 +11,7 @@ const validateResponse = (response) => {
   setAuthToken(null);
 
   if (dispatch) {
-    dispatch(logout()); // ✅ Now, `logout` is dispatched properly
+    dispatch(logout());
   }
 
   window.location.reload(); // Reload page to reflect logout state
@@ -43,7 +43,7 @@ export const signupVerify = createAsyncThunk("auth/signupVerify", async (otpData
     if (data.data) {
       localStorage.setItem("authToken", data.data);
       setAuthToken(data.data);
-      startAutoLogout(); // Start auto-logout timer
+  
     }
 
     return data;
@@ -77,7 +77,6 @@ export const verifyOtp = createAsyncThunk("auth/verifyOtp", async (otpData, { di
     if (data.data) {
       localStorage.setItem("authToken", data.data);
       setAuthToken(data.data);
-      startAutoLogout(); // Start auto-logout timer
     }
 
     return data;
@@ -102,16 +101,9 @@ export const getProfile = createAsyncThunk("auth/getProfile", async (_, { dispat
   }
 });
 
-// ✅ Auto Logout Timer Function
-const AUTO_LOGOUT_TIME = 24 * 60 * 60 * 1000; // 24 hours (1 day)
 
-const startAutoLogout = () => {
-  setTimeout(() => {
-    localStorage.removeItem("authToken");
-    setAuthToken(null);
-    window.location.reload(); // Reload page to reflect logout state
-  }, AUTO_LOGOUT_TIME);
-};
+
+
 
 // ✅ Authentication Slice
 const authSlice = createSlice({
