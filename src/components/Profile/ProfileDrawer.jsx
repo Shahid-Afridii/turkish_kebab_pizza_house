@@ -5,7 +5,7 @@ import { FiUser,FiShoppingBag, FiMail, FiPhone, FiMapPin,FiMoreVertical,FiEdit,F
 import { logout } from "../../redux/slices/authSlice";
 import { clearCart } from "../../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { getAddresses, deleteAddress,addAddress } from "../../redux/slices/userAddressSlice";
+import { getAddresses, deleteAddress,addAddress,setPrimaryAddress,updateAddress } from "../../redux/slices/userAddressSlice";
 import CustomPopup from "../../components/CustomPopup";
 
 const drawerVariants = {
@@ -27,6 +27,8 @@ const drawerVariants = {
 const ProfileDrawer = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("orders");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
   const [newAddress, setNewAddress] = useState({
     name: "",
     address: "",
@@ -38,6 +40,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
    // ✅ State for validation errors
    const [errors, setErrors] = useState({});
    const [selectedAddressId, setSelectedAddressId] = useState(null);
+   const addressTitleRef = useRef(null);
 
   // State for custom popup
    const [isPopupOpen, setPopupOpen] = useState(false);
@@ -70,6 +73,39 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
   //   { id: 3, title: "Friends Home", address: "3321 Brookvale Ave, BT15 3AR" },
   // ];
   const { addresses, isLoading } = useSelector((state) => state.userAddress);
+
+   // ✅ Scroll to the form when updating
+  // ✅ Scroll to the form when updating
+const scrollToForm = () => {
+  setTimeout(() => {
+    if (addressFormRef.current) {
+      addressFormRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, 300); // Added slight delay to ensure form is rendered
+};
+  // ✅ Handle Editing an Address
+  const handleEditAddress = (address) => {
+    setNewAddress({
+      name: address.name,
+      address: address.address,
+      city: address.city,
+      country: address.country,
+      pincode: address.pincode,
+      phone: address.phone,
+    });
+  
+    setSelectedAddressId(address.address_id);
+    setIsEditing(true);
+    setShowAddForm(true);
+  
+   // Step 3: Scroll to h3 tag
+  setTimeout(() => {
+    addressTitleRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 100);
+  };
    // ✅ Validation Function
    const validateForm = () => {
     let newErrors = {};
@@ -124,56 +160,91 @@ const handleChange = (e) => {
 
 
    // ✅ Handle Submit with Validation
+   // ✅ Handle Form Submit (Update or Add)
    const handleSubmit = (e) => {
     e.preventDefault();
-
+    
     if (!validateForm()) {
       openPopup({
         type: "error",
         title: "Error",
         subText: "Please correct the errors before submitting.",
-        onClose: closePopup,
         autoClose: 2,
         showConfirmButton: false,
-        showCancelButton: false,
       });
       return;
     }
 
-    dispatch(addAddress(newAddress))
-      .unwrap()
-      .then(() => {
-        openPopup({
-          type: "success",
-          title: "Success",
-          subText: "Address added successfully!",
-          onClose: closePopup,
-          autoClose: 2,
-          showConfirmButton: false,
-          showCancelButton: false,
+    if (isEditing) {
+      // ✅ Updating existing address
+      dispatch(updateAddress({ ...newAddress, address_id: selectedAddressId }))
+        .unwrap()
+        .then(() => {
+          openPopup({
+            type: "success",
+            title: "Success",
+            subText: "Address updated successfully!",
+            autoClose: 2,
+            showConfirmButton: false,
+            showCancelButton: false,
+          });
+          setShowAddForm(false);
+          setIsEditing(false);
+          setNewAddress({
+            name: "",
+            address: "",
+            city: "",
+            country: "",
+            pincode: "",
+            phone: "",
+          });
+        })
+        .catch((error) => {
+          openPopup({
+            type: "error",
+            title: "Error",
+            subText: error || "Failed to update address.",
+            autoClose: 2,
+            showConfirmButton: false,
+            showCancelButton: false,
+          });
         });
-        setNewAddress({
-          name: "",
-          address: "",
-          city: "",
-          country: "",
-          pincode: "",
-          phone: "",
+    } else {
+      // ✅ Adding new address
+      dispatch(addAddress(newAddress))
+        .unwrap()
+        .then(() => {
+          openPopup({
+            type: "success",
+            title: "Success",
+            subText: "Address added successfully!",
+            autoClose: 2,
+            showConfirmButton: false,
+            showCancelButton: false,
+          });
+          setShowAddForm(false);
+          setNewAddress({
+            name: "",
+            address: "",
+            city: "",
+            country: "",
+            pincode: "",
+            phone: "",
+          });
+        })
+        .catch((error) => {
+          openPopup({
+            type: "error",
+            title: "Error",
+            subText: error || "Failed to add address.",
+            autoClose: 2,
+            showConfirmButton: false,
+            showCancelButton: false,
+          });
         });
-        setShowAddForm(false);
-      })
-      .catch((error) => {
-        openPopup({
-          type: "error",
-          title: "Error",
-          subText: error || "Failed to add address.",
-          onClose: closePopup,
-          autoClose: 2,
-          showConfirmButton: false,
-          showCancelButton: false,
-        });
-      });
+    }
   };
+
  
   const handleDeleteAddress = (addressId) => {
     setSelectedAddressId(addressId); // ✅ Store selected address ID
@@ -220,7 +291,31 @@ const handleChange = (e) => {
     });
   };
   
-  
+   // ✅ Handle Setting Primary Address
+   const handleSetPrimaryAddress = (addressId) => {
+    dispatch(setPrimaryAddress({ id: addressId, is_primary: true }))
+      .unwrap()
+      .then(() => {
+        openPopup({
+          type: "success",
+          title: "Success",
+          subText: "Primary address updated successfully!",
+          autoClose: 2,
+          showConfirmButton: false,
+          showCancelButton: false,
+        });
+      })
+      .catch((error) => {
+        openPopup({
+          type: "error",
+          title: "Error",
+          subText: error || "Failed to update primary address.",
+          autoClose: 2,
+          showConfirmButton: false,
+          showCancelButton: false,
+        });
+      });
+  };
 
   
 
@@ -466,7 +561,7 @@ useEffect(() => {
         <span className="font-semibold">{item.pincode}</span>
 
         {/* **Primary Address Badge** */}
-        {item.isPrimary && (
+        {item.is_primary && (
           <span className="bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-md ml-2">
             Primary
           </span>
@@ -481,15 +576,17 @@ useEffect(() => {
       {/* Dropdown Menu (Appears Next to Each Address) */}
       {showOptions === item.address_id && (
         <div ref={dropdownRef} className=" bg-white shadow-md rounded-md py-2 w-36 md:w-48 border z-30">
-          <button className="flex items-center px-3 py-1 text-xs md:text-sm hover:bg-gray-100 w-full">
+          <button onClick={() => handleEditAddress(item)} className="flex items-center px-3 py-1 text-xs md:text-sm hover:bg-gray-100 w-full">
             <FiEdit className="mr-2 text-gray-600" /> Edit
           </button>
           <button   onClick={() => handleDeleteAddress(item.address_id)}
  className="flex items-center px-3 py-1 text-xs md:text-sm text-red-500 hover:bg-gray-100 w-full">
             <FiTrash2 className="mr-2" /> Delete
           </button>
-          {!item.isPrimary && (
-            <button className="flex items-center px-3 py-1 text-xs md:text-sm text-blue-600 font-semibold hover:bg-gray-100 w-full">
+          {!item.is_primary && (
+            <button      
+                                     onClick={() => handleSetPrimaryAddress(item.address_id)}
+            className="flex items-center px-3 py-1 text-xs md:text-sm text-blue-600 font-semibold hover:bg-gray-100 w-full">
               Set as Primary
             </button>
           )}
@@ -518,10 +615,11 @@ useEffect(() => {
                   </div>
 
      {/* Address Form (Hidden until clicked) */}
-     <AnimatePresence>
+     <AnimatePresence >
                 {showAddForm && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="mt-4 p-4 border rounded-lg bg-gray-100">
-                    <h3 className="text-lg font-semibold mb-2">New Address</h3>
+                    <h3 ref={addressTitleRef}  className="text-lg font-semibold mb-2">        {isEditing ? "Edit Address" : "New Address"}
+                    </h3>
                     <form onSubmit={handleSubmit} className="grid gap-3">
                       {Object.keys(newAddress).map((field) => (
                         <div key={field}>
@@ -549,7 +647,7 @@ useEffect(() => {
       : "bg-red-500 text-white hover:bg-red-600"}
   `}
 >
-  {isLoading ? "Saving..." : "Save Address"}
+{isLoading ? "Saving..." : isEditing ? "Update Address" : "Save Address"}
 </button>
 
 

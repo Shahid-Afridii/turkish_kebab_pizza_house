@@ -33,7 +33,22 @@ export const addAddress = createAsyncThunk(
     }
   }
 );
-
+// ✅ Update Address & Refresh List
+export const updateAddress = createAsyncThunk(
+  "userAddress/update",
+  async (updatedData, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.post("/client/address/update", updatedData);
+      if ((response.status === 200 || response.status === 201) && response.data?.status) {
+        await dispatch(getAddresses()); // Refresh addresses after updating
+        return updatedData;
+      }
+      throw new Error(response.data?.message || "Failed to update address");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Error updating address");
+    }
+  }
+);
 // ✅ Delete Address & Refresh List
 export const deleteAddress = createAsyncThunk(
   "userAddress/delete",
@@ -52,6 +67,23 @@ export const deleteAddress = createAsyncThunk(
   }
 );
 
+// ✅ Set Primary Address & Refresh List
+export const setPrimaryAddress = createAsyncThunk(
+  "userAddress/setPrimary",
+  async ({ id, is_primary = true }, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.post("/client/address/set_primary", { id, is_primary });
+
+      if ((response.status === 200 || response.status === 201) && response.data?.status) {
+        await dispatch(getAddresses()); // Refresh addresses after setting primary
+        return { id, is_primary };
+      }
+      throw new Error(response.data?.message || "Failed to set primary address");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Error setting primary address");
+    }
+  }
+);
 
 // ✅ User Address Slice
 const userAddressSlice = createSlice({
@@ -92,7 +124,15 @@ const userAddressSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-
+      .addCase(updateAddress.pending, (state) => { state.isLoading = true; })
+      .addCase(updateAddress.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(updateAddress.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
       .addCase(deleteAddress.pending, (state) => { state.isLoading = true; })
       .addCase(deleteAddress.fulfilled, (state) => {
         state.isLoading = false;
@@ -100,6 +140,16 @@ const userAddressSlice = createSlice({
         // The addresses are updated by getAddresses
       })
       .addCase(deleteAddress.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(setPrimaryAddress.pending, (state) => { state.isLoading = true; })
+      .addCase(setPrimaryAddress.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.selectedAddressId = action.payload.id; 
+      })
+      .addCase(setPrimaryAddress.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });
