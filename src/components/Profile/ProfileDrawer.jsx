@@ -36,10 +36,13 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     country: "",
     pincode: "",
     phone: "",
+    address_type: "home",
   });
    // ✅ State for validation errors
    const [errors, setErrors] = useState({});
    const [selectedAddressId, setSelectedAddressId] = useState(null);
+   const [customType, setCustomType] = useState(""); // State for custom address type
+
    const addressTitleRef = useRef(null);
 
   // State for custom popup
@@ -51,7 +54,19 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     setPopupConfig(config);
     setPopupOpen(true);
   };
+  const handleTypeChange = (e) => {
+    const value = e.target.value;
+    setNewAddress({ ...newAddress, address_type: value });
   
+    if (value !== "others") {
+      setCustomType(""); // Reset custom type when switching back
+    }
+  };
+  
+  const handleCustomTypeChange = (e) => {
+    setCustomType(e.target.value);
+    setNewAddress({ ...newAddress, address_type: e.target.value });
+  };
   // Update the closePopup function to handle redirection
   const closePopup = () => {
     setPopupOpen(false);
@@ -639,25 +654,63 @@ useEffect(() => {
                     <h3 ref={addressTitleRef}  className="text-lg font-semibold mb-2">        {isEditing ? "Edit Address" : "New Address"}
                     </h3>
                     <form onSubmit={handleSubmit} className="grid gap-3">
-                      {Object.keys(newAddress).map((field) => (
-                        <div key={field}>
-                          <input
-                            type="text"
-                            name={field}
-                            placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                            value={newAddress[field]}
-                            onChange={handleChange}
-                            className="w-full px-3 py-2 border rounded-md"
-                          />
-                          {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
-                        </div>
-                      ))}
-                   <button
+
+{/* Address Type Selection */}
+<div>
+  <label className="font-semibold text-gray-700">Address Type:</label>
+  <div className="flex gap-4 mt-2">
+    {["home", "work", "others"].map((option) => (
+      <label key={option} className="flex items-center space-x-2">
+        <input
+          type="radio"
+          name="address_type"
+          value={option}
+          checked={newAddress.address_type === option}
+          onChange={handleTypeChange}
+          className="form-radio text-red-500"
+        />
+        <span className="text-sm capitalize">{option}</span>
+      </label>
+    ))}
+  </div>
+
+  {/* Show custom input ONLY if "Others" is selected */}
+  {newAddress.address_type === "others" && (
+    <div className="mt-2">
+      <input
+        type="text"
+        placeholder="Enter custom type"
+        value={customType}
+        onChange={handleCustomTypeChange}
+        className="w-full px-3 py-2 border rounded-md"
+      />
+    </div>
+  )}
+</div>
+
+{/* Other Form Fields */}
+{Object.keys(newAddress).map((field) => (
+  field !== "type" && ( // Exclude the 'type' field as it's now handled separately
+    <div key={field}>
+      <input
+        type="text"
+        name={field}
+        placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+        value={newAddress[field]}
+        onChange={handleChange}
+        className="w-full px-3 py-2 border rounded-md"
+      />
+      {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
+    </div>
+  )
+))}
+
+<button
   type="submit"
   disabled={
     isLoading || 
-    Object.keys(errors).length > 0 ||  // ✅ Ensure no validation errors
-    Object.values(newAddress).some(value => value.trim() === "") // ✅ Ensure all fields are filled
+    Object.keys(errors).length > 0 ||  
+    Object.values(newAddress).some(value => value.trim() === "") 
   }
   className={`w-full px-4 py-2 rounded-md font-semibold transition 
     ${isLoading || Object.keys(errors).length > 0 || Object.values(newAddress).some(value => value.trim() === "")
@@ -665,11 +718,11 @@ useEffect(() => {
       : "bg-red-500 text-white hover:bg-red-600"}
   `}
 >
-{isLoading ? "Saving..." : isEditing ? "Update Address" : "Save Address"}
+  {isLoading ? "Saving..." : isEditing ? "Update Address" : "Save Address"}
 </button>
 
+</form>
 
-                    </form>
                   </motion.div>
                 )}
               </AnimatePresence>
