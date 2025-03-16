@@ -41,6 +41,7 @@ const Checkout = () => {
   const [localTotalAmount, setLocalTotalAmount] = useState(0);
   const [localTaxAmount, setLocalTaxAmount] = useState(0);
   const [localTaxableAmount, setLocalTaxableAmount] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false); // ✅ Loading state for payment processing
 
 
    // ✅ Dynamic state for order
@@ -251,7 +252,61 @@ const handleRemoveItem = async (item) => {
         setPopupOpen(true);
       }
     };
-  
+   // ✅ Handle Place Order
+ // ✅ Handle Place Order with Loading State
+ const handlePlaceOrder = async (paymentMode) => {
+  if (!selectedAddress) {
+    setPopupConfig({
+      type: "error",
+      title: "Address Required",
+      subText: "Please select an address before placing your order.",
+      autoClose: 3,
+      showConfirmButton: false,
+      showCancelButton: false,
+    });
+    setPopupOpen(true);
+    return;
+  }
+
+  setSelectedPaymentMethod(paymentMode);
+  setIsProcessing(paymentMode); // ✅ Set loading state for selected payment method
+
+  const orderData = {
+    address_id: selectedAddress,
+    mode: selectedMode,
+    payment_mode: paymentMode, 
+  };
+
+  try {
+    await dispatch(submitOrder(orderData)).unwrap();
+
+    // ✅ Show success popup
+    setPopupConfig({
+      type: "success",
+      title: "Order Placed!",
+      subText: "Your order has been successfully placed.",
+      autoClose: 3,
+      showConfirmButton: false,
+      showCancelButton: false,
+      onClose: () => navigate("/orders"), 
+    });
+
+    dispatch(clearCart());
+    setPopupOpen(true);
+  } catch (err) {
+    setPopupConfig({
+      type: "error",
+      title: "Order Failed",
+      subText: err || "There was an issue placing your order.",
+      autoClose: 3,
+      showConfirmButton: false,
+      showCancelButton: false,
+    });
+    setPopupOpen(true);
+  } finally {
+    setIsProcessing(false); // ✅ Reset loading state after API call completes
+  }
+};
     // ✅ Open Confirmation Popup
     const openOrderPopup = () => {
       if (!selectedPaymentMethod) {
@@ -348,11 +403,16 @@ console.log("displayedCartItems", displayedCartItems);
       <FaChevronDown className="text-gray-600" />
     )}
   </div>
-  {activeAccordion === 3 && <PaymentSection  selectedPaymentMethod={selectedPaymentMethod}
-        setSelectedPaymentMethod={setSelectedPaymentMethod}/>}
+  {activeAccordion === 3 && <PaymentSection
+            selectedPaymentMethod={selectedPaymentMethod}
+            setSelectedPaymentMethod={setSelectedPaymentMethod}
+            handlePlaceOrder={handlePlaceOrder} // ✅ Passing function as prop
+            isProcessing={isProcessing} // ✅ Passing loading state
+
+          />}
 </div>
 {/* Order Button */}
-<div className="flex justify-center mt-6">
+{/* <div className="flex justify-center mt-6">
         <button
           onClick={openOrderPopup}
           className="flex items-center px-6 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90"
@@ -361,7 +421,7 @@ console.log("displayedCartItems", displayedCartItems);
           <FaShoppingCart className="mr-2" />
           {isLoading ? "Processing..." : "Place Order"}
         </button>
-      </div>
+      </div> */}
         </div>
 
         {/* Right Section */}

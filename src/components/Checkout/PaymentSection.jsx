@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaCreditCard, FaGoogle, FaPaypal, FaMoneyBillWave, FaPercent } from "react-icons/fa";
 
-const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod }) => {
+const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod,handlePlaceOrder,isProcessing  }) => {
   const [promotionVisible, setPromotionVisible] = useState(false);
   const [promotionCode, setPromotionCode] = useState("");
 
@@ -62,24 +62,31 @@ const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod }) => 
         <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-4">
           Select Payment Method
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
-          {[
-            { label: "Credit/Debit Card", value: "Credit/Debit Card" },
-            { label: "PayPal", value: "PayPal" },
-            { label: "Google Pay", value: "Google Pay" },
-            { label: "Pay with Cash", value: "COD" }, // Map "Pay with Cash" to "COD"
-          ].map(({ label, value }) => (
-            <button
-              key={value}
-              onClick={() => handlePaymentMethodSelect(value)}
-              className={`flex items-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition ${
-                selectedPaymentMethod === value ? "bg-red-500 text-white" : "bg-gray-100 text-gray-700"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <div className="grid grid-cols-2 gap-2 sm:gap-4">
+        {/* Pay Now - Stripe */}
+        <button
+          onClick={() => handlePlaceOrder("Stripe")}
+          className={`flex items-center justify-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition ${
+            selectedPaymentMethod === "Stripe" ? "bg-red-500 text-white" : "bg-gray-100 text-gray-700"
+          }`}
+          disabled={isProcessing === "Stripe"} // ✅ Disable if processing
+        >
+          <FaCreditCard />
+          {isProcessing === "Stripe" ? "Processing..." : "Pay Now"}
+        </button>
+
+        {/* Cash on Delivery (COD) */}
+        <button
+          onClick={() => handlePlaceOrder("COD")}
+          className={`flex items-center justify-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition ${
+            selectedPaymentMethod === "COD" ? "bg-red-500 text-white" : "bg-gray-100 text-gray-700"
+          }`}
+          disabled={isProcessing === "COD"} // ✅ Disable if processing
+        >
+          <FaMoneyBillWave />
+          {isProcessing === "COD" ? "Processing..." : "Cash on Delivery"}
+        </button>
+      </div>
       </div>
     </div>
   );
