@@ -13,6 +13,8 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
    const [isPopupOpen, setPopupOpen] = useState(false);
    const [popupConfig, setPopupConfig] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+     const [customType, setCustomType] = useState(""); // State for custom address type
+  
   const [selectedAddress, setSelectedAddress] = useState("");
   const [newAddress, setNewAddress] = useState({
     name: "",
@@ -21,7 +23,25 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
     country: "",
     pincode: "",
     phone: "",
+    address_type: "home",
   });
+  const handleTypeChange = (e) => {
+    const value = e.target.value;
+    
+    // Reset customType when switching back from 'Others'
+    if (value !== "others") {
+      setCustomType("");
+    }
+  
+    // Update newAddress state correctly
+    setNewAddress({ ...newAddress, address_type: value });
+  };
+  
+  
+  const handleCustomTypeChange = (e) => {
+    setCustomType(e.target.value);
+    setNewAddress({ ...newAddress, address_type: e.target.value });
+  };
   const openPopup = (config) => {
     setPopupConfig(config);
     setPopupOpen(true);
@@ -72,6 +92,16 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
       setSelectedAddress(address ? address.address : "");
     }
   }, [selectedAddressId, addresses]);
+  useEffect(() => {
+    if (addresses.length > 0) {
+      const primaryAddress = addresses.find((addr) => addr.is_primary === 1);
+      if (primaryAddress) {
+        dispatch(setSelectedAddressId(primaryAddress.address_id));
+        setSelectedAddress(primaryAddress.address);
+      }
+    }
+  }, [addresses, dispatch]);
+  
 
   const handleSubmit = (e) => {
       e.preventDefault();
@@ -88,8 +118,11 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
         });
         return;
       }
-  
-      dispatch(addAddress(newAddress))
+      const payload = {
+        ...newAddress,
+        address_type: newAddress.address_type === "others" ? customType : newAddress.address_type, // ✅ Replace "others" with customType
+      };
+      dispatch(addAddress(payload))
         .unwrap()
         .then(() => {
           openPopup({
@@ -236,7 +269,9 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
       {/* Address List with Custom Scrollbar */}
       {addresses.length > 0 ? (
         <div className="overflow-y-auto custom-scrollbar space-y-3 px-2 max-h-[350px]">
-          {addresses.map((address) => (
+          {[...addresses]
+  .sort((a, b) => (b.is_primary - a.is_primary)) // Sort to place primary first
+  .map((address) => (
             <div
               key={address.address_id}
               className={`flex items-center justify-between w-full p-4 rounded-lg shadow-sm text-sm cursor-pointer transition-all duration-200 
@@ -298,27 +333,65 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
           >
             <h3 className="text-lg font-semibold mb-2 text-center">New Address</h3>
             <form onSubmit={handleSubmit} className="grid gap-3">
-              {Object.keys(newAddress).map((field) => (
-                <div key={field}>
-                <input
-                
-                  type="text"
-                  name={field}
-                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                  value={newAddress[field]}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md text-sm"
-                />
-                                          {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
 
-                </div>
-              ))}
-                <button
+{/* Address Type Selection */}
+
+
+{/* Other Form Fields */}
+{Object.keys(newAddress).map((field) =>
+  field !== "type" && field !== "address_type" ? ( // Exclude 'type' and 'address_type'
+    <div key={field}>
+      <input
+        type="text"
+        name={field}
+        placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+        value={newAddress[field]}
+        onChange={handleChange}
+        className="w-full px-3 py-2 border rounded-md"
+      />
+      {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
+    </div>
+  ) : null
+)}
+
+<div>
+  <label className="font-semibold text-gray-700">Address Type:</label>
+  <div className="flex gap-4 mt-2">
+    {["home", "work", "others"].map((option) => (
+      <label key={option} className="flex items-center space-x-2">
+        <input
+          type="radio"
+          name="address_type"
+          value={option}
+          checked={newAddress.address_type === option}
+          onChange={handleTypeChange}
+          className="form-radio text-red-500"
+        />
+        <span className="text-sm capitalize">{option}</span>
+      </label>
+    ))}
+  </div>
+
+  {/* Show custom input ONLY if "Others" is selected */}
+  {newAddress.address_type === "others" && (
+    <div className="mt-2">
+      <input
+        type="text"
+        placeholder="Enter custom type"
+        value={customType}
+        onChange={(e) => setCustomType(e.target.value)}
+        className="w-full px-3 py-2 border rounded-md"
+      />
+    </div>
+  )}
+</div>
+
+<button
   type="submit"
   disabled={
     isLoading || 
-    Object.keys(errors).length > 0 ||  // ✅ Ensure no validation errors
-    Object.values(newAddress).some(value => value.trim() === "") // ✅ Ensure all fields are filled
+    Object.keys(errors).length > 0 ||  
+    Object.values(newAddress).some(value => value.trim() === "") 
   }
   className={`w-full px-4 py-2 rounded-md font-semibold transition 
     ${isLoading || Object.keys(errors).length > 0 || Object.values(newAddress).some(value => value.trim() === "")
@@ -328,7 +401,8 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
 >
   {isLoading ? "Saving..." : "Save Address"}
 </button>
-            </form>
+
+</form>
           </motion.div>
         )}
       </AnimatePresence>

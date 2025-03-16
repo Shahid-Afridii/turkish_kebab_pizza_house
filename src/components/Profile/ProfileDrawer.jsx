@@ -63,10 +63,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     }
   };
   
-  const handleCustomTypeChange = (e) => {
-    setCustomType(e.target.value);
-    setNewAddress({ ...newAddress, address_type: e.target.value });
-  };
+  
   // Update the closePopup function to handle redirection
   const closePopup = () => {
     setPopupOpen(false);
@@ -189,10 +186,14 @@ const handleChange = (e) => {
       });
       return;
     }
-
+ // Construct payload
+ const payload = {
+  ...newAddress,
+  address_type: newAddress.address_type === "others" ? customType : newAddress.address_type, // ✅ Replace "others" with customType
+};
     if (isEditing) {
       // ✅ Updating existing address
-      dispatch(updateAddress({ ...newAddress, address_id: selectedAddressId }))
+      dispatch(updateAddress({ ...payload, address_id: selectedAddressId }))
         .unwrap()
         .then(() => {
           openPopup({
@@ -226,7 +227,7 @@ const handleChange = (e) => {
         });
     } else {
       // ✅ Adding new address
-      dispatch(addAddress(newAddress))
+      dispatch(addAddress(payload))
         .unwrap()
         .then(() => {
           openPopup({
@@ -655,6 +656,24 @@ useEffect(() => {
                     </h3>
                     <form onSubmit={handleSubmit} className="grid gap-3">
 
+
+
+{/* Other Form Fields */}
+{Object.keys(newAddress).map((field) =>
+  field !== "type" && field !== "address_type" ? ( // Exclude 'type' and 'address_type'
+    <div key={field}>
+      <input
+        type="text"
+        name={field}
+        placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+        value={newAddress[field]}
+        onChange={handleChange}
+        className="w-full px-3 py-2 border rounded-md"
+      />
+      {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
+    </div>
+  ) : null
+)}
 {/* Address Type Selection */}
 <div>
   <label className="font-semibold text-gray-700">Address Type:</label>
@@ -681,30 +700,12 @@ useEffect(() => {
         type="text"
         placeholder="Enter custom type"
         value={customType}
-        onChange={handleCustomTypeChange}
+        onChange={(e) => setCustomType(e.target.value)}
         className="w-full px-3 py-2 border rounded-md"
       />
     </div>
   )}
 </div>
-
-{/* Other Form Fields */}
-{Object.keys(newAddress).map((field) => (
-  field !== "type" && ( // Exclude the 'type' field as it's now handled separately
-    <div key={field}>
-      <input
-        type="text"
-        name={field}
-        placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-        value={newAddress[field]}
-        onChange={handleChange}
-        className="w-full px-3 py-2 border rounded-md"
-      />
-      {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
-    </div>
-  )
-))}
-
 <button
   type="submit"
   disabled={
