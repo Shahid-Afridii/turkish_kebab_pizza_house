@@ -606,12 +606,30 @@ useEffect(() => {
 
   {/* **Add Address Button (Smaller on Mobile)** */}
   <div className="flex justify-center mt-4">
-                    <button
-                      onClick={() => setShowAddForm(!showAddForm)}
-                      className="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-600 flex items-center"
-                    >
-                      <FaPlus className="mr-2" /> Add Address
-                    </button>
+  <button
+  onClick={() => {
+    setIsEditing(false); // ✅ Ensure it's not in editing mode
+    setNewAddress({
+      name: "",
+      address: "",
+      city: "",
+      country: "",
+      pincode: "",
+      phone: "",
+    }); // ✅ Reset the form fields
+    setShowAddForm(true); // ✅ Ensure the form is open
+
+    // ✅ Scroll to the form immediately
+    setTimeout(() => {
+      addressTitleRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  }}
+  className="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-600 flex items-center"
+>
+  <FaPlus className="mr-2" /> Add Address
+</button>
+
+
                   </div>
 
      {/* Address Form (Hidden until clicked) */}
