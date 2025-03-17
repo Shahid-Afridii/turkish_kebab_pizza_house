@@ -9,7 +9,7 @@ export const submitOrder = createAsyncThunk(
       const response = await api.post("/client/order/submit", orderData);
 
       if ((response.status === 200 || response.status === 201) && response.data?.status) {
-        return response.data.data;
+        return response.data;
       }
 
       throw new Error(response.data?.message || "Failed to submit order");

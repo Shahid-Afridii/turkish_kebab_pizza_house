@@ -278,9 +278,20 @@ const handleRemoveItem = async (item) => {
   };
 
   try {
-    await dispatch(submitOrder(orderData)).unwrap();
+    const resultAction = await dispatch(submitOrder(orderData)); // Get full Redux action object
+    console.log("Full Action Response:", resultAction); // Debugging log
+    if (submitOrder.fulfilled.match(resultAction)) {
+      const response = resultAction.payload; // ✅ Extract the actual payload
+      console.log("Extracted Response Payload:", response);
 
-    // ✅ Show success popup
+      if (response?.url) {
+        window.open(response.url, "_blank"); // ✅ Open Stripe URL in a new tab
+        return;
+      }
+    } else {
+      throw new Error(resultAction.payload || "Order submission failed");
+    }
+    // // ✅ Show success popup
     setPopupConfig({
       type: "success",
       title: "Order Placed!",
@@ -291,7 +302,7 @@ const handleRemoveItem = async (item) => {
       onClose: () => navigate("/orders"), 
     });
 
-    dispatch(clearCart());
+    // dispatch(clearCart());
     setPopupOpen(true);
   } catch (err) {
     setPopupConfig({
