@@ -5,7 +5,8 @@ import menuReducer from "./slices/menuSlice";
 import authReducer from "./slices/authSlice";
 import shopReducer from "./slices/shopSlice";
 import userAddressReducer from "./slices/userAddressSlice";
-import orderReducer from "./slices/orderSlice"; // Import Order Slice
+import orderReducer from "./slices/orderSlice";
+import policyReducer from "./slices/policySlice";
 
 
 export const store = configureStore({
@@ -17,6 +18,7 @@ export const store = configureStore({
     shop: shopReducer,
     userAddress: userAddressReducer,
     order: orderReducer,
+    policy: policyReducer,
 
 
   },

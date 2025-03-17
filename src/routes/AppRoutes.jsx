@@ -2,6 +2,8 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import RestaurantInfo from '../pages/RestrauntInfo';
 import Orders from '../pages/Orders';
+import PrivacyPolicy from '../pages/PrivacyPolicy';
+import TermsAndConditons from '../pages/TermsAndConditons';
 
 // Lazy load the components
 const Home = lazy(() => import('../pages/Home'));
@@ -19,6 +21,9 @@ const AppRoutes = () => (
       <Route path="/cart" element={<Cart />} />
       <Route path="/info" element={<RestaurantInfo />} />
       <Route path="/checkout" element={<Checkout />} />
+      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsAndConditons />} />
       <Route path="/login" element={<Login />} />
     </Routes>
 

@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiGooglepay } from "react-icons/si";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -41,10 +42,10 @@ const Footer = () => {
             <h4 className="text-xl font-montserrat font-semibold text-gray-800 mb-4">Quick Links</h4>
             <ul className="space-y-3 text-gray-600 font-Montserrat_Alternates">
               <li>
-                <a href="#" className="hover:text-primary transition">Privacy Policy</a>
+                <Link to="/privacy-policy" className="hover:text-primary transition">Privacy Policy</Link>
               </li>
               <li>
-                <a href="#" className="hover:text-primary transition">Terms of Use</a>
+                <Link to="/terms" className="hover:text-primary transition">Terms of Use</Link>
               </li>
               <li>
                 <a href="#" className="hover:text-primary transition">About Cookies</a>
