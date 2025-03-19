@@ -12,6 +12,7 @@ const TermsAndConditons = () => {
   const { isLoading, error, policyDetails } = useSelector((state) => state.policy);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     dispatch(fetchPrivacyPolicy("tnc")); // ✅ Pass "pp" dynamically when calling API
   }, [dispatch]);
 
