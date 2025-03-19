@@ -107,8 +107,11 @@ const scrollToForm = () => {
       country: address.country,
       pincode: address.pincode,
       phone: address.phone,
+      address_type: address.address_type ? address.address_type : "home", // ✅ Default to "home" if null
+
     });
-  
+    setCustomType(address.address_type === "others" ? address.address_type : "");
+
     setSelectedAddressId(address.address_id);
     setIsEditing(true);
     setShowAddForm(true);
