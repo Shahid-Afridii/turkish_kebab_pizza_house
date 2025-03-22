@@ -14,6 +14,7 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { AiOutlineFilePdf, AiOutlineFileExcel } from "react-icons/ai"; // Add at the top
+import { FaRegCalendarAlt } from "react-icons/fa"; // Add this import
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -236,21 +237,31 @@ console.log("paymentOptions", paymentOptions);
         <span className="font-medium text-base">
           Showing {filteredOrders.length} of {orderList.length} Orders
         </span>
-        <div className="flex gap-2 sm:gap-3 items-center">
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="px-2 py-1.5 w-[130px] rounded border border-gray-300 text-sm"
-          />
-          <span className="text-gray-400">to</span>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="px-2 py-1.5 w-[130px] rounded border border-gray-300 text-sm"
-          />
-        </div>
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4 bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm">
+  {/* Start Date */}
+  <label className="flex items-center gap-2 text-sm text-gray-600">
+   
+    <input
+      type="date"
+      value={startDate}
+      onChange={(e) => setStartDate(e.target.value)}
+      className="appearance-none outline-none text-sm bg-transparent"
+    />
+  </label>
+
+  <span className="text-gray-400 font-medium text-sm">to</span>
+
+  {/* End Date */}
+  <label className="flex items-center gap-2 text-sm text-gray-600">
+  
+    <input
+      type="date"
+      value={endDate}
+      onChange={(e) => setEndDate(e.target.value)}
+      className="appearance-none outline-none text-sm bg-transparent"
+    />
+  </label>
+</div>
       </div>
 
       {/* Mobile Filter Modal */}
