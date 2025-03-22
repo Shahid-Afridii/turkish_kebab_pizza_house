@@ -162,19 +162,25 @@ const handleUpdateLocalQuantity = (itemId, newQuantity) => {
     loadLocalCart();
   } else {
     const item = cartItems.find((i) => i.menu_item_id === itemId);
-    console.log("item", item);
     if (!item) return;
 
-    // ✅ Use add_ons as-is from item
-    const addons = item.add_ons ?? [];
-console.log("addons", addons);
-    dispatch(updateQuantity({
+    const payload = {
       menu_item_id: item.menu_item_id,
       quantity: newQuantity,
-      addons,
-    }));
+      instructions: item.instructions || "",
+      addons: item.add_ons?.map((addon) => ({
+        addon_id: addon.id,
+        addon_item_id: addon.item_ids || []  // Ensure this key exists in your `add_ons`
+      })) || []
+    };
+
+    console.log("Final Payload for API:", payload);
+    dispatch(updateQuantity(payload));
   }
 };
+
+
+
 
 
 
