@@ -380,7 +380,7 @@ console.log("displayedCartItems", displayedCartItems);
 
       
          {/* Delivery/Pick-up Section */}
-         <div className={`bg-white rounded-lg shadow-md ${activeAccordion === 2 ? "p-6" : "p-4"}`}>
+         {isAuthenticated &&   <div className={`bg-white rounded-lg shadow-md ${activeAccordion === 2 ? "p-6" : "p-4"}`}>
             <div
               className="flex items-center justify-between cursor-pointer"
               onClick={() => toggleAccordion(2)}
@@ -396,10 +396,11 @@ console.log("displayedCartItems", displayedCartItems);
               )}
             </div>
             {activeAccordion === 2 && <DeliveryPickupSection mode={selectedMode} setMode={setSelectedMode} />}
-          </div>
+          </div>}
+       
 
           {/* Payment Section */}
-          <div className={`bg-white rounded-lg shadow-md ${activeAccordion === 3 ? "p-6" : "p-4"}`}>
+          {isAuthenticated &&     <div className={`bg-white rounded-lg shadow-md ${activeAccordion === 3 ? "p-6" : "p-4"}`}>
   <div
     className="flex items-center justify-between cursor-pointer"
     onClick={() => toggleAccordion(3)}
@@ -421,7 +422,8 @@ console.log("displayedCartItems", displayedCartItems);
             isProcessing={isProcessing} // ✅ Passing loading state
 
           />}
-</div>
+</div> }
+      
 {/* Order Button */}
 {/* <div className="flex justify-center mt-6">
         <button

@@ -16,6 +16,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
      const [customType, setCustomType] = useState(""); // State for custom address type
   
   const [selectedAddress, setSelectedAddress] = useState("");
+  const [addressType, setAddressType] = useState("");
   const [newAddress, setNewAddress] = useState({
     name: "",
     address: "",
@@ -90,6 +91,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
     if (selectedAddressId) {
       const address = addresses.find((addr) => addr.address_id === selectedAddressId);
       setSelectedAddress(address ? address.address : "");
+      setAddressType(address ? address.address_type : "");
     }
   }, [selectedAddressId, addresses]);
   useEffect(() => {
@@ -98,6 +100,7 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
       if (primaryAddress) {
         dispatch(setSelectedAddressId(primaryAddress.address_id));
         setSelectedAddress(primaryAddress.address);
+        setAddressType(primaryAddress.address_type);
       }
     }
   }, [addresses, dispatch]);
@@ -207,13 +210,16 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
               placeholder="House Number & Street Name"
               value={selectedAddress}
               readOnly
-              className="w-full border rounded-md px-3 py-2 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+              className="w-full border capitalize rounded-md px-3 py-2 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-primary cursor-pointer"
               onClick={() => setIsModalOpen(true)}
             />
             <input
               type="text"
+              readOnly
+              onClick={() => setIsModalOpen(true)}
+              value={addressType}
               placeholder="Save address as (Home, Office, etc.)"
-              className="w-full border rounded-md px-3 py-2 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-primary"
+              className="w-full border capitalize rounded-md px-3 py-2 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
           {/* <div className="flex items-center space-x-2">
