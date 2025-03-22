@@ -17,7 +17,7 @@ const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod,handle
   return (
     <div className="bg-white mt-3 p-2 space-y-4 sm:space-y-6">
       {/* Promotion Code Section */}
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+      {/* <div className="bg-red-50 border border-red-200 rounded-lg p-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
           <div className="flex items-center gap-2">
             <FaPercent className="text-red-500 text-sm sm:text-lg" />
@@ -50,7 +50,7 @@ const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod,handle
             </div>
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* Payment Methods */}
       <div>

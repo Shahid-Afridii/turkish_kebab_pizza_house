@@ -614,10 +614,10 @@ console.log("displayedCartItems", displayedCartItems);
       <span>Item Total</span>
       <span>{formatPrice(displayedTaxableAmount) || 0}</span>
     </div>
-    <div className="flex justify-between text-xs md:text-sm mb-4">
+    {/* <div className="flex justify-between text-xs md:text-sm mb-4">
       <span>Service Fee</span>
       <span>{formatPrice(displayedTaxAmount) || 0} </span>
-    </div>
+    </div> */}
     <div className="flex justify-between text-sm md:text-lg font-bold">
       <span>TO PAY</span>
       <span>{formatPrice(displayedTotalAmount)}</span>
