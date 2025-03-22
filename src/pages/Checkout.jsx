@@ -307,7 +307,7 @@ const handleRemoveItem = async (item) => {
           autoClose: 3,
           showConfirmButton: false,
           showCancelButton: false,
-          onClose: closePopup,
+          onClose: () => navigate("/orders"), // Redirect after success
         });
         setPopupOpen(true);
       } else {

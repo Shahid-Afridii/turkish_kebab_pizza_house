@@ -162,11 +162,13 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
         });
     };
 
-  const handleSelectAddress = (addressId, addressText) => {
-    dispatch(setSelectedAddressId(addressId));
-    setSelectedAddress(addressText);
-    setIsModalOpen(false);
-  };
+    const handleSelectAddress = (addressId, addressText, type = "") => {
+      dispatch(setSelectedAddressId(addressId));
+      setSelectedAddress(addressText);  
+      setAddressType(type);                
+      setIsModalOpen(false);
+    };
+    
 
   return (
     <div className="bg-white p-4 sm:p-6">
