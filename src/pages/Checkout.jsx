@@ -161,9 +161,22 @@ const handleUpdateLocalQuantity = (itemId, newQuantity) => {
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
     loadLocalCart();
   } else {
-    dispatch(updateQuantity({ menu_item_id: itemId, quantity: newQuantity }));
+    const item = cartItems.find((i) => i.menu_item_id === itemId);
+    console.log("item", item);
+    if (!item) return;
+
+    // ✅ Use add_ons as-is from item
+    const addons = item.add_ons ?? [];
+console.log("addons", addons);
+    dispatch(updateQuantity({
+      menu_item_id: item.menu_item_id,
+      quantity: newQuantity,
+      addons,
+    }));
   }
 };
+
+
 
       // ✅ Open Confirmation Popup
  // ✅ Open Confirmation Popup

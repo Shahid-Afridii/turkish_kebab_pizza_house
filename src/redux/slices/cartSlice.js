@@ -61,6 +61,7 @@ export const removeCartItem = createAsyncThunk(
 );
 
 // ✅ Update Quantity
+// ✅ Update Quantity
 export const updateQuantity = createAsyncThunk(
   "cart/updateQuantity",
   async ({ menu_item_id, quantity }, { dispatch, getState, rejectWithValue }) => {
@@ -68,14 +69,13 @@ export const updateQuantity = createAsyncThunk(
       const item = getState().cart.items.find((i) => i.menu_item_id === menu_item_id);
       if (!item) return rejectWithValue("Item not found in cart");
 
-      // ✅ Update Cart Data
+      // ✅ Use correct key `add_ons` not `addons`
       const updatedCartData = {
         menu_item_id,
         quantity,
-        addons: item.addons || [],
+        addons: item.add_ons || [], // 👈 this is your real data structure
       };
 
-      // ✅ Dispatch Add to Cart with updated quantity
       await dispatch(addToCart(updatedCartData)).unwrap();
       return { menu_item_id, quantity };
     } catch (error) {
@@ -83,6 +83,7 @@ export const updateQuantity = createAsyncThunk(
     }
   }
 );
+
 
 // ✅ Cart Slice
 const cartSlice = createSlice({
