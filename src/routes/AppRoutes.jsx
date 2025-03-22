@@ -1,22 +1,21 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import RestaurantInfo from '../pages/RestrauntInfo';
-import Orders from '../pages/Orders';
-import PrivacyPolicy from '../pages/PrivacyPolicy';
-import TermsAndConditons from '../pages/TermsAndConditons';
+
 
 // Lazy load the components
 const Home = lazy(() => import('../pages/Home'));
-const Menu = lazy(() => import('../pages/Menu'));
 const Cart = lazy(() => import('../pages/Cart'));
 const Checkout = lazy(() => import('../pages/Checkout'));
 const Login = lazy(() => import('../pages/Login'));
+const Orders = lazy(() => import('../pages/Orders'));
+const RestaurantInfo = lazy(() => import('../pages/RestrauntInfo'));
+const PrivacyPolicy = lazy(() => import('../pages/PrivacyPolicy'));
+const TermsAndConditons = lazy(() => import('../pages/TermsAndConditons'));
 
 const AppRoutes = () => (
   
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/menu" element={<Menu />} />
       <Route path="/orders" element={<Orders />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/info" element={<RestaurantInfo />} />

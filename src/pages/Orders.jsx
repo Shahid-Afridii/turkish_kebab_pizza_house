@@ -14,10 +14,10 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { AiOutlineFilePdf, AiOutlineFileExcel } from "react-icons/ai"; // Add at the top
-import { FaRegCalendarAlt } from "react-icons/fa"; // Add this import
 
 const Orders = () => {
   const dispatch = useDispatch();
+  
   const { orderList, isLoading, error } = useSelector((state) => state.order);
   const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 

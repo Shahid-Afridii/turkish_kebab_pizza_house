@@ -35,6 +35,7 @@ const Checkout = () => {
   const cartFetched = useSelector((state) => state.cart.cartFetched); // ✅ Track API call status
   const taxAmount = useSelector((state) => state.cart.taxAmount);
   const taxableAmount = useSelector((state) => state.cart.taxableAmount);
+  const [orderIdForStatus, setOrderIdForStatus] = useState(null);
 
   // ✅ Fetch from LocalStorage (For Guests)
   const [localCartItems, setLocalCartItems] = useState([]);
@@ -49,10 +50,10 @@ const Checkout = () => {
    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(""); // Store payment mode
    const [selectedAddress, setSelectedAddress] = useState(1); // Default address (Make this dynamic)
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const { addresses, selectedAddressId, isLoading: isAddressLoading } = useSelector((state) => state.userAddress);
-  const [itemToRemove, setItemToRemove] = useState(null);
+  const { selectedAddressId, isLoading: isAddressLoading } = useSelector((state) => state.userAddress);
+  
 
-  const { isLoading, error } = useSelector((state) => state.order);
+
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // ✅ Track login modal state
   const navigate = useNavigate(); // ✅ Initialize navigation
@@ -140,9 +141,7 @@ useEffect(() => {
     useEffect(() => {
       window.scrollTo(0, 0);
     }, []);
-    const handlePaymentCompletion = () => {
-      setPaymentCompleted(true);
-    };
+   
   
 // ✅ Function to remove item from localStorage for guests
 const handleRemoveLocalItem = (itemId) => {
@@ -188,7 +187,7 @@ const openDeletePopup = (item) => {
 // ✅ Handle Remove Item
 const handleRemoveItem = async (item) => {
   try {
-    await dispatch(removeCartItem(item.cart_id)).unwrap();
+    await dispatch(removeCartItem(item.id)).unwrap();
     
     // ✅ Show Success Popup
     setPopupConfig({
@@ -286,6 +285,19 @@ const handleRemoveItem = async (item) => {
           window.open(response.url, "_blank");
           return;
         }
+        if (response?.order_id) {
+          sessionStorage.setItem("latest_order_id", response.order_id);
+        
+          // Trigger after small delay (ensures mounted listener catches it)
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent("show-order-status", {
+              detail: response.order_id
+            }));
+          }, 100); // slight delay to allow MainLayout to attach listener
+        }
+        
+        
+        setPaymentCompleted(true);  
 
         // ✅ Show success popup
         setPopupConfig({
@@ -295,7 +307,7 @@ const handleRemoveItem = async (item) => {
           autoClose: 3,
           showConfirmButton: false,
           showCancelButton: false,
-          onClose: () => navigate("/orders"),
+          onClose: closePopup,
         });
         setPopupOpen(true);
       } else {
@@ -598,7 +610,7 @@ console.log("displayedCartItems", displayedCartItems);
 </div>
 
 
-{paymentCompleted && <OrderStatus isVisible={true} onClose={() => setPaymentCompleted(false)} orderStatus="preparing" />}
+
 
 
       </div>
