@@ -383,6 +383,8 @@ const handleRemoveItem = async (item) => {
     const displayedTaxAmount = isAuthenticated ? taxAmount : localTaxAmount;
     const displayedTaxableAmount = isAuthenticated ? taxableAmount : localTaxableAmount;
 console.log("displayedCartItems", displayedCartItems);
+
+
   return (
     <div className="container mx-auto p-2 lg:p-0 bg-gray-50 min-h-screen">
       <h1 className="text-md md:text-xl font-bold mb-8 text-center text-gray-800">
@@ -564,26 +566,40 @@ console.log("displayedCartItems", displayedCartItems);
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() =>
-                      handleUpdateLocalQuantity(item.menu_item_id, item.quantity - 1)
-                    }
-                    className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
-                  >
-                    <FaMinus size={10} />
-                  </button>
-                  <span className="px-2 py-1 text-xs sm:text-sm font-medium text-gray-800 border rounded-md">
-                    {item.qty || item.quantity}
-                  </span>
-                  <button
-                    onClick={() =>
-                      handleUpdateLocalQuantity(item.menu_item_id, item.quantity + 1)
-                    }
-                    className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
-                  >
-                    <FaPlus size={10} />
-                  </button>
-                </div>
+  <button
+    disabled={(item.qty ?? item.quantity ?? 1) <= 1}
+    onClick={() =>
+      handleUpdateLocalQuantity(
+        item.menu_item_id,
+        Math.max(1, (item.qty ?? item.quantity ?? 1) - 1)
+      )
+    }
+    className={`w-6 h-6 rounded-full flex items-center justify-center ${
+      (item.qty ?? item.quantity ?? 1) <= 1
+        ? "bg-gray-300 cursor-not-allowed"
+        : "bg-red-500 hover:bg-red-600 text-white"
+    }`}
+  >
+    <FaMinus size={10} />
+  </button>
+
+  <span className="px-2 py-1 text-xs sm:text-sm font-medium text-gray-800 border rounded-md">
+    {item.qty ?? item.quantity ?? 1}
+  </span>
+
+  <button
+    onClick={() =>
+      handleUpdateLocalQuantity(
+        item.menu_item_id,
+        (item.qty ?? item.quantity ?? 1) + 1
+      )
+    }
+    className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+  >
+    <FaPlus size={10} />
+  </button>
+</div>
+
               </div>
             </li>
           ))}
