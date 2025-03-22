@@ -269,55 +269,75 @@ const handleRemoveItem = async (item) => {
   }
 
   setSelectedPaymentMethod(paymentMode);
-  setIsProcessing(paymentMode); // ✅ Set loading state for selected payment method
 
   const orderData = {
     address_id: selectedAddress,
     mode: selectedMode,
-    payment_mode: paymentMode, 
+    payment_mode: paymentMode,
   };
 
-  try {
-    const resultAction = await dispatch(submitOrder(orderData)); // Get full Redux action object
-    console.log("Full Action Response:", resultAction); // Debugging log
-    if (submitOrder.fulfilled.match(resultAction)) {
-      const response = resultAction.payload; // ✅ Extract the actual payload
-      console.log("Extracted Response Payload:", response);
+  const callPlaceOrderAPI = async () => {
+    setIsProcessing(paymentMode); // ✅ Set loading state for selected payment method
+    try {
+      const resultAction = await dispatch(submitOrder(orderData));
+      if (submitOrder.fulfilled.match(resultAction)) {
+        const response = resultAction.payload;
+        if (response?.url) {
+          window.open(response.url, "_blank");
+          return;
+        }
 
-      if (response?.url) {
-        window.open(response.url, "_blank"); // ✅ Open Stripe URL in a new tab
-        return;
+        // ✅ Show success popup
+        setPopupConfig({
+          type: "success",
+          title: "Order Placed!",
+          subText: "Your order has been successfully placed.",
+          autoClose: 3,
+          showConfirmButton: false,
+          showCancelButton: false,
+          onClose: () => navigate("/orders"),
+        });
+        setPopupOpen(true);
+      } else {
+        throw new Error(resultAction.payload || "Order submission failed");
       }
-    } else {
-      throw new Error(resultAction.payload || "Order submission failed");
+    } catch (err) {
+      setPopupConfig({
+        type: "error",
+        title: "Order Failed",
+        subText: err?.message || "There was an issue placing your order.",
+        autoClose: 3,
+        showConfirmButton: false,
+        showCancelButton: false,
+      });
+      setPopupOpen(true);
+    } finally {
+      setIsProcessing(false);
     }
-    // // ✅ Show success popup
-    setPopupConfig({
-      type: "success",
-      title: "Order Placed!",
-      subText: "Your order has been successfully placed.",
-      autoClose: 3,
-      showConfirmButton: false,
-      showCancelButton: false,
-      onClose: () => navigate("/orders"), 
-    });
+  };
 
-    // dispatch(clearCart());
-    setPopupOpen(true);
-  } catch (err) {
+  // Check for COD and show confirm popup
+  if (paymentMode === "COD") {
     setPopupConfig({
-      type: "error",
-      title: "Order Failed",
-      subText: err || "There was an issue placing your order.",
-      autoClose: 3,
-      showConfirmButton: false,
-      showCancelButton: false,
+      type: "warning",
+      title: "Confirm Your Order",
+      subText: `Are you sure you want to place this order with ${selectedMode} and ${paymentMode}?`,
+      confirmLabel: "Yes, Place Order",
+      cancelLabel: "Cancel",
+      showConfirmButton: true,
+      showCancelButton: true,
+      onConfirm: () => {
+        setPopupOpen(false); // Close popup before calling API
+        callPlaceOrderAPI();
+      },
     });
     setPopupOpen(true);
-  } finally {
-    setIsProcessing(false); // ✅ Reset loading state after API call completes
+  } else {
+    // Directly call API for non-COD
+    callPlaceOrderAPI();
   }
 };
+
     // ✅ Open Confirmation Popup
     const openOrderPopup = () => {
       if (!selectedPaymentMethod) {
@@ -438,104 +458,134 @@ console.log("displayedCartItems", displayedCartItems);
         </div>
 
         {/* Right Section */}
-        <div>
-        <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-  <h2 className="text-sm md:text-lg font-semibold mb-4">Items in your cart</h2>
-  {displayedCartItems?.length === 0 ? (
-        <div className="flex flex-col items-center justify-center text-center py-10">
-          <p className="text-gray-500 mb-4">No items in cart</p>
-          <button
-            onClick={() => navigate("/")} // Change this based on your router
-            className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition"
-          >
-            Add Products
-          </button>
-        </div>
-      ) : (
-        <div className="flex-grow overflow-y-auto pr-2" style={{ maxHeight: "400px" }}>
-          <ul className="space-y-4">
-            {displayedCartItems.map((item) => (
-              <li key={item.id} className="flex items-center justify-between border-b pb-4 relative">
-                {/* Product Image */}
+     <div>
+  <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+    <h2 className="text-sm md:text-lg font-semibold mb-4">Items in your cart</h2>
+    {displayedCartItems?.length === 0 ? (
+      <div className="flex flex-col items-center justify-center text-center py-10">
+        <p className="text-gray-500 mb-4">No items in cart</p>
+        <button
+          onClick={() => navigate("/")}
+          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition"
+        >
+          Add Products
+        </button>
+      </div>
+    ) : (
+      <div className="flex-grow overflow-y-auto pr-2" style={{ maxHeight: "400px" }}>
+        <ul className="space-y-6">
+          {displayedCartItems.map((item) => (
+            <li key={item.id} className="flex flex-col sm:flex-row gap-4 border-b pb-4 relative">
+              {/* Image */}
+              <div className="flex-shrink-0">
                 <img
                   src={item.image ? `${IMAGE_URL}${item.image}` : "/assets/noimage.png"}
                   alt={item.name}
-                  className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-lg transition-opacity duration-500 opacity-0"
+                  className="w-20 h-20 object-cover rounded-md transition-opacity duration-500 opacity-0"
                   onLoad={(e) => e.target.classList.remove("opacity-0")}
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = "/assets/noimage.png";
                   }}
                 />
+              </div>
 
-                {/* Product Details */}
-                <div className="flex-1 ml-3">
-                  <h4 className="font-semibold text-xs md:text-sm">{item.name}</h4>
-                  <h4 className="font-semibold text-xs md:text-sm">
-                    {formatPrice(item.price)}
-                    <button
-  onClick={() => {
-    console.log("isAuthenticated", isAuthenticated);
-    isAuthenticated == false ? handleRemoveLocalItem(item.menu_item_id) : openDeletePopup(item);
-    window.dispatchEvent(new Event("storage")); // 🔥 Forces re-render of BottomCartBar
-
-    // !isAuthenticated ? openDeletePopup(item) : handleRemoveLocalItem(item.menu_item_id);
-  }}
-  className="ml-2 mb-2 p-2 text-red-500 hover:text-red-700"
->
-  <FaTrash size={12} />
-</button>
-
+              {/* Details */}
+              <div className="flex-1 space-y-2">
+                <div className="flex justify-between items-start">
+                  <h4 className="text-sm sm:text-base font-semibold text-gray-800 w-[80%] break-words">
+                    {item.name}
                   </h4>
-                  <div className="text-xs text-gray-500 space-y-1">
-                    {/* Add-on Items */}
-                    {(item.add_on_items || item.addons)?.length > 0 && (
-                      <p className="text-xs text-gray-500">
-                        <span className="font-semibold text-gray-700">Add-ons:</span>{" "}
-                        {(item.add_on_items || item.addons).map((addOn) => `${addOn.name || addOn.addon_name} (${formatPrice(addOn.addon_price) || formatPrice(addOn.price)})`).join(", ")}
-                      </p>
-                    )}
-
-                    {/* Description Fallback */}
-                    {!item.toppings?.length &&
-                      !item.dips?.length &&
-                      !item.drinks?.length && (
-                        <p className="line-clamp-2">{item.description}</p>
-                      )}
-                  </div>
+                  <button
+                    onClick={() => {
+                      isAuthenticated
+                        ? openDeletePopup(item)
+                        : handleRemoveLocalItem(item.menu_item_id);
+                      window.dispatchEvent(new Event("storage"));
+                    }}
+                    className="text-red-500 hover:text-red-600 p-1"
+                  >
+                    <FaTrash size={13} />
+                  </button>
                 </div>
 
-                {/* Quantity Buttons */}
-                <div className="flex items-center space-x-2">
+                {/* Add-ons */}
+                    {item.add_ons?.some((addon) => addon.items.length > 0) && (
+                  <div className="text-[13px] sm:text-sm flex flex-wrap gap-2 mt-1">
+                    {item.add_ons.map((addon, idx) =>
+                      addon.items.length > 0 ? (
+                        <div key={idx} className="flex items-center gap-2 flex-wrap">
+                          {addon.items.map((item, i) => (
+                            <span
+                              key={i}
+                              className=" text-gray-700 px-2 py-1 rounded-full text-xs border "
+                            >
+                              {item}    {addon.price > 0 && (
+                            <span className="text-red-500 font-semibold text-xs whitespace-nowrap">
+                              +{formatPrice(addon.price)}
+                            </span>
+                          )}
+                            </span>
+                          ))}
+                         
+                        </div>
+                      ) : null
+                    )}
+                  </div>
+                )}
+
+                {/* Fallback description */}
+                {!item.toppings?.length &&
+                  !item.dips?.length &&
+                  !item.drinks?.length && (
+                    <p className="text-[0.75rem] sm:text-xs text-gray-500 line-clamp-2">
+                      {item.description}
+                    </p>
+                  )}
+              </div>
+
+              {/* Price & Qty */}
+              <div className="flex justify-between items-center sm:flex-col sm:items-end sm:gap-4 mt-2 sm:mt-0">
+                <div className="text-sm sm:text-base font-semibold text-gray-900">
+                  {formatPrice(
+                    item.price )}
+                </div>
+
+                <div className="flex items-center gap-2">
                   <button
-                   onClick={() => handleUpdateLocalQuantity(item.menu_item_id, item.quantity - 1)}
-                    className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
+                    onClick={() =>
+                      handleUpdateLocalQuantity(item.menu_item_id, item.quantity - 1)
+                    }
+                    className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
                   >
                     <FaMinus size={10} />
                   </button>
-                  <span className="px-2 py-1 text-xs md:text-sm font-medium text-gray-800 bg-gray-100 rounded-md border border-gray-300">
+                  <span className="px-2 py-1 text-xs sm:text-sm font-medium text-gray-800 border rounded-md">
                     {item.qty || item.quantity}
                   </span>
                   <button
-                   onClick={() => handleUpdateLocalQuantity(item.menu_item_id, item.quantity + 1)}
-                    className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90"
+                    onClick={() =>
+                      handleUpdateLocalQuantity(item.menu_item_id, item.quantity + 1)
+                    }
+                    className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
                   >
                     <FaPlus size={10} />
                   </button>
                 </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-</div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
 
   <div className="bg-white rounded-lg shadow p-4 mt-4 md:mt-6">
     <h2 className="text-sm md:text-lg font-semibold mb-4">Order Summary</h2>
     <div className="flex justify-between text-xs md:text-sm mb-2">
       <span>Item Total</span>
       <span>{formatPrice(displayedTaxableAmount) || 0}</span>
-      </div>
+    </div>
     <div className="flex justify-between text-xs md:text-sm mb-4">
       <span>Service Fee</span>
       <span>{formatPrice(displayedTaxAmount) || 0} </span>
@@ -543,9 +593,10 @@ console.log("displayedCartItems", displayedCartItems);
     <div className="flex justify-between text-sm md:text-lg font-bold">
       <span>TO PAY</span>
       <span>{formatPrice(displayedTotalAmount)}</span>
-      </div>
+    </div>
   </div>
 </div>
+
 
 {paymentCompleted && <OrderStatus isVisible={true} onClose={() => setPaymentCompleted(false)} orderStatus="preparing" />}
 
