@@ -47,12 +47,15 @@ const AuthDrawer = ({ isOpen, onClose }) => {
 // Update the closePopup function to handle redirection
 const closePopup = () => {
   setPopupOpen(false);
-  if (popupConfig.redirectOnClose) {
-    router.push(popupConfig.redirectOnClose);
+  if (typeof popupConfig.onClose === "function") {
+    setTimeout(() => {
+      popupConfig.onClose();
+    }, 200); // Slight delay to ensure state updates smoothly
   }
 };
 
-  const otpRefs = [useRef(), useRef(), useRef(), useRef()];
+
+const otpRefs = Array.from({ length: 4 }, () => useRef());
  // Reset form fields when the modal opens
  useEffect(() => {
   if (isOpen) {
@@ -115,22 +118,69 @@ const closePopup = () => {
 
   return true;
 };
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  if (name === "mobileNumber" && !/^\d*$/.test(value)) return;
+  setFormData((prev) => ({ ...prev, [name]: value }));
+};
 
-  const handleOtpChange = (index, value) => {
-    if (value.length > 1) return; 
+const handleOtpChange = (index, value) => {
+  if (!/^\d?$/.test(value)) return;
 
-    let newOtp = [...formData.otp];
-    newOtp[index] = value;
-    setFormData((prev) => ({ ...prev, otp: newOtp }));
+  const newOtp = [...formData.otp];
+  newOtp[index] = value;
 
-    if (value && index < otpRefs.length - 1) {
-      otpRefs[index + 1].current.focus();
+  setFormData((prev) => ({
+    ...prev,
+    otp: newOtp,
+  }));
+
+  // Move to next input after a short delay to allow state update
+  if (value && index < otpRefs.length - 1) {
+    setTimeout(() => {
+      otpRefs[index + 1]?.current?.focus();
+    }, 10);
+  }
+};
+
+
+const handleOtpKeyDown = (e, index) => {
+  if (e.key === "ArrowRight" && index < otpRefs.length - 1) {
+    e.preventDefault();
+    otpRefs[index + 1]?.current?.focus();
+  } else if (e.key === "ArrowLeft" && index > 0) {
+    e.preventDefault();
+    otpRefs[index - 1]?.current?.focus();
+  } else if (e.key === "Backspace") {
+    e.preventDefault();
+    const newOtp = [...formData.otp];
+    if (newOtp[index]) {
+      newOtp[index] = "";
+      setFormData((prev) => ({
+        ...prev,
+        otp: newOtp,
+      }));
+    } else if (index > 0) {
+      otpRefs[index - 1]?.current?.focus();
     }
-  };
+  }
+};
+
+
+const handlePaste = (e) => {
+  e.preventDefault();
+  const paste = e.clipboardData.getData("text").slice(0, 4).split("");
+  if (!/^\d+$/.test(paste.join(""))) return;
+
+  const updatedOtp = ["", "", "", ""].map((_, i) => paste[i] || "");
+  setFormData((prev) => ({ ...prev, otp: updatedOtp }));
+
+  paste.forEach((char, idx) => {
+    if (otpRefs.current[idx]) otpRefs.current[idx].value = char;
+  });
+
+  otpRefs.current[Math.min(3, paste.length)].focus();
+};
 
   const handleGenerateOtp = () => {
     if (!validateFields()) return;
@@ -152,15 +202,26 @@ const closePopup = () => {
           showCancelButton: false,
         });
       } else {
-        openPopup({
-          type: "error",
-          title: "Error!",
-          subText: res.payload || "Failed to send OTP. Try again.",
-          onClose: closePopup,
-          autoClose: 2,
-          showConfirmButton: false,
-        showCancelButton: false,
-        });
+        const errorMessage = typeof res.payload === "string" ? res.payload.toLowerCase() : "";
+
+const isInvalidMobileMessage = errorMessage.includes("invalid mobile") || errorMessage.includes("register");
+
+openPopup({
+  type: "error",
+  title: "OTP Error",
+  subText: res.payload || "Failed to send OTP.",
+  autoClose: 2,
+  showConfirmButton: false,
+  showCancelButton: false,
+  onClose: () => {
+    console.log("Switching to signup mode...");
+    if (!isSignUp && isInvalidMobileMessage) {
+      setIsSignUp(true);
+    }
+  }
+  
+});
+
       }
     });
   };
@@ -322,18 +383,20 @@ const closePopup = () => {
                   <h3 className="text-lg font-semibold text-center text-gray-800 mb-4">
                     Enter OTP
                   </h3>
-                  <div className="flex justify-center space-x-3 mb-6">
-                    {formData.otp.map((digit, index) => (
+                  <div onPaste={handlePaste} className="flex justify-center space-x-3 mb-6">
+                  {formData.otp.map((digit, index) => (
                       <input
                         key={index}
                         type="text"
                         value={digit}
+                        onKeyDown={(e) => handleOtpKeyDown(e, index)}
                         onChange={(e) => handleOtpChange(index, e.target.value)}
                         ref={otpRefs[index]}
                         maxLength="1"
                         className="w-12 h-12 text-xl text-center border rounded-lg outline-none focus:ring-2 focus:ring-red-500"
                       />
                     ))}
+                   
                   </div>
                   <button
                     type="button"
