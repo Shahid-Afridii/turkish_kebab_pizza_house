@@ -7,6 +7,7 @@ import { clearCart } from "../../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { getAddresses, deleteAddress,addAddress,setPrimaryAddress,updateAddress } from "../../redux/slices/userAddressSlice";
 import CustomPopup from "../../components/CustomPopup";
+import { getOrders } from "../../redux/slices/orderSlice"; // ✅ Make sure this is correct
 
 const drawerVariants = {
     hidden: { x: "100%", opacity: 0 },
@@ -44,11 +45,13 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
    const [customType, setCustomType] = useState(""); // State for custom address type
 
    const addressTitleRef = useRef(null);
-
+ 
+  
   // State for custom popup
    const [isPopupOpen, setPopupOpen] = useState(false);
    const [popupConfig, setPopupConfig] = useState({});
   const dispatch = useDispatch();
+  const { orderList } = useSelector((state) => state.order);
 
   const openPopup = (config) => {
     setPopupConfig(config);
@@ -349,6 +352,8 @@ if (name === "pincode" && postcodeRegex.test(value.trim())) {
   useEffect(() => {
     dispatch(getAddresses());
   }, [dispatch]);
+  const orders = Array.isArray(orderList) ? orderList : [];
+
   // ✅ Static Order History (Precise Fix)
   // const orders = [
   //   {
@@ -376,7 +381,7 @@ if (name === "pincode" && postcodeRegex.test(value.trim())) {
   //     rateOrder: true,
   //   },
   // ];
-  const orders=[];
+  
   const [showOptions, setShowOptions] = useState(null);
   const dropdownRef = useRef(null);
 const handleLogout = () => {
@@ -401,6 +406,9 @@ useEffect(() => {
     document.removeEventListener("mousedown", handleClickOutside);
   };
 }, []);
+useEffect(() => {
+  dispatch(getOrders());
+}, [dispatch]);
   return (
     <AnimatePresence>
       {isOpen && (
@@ -512,51 +520,53 @@ useEffect(() => {
   </div>
 ) : (
   orders.map((order) => (
-    <div key={order.id} className="border-b pb-4">
-      {/* **Order Container (Responsive Flex)** */}
+    <div key={order.order_id} className="border-b pb-4">
       <div className="flex flex-col md:flex-row items-start md:items-center">
-        
-        {/* Order Image (Ensures it stays properly aligned) */}
-        <img src={order.image} alt={order.title} className="w-16 h-16 md:w-20 md:h-20 rounded-md object-cover" />
-        
-        {/* Order Details */}
+        {/* Image */}
+        <img
+          src={order.items[0]?.image ? `${import.meta.env.VITE_IMAGE_URL}${order.items[0].image}` : "/assets/noimage.png"}
+          alt={order.items[0]?.name}
+          className="w-16 h-16 md:w-20 md:h-20 rounded-md object-cover"
+        />
+  
+        {/* Details */}
         <div className="mt-2 md:mt-0 md:ml-4 flex-1">
-          {/* Title & Date in Same Row on Desktop, Stacked on Mobile */}
           <div className="flex flex-col md:flex-row justify-between">
-            <h4 className="text-sm font-semibold">{order.title}</h4>
-            <span className="text-xs font-semibold text-gray-600">{order.date}</span>
+            <h4 className="text-sm font-semibold">
+              Order #{order.order_id}
+            </h4>
+            <span className="text-xs font-semibold text-gray-600">
+              {new Date(order.updatedAt).toLocaleDateString("en-GB", {
+                day: "numeric", month: "short", year: "numeric"
+              })}
+            </span>
           </div>
-
-          {/* Order Description */}
+  
           <p className="text-xs text-gray-600 leading-tight mt-1">
-            <strong>Toppings:</strong> {order.toppings} | <strong>Dip:</strong> {order.dip} <br />
-            <strong>Drinks:</strong> {order.drinks}
+            <strong>Items:</strong>{" "}
+            {order.items.map((item) => item.name).join(", ")}
           </p>
-
-          {/* **Track Order & Delivery Date (Responsive Alignment)** */}
-          {order.trackOrder && (
+          {/* <span className="mr-1 text-xs">Delivery: {new Date(order.updatedAt).toLocaleString()}</span>{" "} */}
+          
+          {order.order_status === "pending" && (
             <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center mt-2 space-y-2 md:space-y-0">
-              
-              {/* Track Order Button */}
               <button className="text-xs border px-3 py-1 rounded-md text-red-500 border-red-500">
                 Track Order
               </button>
-
-              {/* Delivery Info */}
               <div className="flex items-center text-xs font-medium text-gray-800">
-                <span className="mr-1">Delivery:</span> {order.deliveryDate}
+                
                 <FiMapPin className="ml-2 text-red-500" />
-                <span className="ml-1 text-red-500 font-medium">{order.status}</span>
+                <span className="ml-1 text-red-500 font-medium">{order.address.city}</span>
               </div>
             </div>
           )}
-
-          {/* **Reorder & Rate Order (Proper Spacing on Mobile)** */}
-          {order.reorder && (
+  
+          {/* If you want Reorder or Rate Order buttons based on status */}
+          {order.order_status === "delivered" && (
             <div className="flex flex-row md:flex-row md:justify-start space-x-2 mt-2">
-              <button className="text-xs md:text-xs px-3 py-1 border rounded-md bg-gray-200 text-gray-800 w-1/2 md:w-auto">
+              {/* <button className="text-xs md:text-xs px-3 py-1 border rounded-md bg-gray-200 text-gray-800 w-1/2 md:w-auto">
                 REORDER
-              </button>
+              </button> */}
               <button className="text-xs md:text-xs px-3 py-1 border rounded-md text-red-500 border-red-500 w-1/2 md:w-auto">
                 RATE ORDER
               </button>
@@ -566,6 +576,7 @@ useEffect(() => {
       </div>
     </div>
   ))
+  
 )}
              </div>
              
