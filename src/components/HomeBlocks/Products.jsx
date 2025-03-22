@@ -164,16 +164,20 @@ const Products = forwardRef(({ productRef }, ref) => {
             </span>
           )}
           {/* Food Type Indicator */}
-          <span
-            className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full border border-gray-300 shadow-md bg-white"
-          >
-            <span
-              className="w-3 h-3 rounded-full"
-              style={{
-                backgroundColor: item.food_type === "non-veg" ? "#D32F2F" : "#388E3C",
-              }}
-            ></span>
-          </span>
+          {item.food_type !== "others" && (
+  <span
+    className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full border border-gray-300 shadow-md bg-white"
+  >
+    <span
+      className="w-3 h-3 rounded-full"
+      style={{
+        backgroundColor:
+          item.food_type === "non-veg" ? "#D32F2F" : "#388E3C",
+      }}
+    ></span>
+  </span>
+)}
+
           <img
   src={item.image ? `${IMAGE_URL}${item.image}` : "/assets/noimage.png"}
   alt={item.name}
