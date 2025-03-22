@@ -1,7 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaCheckCircle } from "react-icons/fa";
-import { signup, login, signupVerify, verifyOtp,getProfile } from "../../redux/slices/authSlice";
+import { signup, login, signupVerify, verifyOtp } from "../../redux/slices/authSlice";
 import CustomPopup from "../../components/CustomPopup";
 
 const AccountSection = () => {
@@ -18,8 +18,6 @@ const AccountSection = () => {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [popupConfig, setPopupConfig] = useState({});
 
-  const otpInputs = useRef([]);
-
   const openPopup = (config) => {
     setPopupConfig(config);
     setPopupOpen(true);
@@ -31,8 +29,6 @@ const AccountSection = () => {
       setTimeout(() => popupConfig.onClose(), 500);
     }
   };
-
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleSendOtp = () => {
     if (!mobileNumber || mobileNumber.length < 10) {
@@ -47,30 +43,16 @@ const AccountSection = () => {
       return;
     }
 
-    if (isSignUp) {
-      if (!name.trim() || !email.trim()) {
-        openPopup({
-          type: "error",
-          title: "Signup Details Required",
-          subText: "Please fill in your name and email.",
-          showConfirmButton: false,
-          showCancelButton: false,
-          autoClose: 3,
-        });
-        return;
-      }
-
-      if (!isValidEmail(email)) {
-        openPopup({
-          type: "error",
-          title: "Invalid Email",
-          subText: "Please enter a valid email address.",
-          showConfirmButton: false,
-          showCancelButton: false,
-          autoClose: 3,
-        });
-        return;
-      }
+    if (isSignUp && (!name.trim() || !email.trim())) {
+      openPopup({
+        type: "error",
+        title: "Signup Details Required",
+        subText: "Please fill in your name and email.",
+        showConfirmButton: false,
+        showCancelButton: false,
+        autoClose: 3,
+      });
+      return;
     }
 
     const action = isSignUp
@@ -79,8 +61,6 @@ const AccountSection = () => {
 
     dispatch(action).then((res) => {
       if (res.payload?.status) {
-        
-       
         setStep(2);
         openPopup({
           type: "success",
@@ -91,22 +71,14 @@ const AccountSection = () => {
           autoClose: 3,
         });
       } else {
-        const isInvalidMobileMessage = typeof res.payload === "string" && res.payload.toLowerCase().includes("invalid mobile");
-
-openPopup({
-  type: "error",
-  title: "OTP Error",
-  subText: res.payload || "Failed to send OTP.",
-  showConfirmButton: false,
-  showCancelButton: false,
-  autoClose: 3,
-  onClose: () => {
-    if (!isSignUp && isInvalidMobileMessage) {
-      setIsSignUp(true); // ✅ Automatically redirect to Sign Up mode
-    }
-  }
-});
-
+        openPopup({
+          type: "error",
+          title: "OTP Error",
+          subText: res.payload || "Failed to send OTP.",
+          showConfirmButton: false,
+          showCancelButton: false,
+          autoClose: 3,
+        });
       }
     });
   };
@@ -130,7 +102,6 @@ openPopup({
 
     dispatch(action).then((res) => {
       if (res.payload?.status) {
-        dispatch(getProfile());
         openPopup({
           type: "success",
           title: "Success",
@@ -157,43 +128,6 @@ openPopup({
         });
       }
     });
-  };
-
-  const handleOtpChange = (val, index) => {
-    const otpArray = otp.split("");
-    otpArray[index] = val;
-    const updatedOtp = otpArray.join("");
-    setOtp(updatedOtp);
-
-    if (val && index < 3) {
-      otpInputs.current[index + 1].focus();
-    }
-  };
-
-  const handleOtpKeyDown = (e, index) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      otpInputs.current[index - 1].focus();
-    }
-    if (e.key === "ArrowRight" && index < 3) {
-      otpInputs.current[index + 1].focus();
-    }
-    if (e.key === "ArrowLeft" && index > 0) {
-      otpInputs.current[index - 1].focus();
-    }
-  };
-
-  const handlePaste = (e) => {
-    e.preventDefault();
-    const paste = e.clipboardData.getData("text").slice(0, 4);
-    if (!/^[0-9]+$/.test(paste)) return;
-
-    const otpArray = paste.split("");
-    setOtp(paste);
-    otpArray.forEach((char, idx) => {
-      otpInputs.current[idx].value = char;
-    });
-
-    otpInputs.current[Math.min(3, otpArray.length - 1)].focus();
   };
 
   const handleEditNumber = () => {
@@ -227,23 +161,10 @@ openPopup({
             <input
               type="text"
               value={mobileNumber}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (/^\d*$/.test(val)) setMobileNumber(val);
-              }}
-              
+              onChange={(e) => setMobileNumber(e.target.value)}
               placeholder="117 2345678"
               className="flex-1 border rounded-lg px-2 md:px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
             />
-            <button
-              onClick={handleSendOtp}
-              disabled={isLoading}
-              className={`bg-primary text-white px-4 py-2 rounded-md text-sm font-semibold transition ${
-                isLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-primary/90"
-              }`}
-            >
-              {isLoading ? "Processing..." : "OTP"}
-            </button>
           </div>
 
           {isSignUp && (
@@ -264,55 +185,46 @@ openPopup({
               />
             </>
           )}
+
+          <button
+            onClick={handleSendOtp}
+            className="bg-primary text-white w-full py-2 rounded-lg text-sm font-medium hover:bg-primary/90"
+          >
+            Send OTP
+          </button>
         </div>
       ) : (
         <div>
-          <p className="text-xs md:text-sm text-gray-600 mb-4">Enter the OTP sent to your mobile</p>
-
-          <div className="flex items-center gap-4">
-            <div className="flex gap-2" onPaste={handlePaste}>
-              {[0, 1, 2, 3].map((_, idx) => (
-                <input
-                  key={idx}
-                  type="text"
-                  maxLength="1"
-                  onChange={(e) => handleOtpChange(e.target.value, idx)}
-                  onKeyDown={(e) => handleOtpKeyDown(e, idx)}
-                  ref={(el) => (otpInputs.current[idx] = el)}
-                  className="w-12 h-12 text-xl text-center border-2 border-red-500 rounded-md outline-none  focus:ring-red-400"
-                />
-              ))}
-            </div>
-
+          <p className="text-xs md:text-sm text-gray-600 mb-4">
+            Enter the OTP sent to your mobile
+          </p>
+          <div className="flex items-center gap-2 md:gap-4">
+            <input
+              type="text"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              placeholder="Enter your OTP"
+              maxLength="4"
+              className="flex-1 border rounded-lg px-2 md:px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
+            />
             <button
               onClick={handleVerifyOtp}
-              disabled={isLoading}
-              className={`bg-primary text-white px-4 py-2 rounded-lg font-medium text-sm transition ${
-                isLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-primary/90"
-              }`}
+              className="bg-primary text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-primary/90"
             >
-              {isLoading ? "Processing..." : "Verify OTP"}
+              Verify OTP
             </button>
           </div>
-
           <div className="flex justify-between mt-4 text-xs md:text-sm text-gray-600">
             <p>
               Haven’t received?{" "}
-              <button
-                onClick={handleSendOtp}
-                disabled={isLoading}
-                className="text-primary underline disabled:opacity-60"
-              >
+              <button onClick={handleSendOtp} className="text-primary underline">
                 Resend OTP
               </button>
             </p>
-            {isSignUp && (
-    <button onClick={handleEditNumber} className="text-primary underline">
-      Edit Number
-    </button>
-  )}
+            <button onClick={handleEditNumber} className="text-primary underline">
+              Edit Number
+            </button>
           </div>
-
           <div className="mt-4 text-xs md:text-sm text-gray-800 font-semibold">
             <img
               src="https://flagcdn.com/w40/gb.png"
