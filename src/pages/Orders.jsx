@@ -13,6 +13,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { AiOutlineFilePdf, AiOutlineFileExcel } from "react-icons/ai"; // Add at the top
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -155,18 +156,21 @@ console.log("paymentOptions", paymentOptions);
         <MdNavigateNext className="mx-2" />
         <span className="text-primary font-semibold">Order History</span>
       </nav>
-      <div className="flex flex-wrap justify-end gap-3 mb-6">
+      <div className="flex flex-row justify-end items-center gap-2 sm:gap-3 mb-4">
   <button
     onClick={downloadPDF}
-    className="bg-red-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-700 transition"
+    className="flex items-center gap-1 bg-red-600 text-white px-3 py-1.5 rounded text-xs sm:text-sm font-medium hover:bg-red-700 transition"
   >
-    Download PDF
+    <AiOutlineFilePdf className="text-base sm:text-lg" />Invoice
+    <span className="hidden xs:inline">PDF</span>
   </button>
+
   <button
     onClick={downloadExcel}
-    className="bg-green-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-green-700 transition"
+    className="flex items-center gap-1 bg-green-600 text-white px-3 py-1.5 rounded text-xs sm:text-sm font-medium hover:bg-green-700 transition"
   >
-    Download Excel
+    <AiOutlineFileExcel className="text-base sm:text-lg" /> Invoice
+    <span className="hidden xs:inline">Excel</span>
   </button>
 </div>
       {/* Mobile Filter Button */}
