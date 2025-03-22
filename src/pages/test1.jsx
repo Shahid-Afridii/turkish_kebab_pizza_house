@@ -8,29 +8,22 @@ import { FaHome } from "react-icons/fa";
 import { MdNavigateNext } from "react-icons/md";
 import { motion } from "framer-motion";
 import { IoFilter } from "react-icons/io5";
-import withErrorBoundary from "../components/ErrorBoundary/withErrorBoundary"; // Import HOC
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
 
 const Orders = () => {
   const dispatch = useDispatch();
   const { orderList, isLoading, error } = useSelector((state) => state.order);
   const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
-
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
+  const [tempStatusFilter, setTempStatusFilter] = useState(statusFilter);
+  const [tempPaymentFilter, setTempPaymentFilter] = useState(paymentFilter);
+  const [tempStartDate, setTempStartDate] = useState(startDate);
+  const [tempEndDate, setTempEndDate] = useState(endDate);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("All");
   const [paymentFilter, setPaymentFilter] = useState("All");
   const topRef = useRef(null);
-
-  const [showMobileFilter, setShowMobileFilter] = useState(false);
-  const [tempStatusFilter, setTempStatusFilter] = useState(statusFilter);
-  const [tempPaymentFilter, setTempPaymentFilter] = useState(paymentFilter);
-  const [tempStartDate, setTempStartDate] = useState(startDate);
-  const [tempEndDate, setTempEndDate] = useState(endDate);
 
   const itemsPerPage = 4;
   useEffect(() => {
@@ -63,15 +56,12 @@ const Orders = () => {
     }
   };
 
- // If orderList itself is an array, use it directly:
-const orders = Array.isArray(orderList) ? orderList : [];
+const orders = orderList?.data || [];
 
-const statusOptions = ["All", ...new Set(orders.map(order => order.order_status?.toLowerCase()).filter(Boolean))];
+const statusOptions = ["All", ...new Set(orders.map(order => order.order_status).filter(Boolean))];
 const paymentOptions = ["All", ...new Set(orders.map(order => order.mode).filter(Boolean))];
 
-console.log("orders", orders);
-console.log("statusOptions", statusOptions);
-console.log("paymentOptions", paymentOptions);
+  
 
   const PaginationControls = () => (
     <div className="flex justify-center gap-3 items-center mt-6 text-xs sm:text-sm">
@@ -100,51 +90,7 @@ console.log("paymentOptions", paymentOptions);
       </button>
     </div>
   );
-  const downloadPDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text("Order Invoice", 14, 15);
-  
-    const tableData = filteredOrders.map((order) => [
-      order.order_id,
-      formatDate(order.updatedAt),
-      order.order_status,
-      order.mode,
-      order.total_amount.toFixed(2),
-      order.address?.name || "-",
-    ]);
-  
-    autoTable(doc, {
-      startY: 25,
-      head: [["Order ID", "Date", "Status", "Payment", "Amount", "Customer"]],
-      body: tableData,
-      styles: { fontSize: 10 },
-      headStyles: { fillColor: [255, 99, 132] },
-    });
-  
-    doc.save("orders_invoice.pdf");
-  };
-  
-  
-  const downloadExcel = () => {
-    const excelData = filteredOrders.map((order) => ({
-      "Order ID": order.order_id,
-      "Date": formatDate(order.updatedAt),
-      "Status": order.order_status,
-      "Payment": order.mode,
-      "Amount (£)": order.total_amount,
-      "Customer": order.address?.name || "-",
-      "Phone": order.address?.phone || "-",
-    }));
-  
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
-  
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(data, "orders_invoice.xlsx");
-  };
+
   return (
     <div className="max-w-5xl mx-auto px-3 sm:px-4 py-4">
       {/* Breadcrumbs */}
@@ -155,38 +101,10 @@ console.log("paymentOptions", paymentOptions);
         <MdNavigateNext className="mx-2" />
         <span className="text-primary font-semibold">Order History</span>
       </nav>
-      <div className="flex flex-wrap justify-end gap-3 mb-6">
-  <button
-    onClick={downloadPDF}
-    className="bg-red-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-700 transition"
-  >
-    Download PDF
-  </button>
-  <button
-    onClick={downloadExcel}
-    className="bg-green-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-green-700 transition"
-  >
-    Download Excel
-  </button>
-</div>
-      {/* Mobile Filter Button */}
-      <div className="flex sm:hidden justify-end mb-3">
-        <button
-          onClick={() => {
-            setTempStatusFilter(statusFilter);
-            setTempPaymentFilter(paymentFilter);
-            setTempStartDate(startDate);
-            setTempEndDate(endDate);
-            setShowMobileFilter(true);
-          }}
-          className="flex items-center gap-1 px-3 py-1 text-sm border rounded bg-gray-100 hover:bg-gray-200"
-        >
-          <IoFilter /> Filter
-        </button>
-      </div>
 
-      {/* Desktop Filters */}
-      <div className="hidden  sm:flex flex-col gap-3 sm:gap-4 md:flex-row justify-between items-start md:items-center mb-4">
+      {/* Filters */}
+      <div className="flex flex-col gap-3 sm:gap-4 md:flex-row justify-between items-start md:items-center mb-4">
+        {/* Status */}
         <div className="flex flex-wrap gap-2">
           {statusOptions.map((status) => (
             <button
@@ -195,7 +113,7 @@ console.log("paymentOptions", paymentOptions);
                 setStatusFilter(status);
                 setCurrentPage(1);
               }}
-              className={`px-3 py-1 capitalize text-xs sm:text-sm rounded-full font-medium border transition ${
+              className={`px-3 py-1 text-xs sm:text-sm rounded-full font-medium border transition ${
                 statusFilter === status
                   ? "bg-red-600 text-white border-red-600"
                   : "text-gray-600 hover:bg-gray-100 border-gray-300"
@@ -206,6 +124,7 @@ console.log("paymentOptions", paymentOptions);
           ))}
         </div>
 
+        {/* Payment */}
         <div className="flex flex-wrap gap-2">
           {paymentOptions.map((mode) => (
             <button
@@ -225,10 +144,9 @@ console.log("paymentOptions", paymentOptions);
           ))}
         </div>
       </div>
-      
 
       {/* Count & Date Filters */}
-      <div className="hidden lg:flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 text-sm text-gray-700">
+      <div className=" flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 text-sm text-gray-700">
         <span className="font-medium text-base">
           Showing {filteredOrders.length} of {orderList.length} Orders
         </span>
@@ -249,95 +167,10 @@ console.log("paymentOptions", paymentOptions);
         </div>
       </div>
 
-      {/* Mobile Filter Modal */}
-      {showMobileFilter && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-end">
-          <div className="bg-white w-full p-5 rounded-t-lg max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Filter Orders</h3>
-              <button onClick={() => setShowMobileFilter(false)} className="text-gray-500 text-sm">
-                Close
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm font-medium mb-2">Order Status</p>
-                <div className="flex flex-wrap gap-2 capitalize">
-                  {statusOptions.map((status) => (
-                    <button
-                      key={status}
-                      onClick={() => setTempStatusFilter(status)}
-                      className={`px-3 py-1 capitalize text-xs rounded-full font-medium border transition ${
-                        tempStatusFilter === status
-                          ? "bg-red-600 text-white border-red-600"
-                          : "text-gray-600 hover:bg-gray-100 border-gray-300"
-                      }`}
-                    >
-                      {status}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="text-sm font-medium mb-2">Payment Mode</p>
-                <div className="flex flex-wrap gap-2">
-                  {paymentOptions.map((mode) => (
-                    <button
-                      key={mode}
-                      onClick={() => setTempPaymentFilter(mode)}
-                      className={`px-3 py-1 text-xs capitalize rounded-full font-medium border transition ${
-                        tempPaymentFilter === mode
-                          ? "bg-indigo-600 text-white border-indigo-600"
-                          : "text-gray-600 hover:bg-gray-100 border-gray-300"
-                      }`}
-                    >
-                      {mode}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="text-sm">
-                <p className="font-medium mb-2">Date Range</p>
-                <div className="flex gap-3">
-                  <input
-                    type="date"
-                    value={tempStartDate}
-                    onChange={(e) => setTempStartDate(e.target.value)}
-                    className="w-1/2 px-2 py-1.5 border rounded border-gray-300"
-                  />
-                  <input
-                    type="date"
-                    value={tempEndDate}
-                    onChange={(e) => setTempEndDate(e.target.value)}
-                    className="w-1/2 px-2 py-1.5 border rounded border-gray-300"
-                  />
-                </div>
-              </div>
-
-              <button
-                onClick={() => {
-                  setStatusFilter(tempStatusFilter);
-                  setPaymentFilter(tempPaymentFilter);
-                  setStartDate(tempStartDate);
-                  setEndDate(tempEndDate);
-                  setCurrentPage(1);
-                  setShowMobileFilter(false);
-                }}
-                className="w-full mt-4 bg-red-600 text-white py-2 rounded text-sm font-medium"
-              >
-                Apply Filters
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Pagination Top */}
       {filteredOrders.length > 0 && <PaginationControls />}
- {/* Loader */}
+
+      {/* Loader */}
       {isLoading ? (
         <div className="space-y-6 mt-4">
           {Array.from({ length: 4 }).map((_, idx) => (
@@ -441,10 +274,11 @@ console.log("paymentOptions", paymentOptions);
           ))}
         </div>
       )}
-            {filteredOrders.length > 0 && <PaginationControls />}
 
+      {/* Pagination Bottom */}
+      {filteredOrders.length > 0 && <PaginationControls />}
     </div>
   );
 };
 
-export default withErrorBoundary(Orders);
+export default Orders;
