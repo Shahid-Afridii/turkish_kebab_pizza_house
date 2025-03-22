@@ -137,12 +137,15 @@ const scrollToForm = () => {
       newErrors.phone = "Enter a valid 10-digit phone number.";
     }
   
-    // ✅ Pincode Validation (Ensure Exactly 6 Digits)
-    if (!newAddress.pincode.trim()) {
-      newErrors.pincode = "Pincode is required.";
-    } else if (!/^\d{6}$/.test(newAddress.pincode.trim())) {
-      newErrors.pincode = "Enter a valid 6-digit pincode.";
-    }
+   // ✅ Belfast Postcode Validation (BT1 to BT17 only)
+const postcodeRegex = /^BT(1[0-7]|[1-9])\s?\d[ABDEFGHJLNPQRSTUWXYZ]{2}$/i;
+
+if (!newAddress.pincode.trim()) {
+  newErrors.pincode = "Pincode is required.";
+} else if (!postcodeRegex.test(newAddress.pincode.trim())) {
+  newErrors.pincode = "Sorry we don't deliver outside Belfast.";
+}
+
   
     setErrors(newErrors);
   
@@ -162,9 +165,11 @@ const handleChange = (e) => {
     if (name === "phone" && /^\d{10}$/.test(value.trim())) {
       delete newErrors.phone;
     }
-    if (name === "pincode" && /^\d{6}$/.test(value.trim())) {
-      delete newErrors.pincode;
-    }
+    const postcodeRegex = /^BT(1[0-7]|[1-9])\s?\d[ABDEFGHJLNPQRSTUWXYZ]{2}$/i;
+if (name === "pincode" && postcodeRegex.test(value.trim())) {
+  delete newErrors.pincode;
+}
+
     if (value.trim()) {
       delete newErrors[name]; // ✅ Remove other errors if input is valid
     }
@@ -186,6 +191,7 @@ const handleChange = (e) => {
         subText: "Please correct the errors before submitting.",
         autoClose: 2,
         showConfirmButton: false,
+        showCancelButton: false,
       });
       return;
     }

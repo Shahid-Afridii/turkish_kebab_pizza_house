@@ -68,9 +68,11 @@ const DeliveryPickupSection = ({ mode, setMode }) => {
     if (!newAddress.phone.trim() || !/^\d{10}$/.test(newAddress.phone.trim())) {
       newErrors.phone = "Enter a valid 10-digit phone number.";
     }
-    if (!newAddress.pincode.trim() || !/^\d{6}$/.test(newAddress.pincode.trim())) {
-      newErrors.pincode = "Enter a valid 6-digit pincode.";
-    }
+    const postcodeRegex = /^BT(1[0-7]|[1-9])\s?\d[ABDEFGHJLNPQRSTUWXYZ]{2}$/i;
+if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())) {
+  newErrors.pincode = "Sorry we don't deliver outside Belfast.";
+}
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
