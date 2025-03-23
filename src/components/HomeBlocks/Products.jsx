@@ -5,89 +5,11 @@ import withErrorBoundary from "../../components/ErrorBoundary/withErrorBoundary"
 import { motion } from "framer-motion";
 import { FaPlus,FaChevronDown } from "react-icons/fa";
 import { fetchMenuItems } from "../../redux/slices/menuSlice"; 
+import { clearSearchResults } from "../../redux/slices/searchSlice";
 import { formatPrice } from "../../utils/formatPrice";
 const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 // Static Data for All Items
-const items = [
-    {
-      id: 1,
-      name: "Pizza Meal For 1 (10\")",
-      price: "£10",
-      description: "2 toppings, dip, chips and free can of drink",
-      img: "assets/delicious-pizza-studio 1.png",
-      rating: "4.5",
-      reviews: "1K Reviews",
-      popular: true,
-      toppings: ["Mushroom", "Chicken", "Pepperoni", "Sweetcorn", "Onions", "Green Peppers"],
-      dips: ["Curry", "Gravy", "Garlic", "Chilli", "Mint Sauce"],
-      drinks: ["Coca Cola", "Diet Coke", "Fanta Orange", "Sprite"],
-    },
-    {
-      id: 2,
-      name: "Pizza Meal For 2 (12\")",
-      price: "£14",
-      description: "2 toppings, chips, dip and 2 free cans",
-      img: "assets/delicious-pizza-studio (2) 1.png",
-      rating: "4.5",
-      reviews: "1K Reviews",
-      popular: true,
-      toppings: ["Tuna", "Bacon", "Jalapenos", "Kebab", "Salami", "Sweetcorn"],
-      dips: ["House", "Garlic", "Chilli", "Barbecue", "Honey Mustard"],
-      drinks: ["Coca Cola", "Diet Coke", "Coke Zero", "Pepsi", "7UP"],
-    },
-    {
-      id: 3,
-      name: "10\" Munch Box",
-      price: "£11",
-      description: "Lamb kebab, 2x wings, 2x nuggets, 2x chicken...",
-      img: "assets/appetizing-kofta-kebab-meatballs-with-sauce-tortillas-tacos-white-plate 1.png",
-      rating: "4.5",
-      reviews: "1K Reviews",
-      popular: true,
-      toppings: ["Lamb", "Chicken", "Nuggets", "Wings", "Cheese", "Pickles"],
-      dips: ["Curry", "Garlic", "Hot Sauce", "Mayonnaise"],
-      drinks: ["Sprite", "Coca Cola", "Diet Coke", "Fanta Orange"],
-    },
-    {
-      id: 4,
-      name: "Special Pizza Meal...",
-      price: "£20",
-      description: "2 toppings, large chips, french garlic bread, 2 dips...",
-      img: "assets/top-view-whole-pepperoni-pizza-with-sesame-sprinkles-top 1.png",
-      rating: "4.5",
-      reviews: "1K Reviews",
-      popular: false,
-      toppings: ["Salami", "Olives", "Peppers", "Chicken", "Mushrooms", "Sweetcorn"],
-      dips: ["House", "Garlic", "Barbecue", "Ranch", "Ketchup"],
-      drinks: ["Coke Zero", "Fanta Orange", "Pepsi", "Mountain Dew"],
-    },
-    {
-      id: 5,
-      name: "Burger Meal For 2",
-      price: "£16",
-      description: "2x burgers (chicken with cheese or 1/4lb cheese...",
-      img: "assets//burger-with-fries-cherry-tomatoes 1.png",
-      rating: "4.5",
-      reviews: "1K Reviews",
-      popular: false,
-      toppings: ["Cheese", "Lettuce", "Tomato", "Pickles", "Onions", "Bacon"],
-      dips: ["Ketchup", "Mayonnaise", "Mustard", "Ranch"],
-      drinks: ["Coca Cola", "Sprite", "Water", "Diet Coke"],
-    },
-    {
-      id: 6,
-      name: "Big Family x2 Pizza...",
-      price: "£16",
-      description: "2 toppings, 2 chips, x4 goujons, 2 dips and 1.25l...",
-      img: "assets/pizza-pizza-filled-with-tomatoes-salami-olives 1.png",
-      rating: "4.5",
-      reviews: "1K Reviews",
-      popular: false,
-      toppings: ["Pepperoni", "Cheese", "Sweetcorn", "Jalapenos", "Mushrooms", "Chicken"],
-      dips: ["Garlic", "Chilli", "Barbecue", "Honey Mustard", "Ranch"],
-      drinks: ["Coca Cola", "Diet Coke", "Sprite", "Fanta Orange"],
-    },
-  ];
+
   const SkeletonLoader = () => {
     return (
       <div className="bg-white animate-pulse rounded-lg shadow-lg overflow-hidden border border-gray-200">
@@ -106,6 +28,11 @@ const Products = forwardRef(({ productRef }, ref) => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const { menuItems, selectedCategoryId, status } = useSelector((state) => state.menu);
+  const { results: searchResults } = useSelector((state) => state.search);
+  const displayedItems =
+  searchResults && searchResults.length > 0 ? searchResults : menuItems;
+  const { keyword } = useSelector((state) => state.search);
+
   const dispatch = useDispatch();
   const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
   const handleShowMore = () => {
@@ -122,15 +49,31 @@ const Products = forwardRef(({ productRef }, ref) => {
     setSelectedItem(null);
   };
   useEffect(() => {
-    if (selectedCategoryId) {
-      dispatch(fetchMenuItems()); // ✅ Fetch menu items dynamically
+    // ✅ Only dispatch fetchMenuItems when there's no active search
+    if (selectedCategoryId && (!searchResults || searchResults.length === 0)) {
+      dispatch(fetchMenuItems());
+    }
+  
+    // ✅ Always clear previous search results when switching category
+    if (searchResults?.length > 0) {
+      dispatch(clearSearchResults());
     }
   }, [selectedCategoryId, dispatch]);
+  useEffect(() => {
+    setVisibleItems(8); // reset visible items whenever new search happens or category changes
+  }, [searchResults, selectedCategoryId]);  
 
-  console.log("menuItems", menuItems);
+  console.log("keyword", keyword);
   return (
     <div ref={productRef} className="px-4 sm:px-8 py-8 mt-8 bg-gray-50">
-     
+     {searchResults && searchResults.length > 0 && (
+      <div className="mb-6 px-2 sm:px-4 text-gray-700">
+        <p className="text-sm sm:text-base font-medium">
+          Showing <span className="text-primary font-bold">{searchResults.length}</span> results for{" "}
+          <span className="italic text-primary font-semibold">"{keyword}"</span>
+        </p>
+      </div>
+    )}
 <motion.div
   className="grid grid-cols-1 p-2 lg:p-0 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6"
   initial={{ opacity: 0 }}
@@ -144,13 +87,15 @@ const Products = forwardRef(({ productRef }, ref) => {
       <p className="text-lg font-bold">Oops! Something went wrong.</p>
       <p className="text-sm text-gray-500">We couldn't load the menu items. Please try again.</p>
     </div>
-  ) : menuItems.length === 0 ? (
+  ) : displayedItems.slice(0, visibleItems).length === 0 ? (
+
     <div className="col-span-full flex flex-col items-center justify-center text-gray-600">
       <p className="text-lg font-bold">No items available.</p>
       <p className="text-sm text-gray-500">Please select a different category.</p>
     </div>
   ) : (
-    menuItems.slice(0, visibleItems).map((item) => (
+    displayedItems.slice(0, visibleItems).map((item) => (
+  
       <motion.div
   
         key={item.id}
@@ -244,17 +189,27 @@ const Products = forwardRef(({ productRef }, ref) => {
 </motion.div>
 
 
-      {visibleItems < items.length && (
-        <div className="flex justify-center mt-8">
-          <button
-            onClick={handleShowMore}
-            className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-600 flex items-center"
-          >
-            Show more
-            <FaChevronDown className="ml-2" />
-          </button>
-        </div>
-      )}
+<div className="flex justify-center mt-8 gap-4 flex-wrap">
+  {visibleItems < displayedItems.length && (
+    <button
+      onClick={handleShowMore}
+      className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-600 flex items-center"
+    >
+      Show more
+      <FaChevronDown className="ml-2" />
+    </button>
+  )}
+
+  {visibleItems > 6 && (
+    <button
+      onClick={() => setVisibleItems(6)}
+      className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-400"
+    >
+      Show less
+    </button>
+  )}
+</div>
+
 
       <DrawerModal
         isOpen={isDrawerOpen}

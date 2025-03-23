@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { fetchMenuData,setSelectedCategoryId  } from "../../redux/slices/menuSlice";
 import withErrorBoundary from "../../components/ErrorBoundary/withErrorBoundary"; // Import HOC
+import { clearSearchResults } from "../../redux/slices/searchSlice";
 
 // const categories = [
 //   { id: 1, name: "Meals", img: "assets/side-view-pizza-with-chicken-mushrooms-served-with-sauce-vegetables-salad-wooden-plate-removebg-preview 1.png" },
@@ -18,7 +19,8 @@ import withErrorBoundary from "../../components/ErrorBoundary/withErrorBoundary"
 
 const CategoryCarousel = () => {
   const [isScrollable, setIsScrollable] = useState(false);
-  
+  const { results: searchResults } = useSelector((state) => state.search);
+
   const carouselRef = useRef(null);
   const isFetched = useRef(false);
   const dispatch = useDispatch();
@@ -97,9 +99,11 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
   };
 
   const handleCategoryClick = (id) => {
-    dispatch(setSelectedCategoryId(id)); // ✅ Update Redux state with selected category
-    dispatch(fetchMenuItems()); // ✅ Fetch menu items for the new category
+    dispatch(clearSearchResults());
+    dispatch(setSelectedCategoryId(id)); // Set new category
+    dispatch(fetchMenuItems());
   };
+  
 
   return (
     <div
@@ -169,7 +173,8 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
       >
         <div
           className={`flex items-center p-2 justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-24 lg:h-24 overflow-hidden rounded-full shadow-sm  ${
-            selectedCategoryId === category.id
+            selectedCategoryId === category.id && searchResults?.length === 0
+
               ? "border-2 border-primary shadow-lg"
               : "border-2 border-transparent"
           }`}
@@ -187,7 +192,8 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
         </div>
         <span
           className={`mt-2 text-xs sm:text-sm font-medium text-center truncate ${
-            selectedCategoryId === category.id ? "text-primary" : "text-gray-700"
+            selectedCategoryId === category.id && searchResults?.length === 0
+            ? "text-primary" : "text-gray-700"
           }`}
           title={category.name}
           style={{ maxWidth: "6rem" }}
