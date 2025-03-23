@@ -59,7 +59,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
     return (
       <motion.div
   ref={containerRef}
-  className="fixed bottom-0 left-0 right-0 z-50 bg-primary text-white shadow-2xl rounded-t-2xl"
+  className="fixed bottom-0 left-0 right-0 z-[999] bg-primary text-white shadow-2xl rounded-t-2xl"
   variants={waveAnimation}
   initial="hidden"
   animate="visible"
@@ -149,7 +149,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
   return (
     <motion.div
       ref={containerRef}
-      className="fixed bottom-0 left-0 right-0 z-50 bg-red-600 text-white shadow-2xl"
+      className="fixed bottom-0 left-0 right-0 z-[999] bg-red-600 text-white shadow-2xl"
       variants={waveAnimation}
       initial="hidden"
       animate="visible"
