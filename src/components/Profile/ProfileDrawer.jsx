@@ -553,16 +553,14 @@ useEffect(() => {
           {order.order_status === "pending" && (
             <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center mt-2 space-y-2 md:space-y-0">
             <button
-  onClick={() => {
-    // Store order_id in sessionStorage
-    sessionStorage.setItem("latest_order_id", order.order_id);
-
-    // Dispatch custom event to trigger OrderStatus
-    const event = new CustomEvent("show-order-status", {
-      detail: order.order_id,
-    });
-    window.dispatchEvent(event);
-  }}
+ onClick={() => {
+  sessionStorage.setItem("latest_order_id", order.order_id);
+  const event = new CustomEvent("show-order-status", {
+    detail: order.order_id,
+  });
+  window.dispatchEvent(event);
+  onClose(); // ✅ Close the drawer
+}}
   className="text-xs border px-3 py-1 rounded-md text-red-500 border-red-500"
 >
   Track Order
@@ -595,8 +593,10 @@ useEffect(() => {
 )}
 <div className="text-center mt-4">
   <button
-    onClick={() => navigate("/orders")}
-    className="text-sm text-red-500 font-semibold underline underline-offset-2 hover:text-red-600"
+onClick={() => {
+  navigate("/orders");
+  onClose(); 
+}}    className="text-sm text-red-500 font-semibold underline underline-offset-2 hover:text-red-600"
   >
     View All Orders
   </button>
