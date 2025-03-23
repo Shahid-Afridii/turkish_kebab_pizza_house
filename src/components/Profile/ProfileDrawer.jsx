@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAddresses, deleteAddress,addAddress,setPrimaryAddress,updateAddress } from "../../redux/slices/userAddressSlice";
 import CustomPopup from "../../components/CustomPopup";
 import { getOrders } from "../../redux/slices/orderSlice"; // ✅ Make sure this is correct
+import { useNavigate } from "react-router-dom";
 
 const drawerVariants = {
     hidden: { x: "100%", opacity: 0 },
@@ -29,6 +30,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("orders");
   const [showAddForm, setShowAddForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
 
   const [newAddress, setNewAddress] = useState({
     name: "",
@@ -591,6 +593,14 @@ useEffect(() => {
   ))
   
 )}
+<div className="text-center mt-4">
+  <button
+    onClick={() => navigate("/orders")}
+    className="text-sm text-red-500 font-semibold underline underline-offset-2 hover:text-red-600"
+  >
+    View All Orders
+  </button>
+</div>
              </div>
              
               ) : (
