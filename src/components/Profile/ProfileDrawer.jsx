@@ -140,7 +140,7 @@ const scrollToForm = () => {
       newErrors.phone = "Enter a valid 10-digit phone number.";
     }
   
-   // ✅ Belfast Postcode Validation (BT1 to BT17 only)
+   // ✅ Belfast Postcode Validation (BT1 to BT17 only) -BT1 1AA
 const postcodeRegex = /^BT(1[0-7]|[1-9])\s?\d[ABDEFGHJLNPQRSTUWXYZ]{2}$/i;
 
 if (!newAddress.pincode.trim()) {

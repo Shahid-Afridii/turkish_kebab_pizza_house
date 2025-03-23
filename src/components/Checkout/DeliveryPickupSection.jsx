@@ -290,8 +290,8 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
                     ? "bg-red-600 text-white border border-red-700"
                     : "bg-white hover:bg-gray-100 border border-gray-300"
                 }`}
-              onClick={() => handleSelectAddress(address.address_id, address)}
-            >
+                onClick={() => handleSelectAddress(address.address_id, address.address, address.address_type)}
+                >
               <div className="flex flex-col">
                 <p className={`font-semibold text-sm md:text-base ${selectedAddressId === address.address_id ? "text-white" : "text-gray-900"}`}>
                   {address.name} - {address.phone}
