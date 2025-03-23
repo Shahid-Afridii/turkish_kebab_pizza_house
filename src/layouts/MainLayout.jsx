@@ -37,6 +37,10 @@ const MainLayout = ({ children }) => {
     };
   }, []);
   
+  useEffect(() => {
+    // Hide on route change
+    setShowOrderStatus(false);
+  }, [location.pathname]);
   
   return (  
     <div>

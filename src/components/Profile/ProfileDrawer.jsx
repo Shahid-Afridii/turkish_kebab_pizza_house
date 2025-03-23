@@ -550,9 +550,22 @@ useEffect(() => {
           
           {order.order_status === "pending" && (
             <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center mt-2 space-y-2 md:space-y-0">
-              <button className="text-xs border px-3 py-1 rounded-md text-red-500 border-red-500">
-                Track Order
-              </button>
+            <button
+  onClick={() => {
+    // Store order_id in sessionStorage
+    sessionStorage.setItem("latest_order_id", order.order_id);
+
+    // Dispatch custom event to trigger OrderStatus
+    const event = new CustomEvent("show-order-status", {
+      detail: order.order_id,
+    });
+    window.dispatchEvent(event);
+  }}
+  className="text-xs border px-3 py-1 rounded-md text-red-500 border-red-500"
+>
+  Track Order
+</button>
+
               <div className="flex items-center text-xs font-medium text-gray-800">
                 
                 <FiMapPin className="ml-2 text-red-500" />
