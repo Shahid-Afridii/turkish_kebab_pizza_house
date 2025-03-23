@@ -123,11 +123,11 @@ openPopup({
       });
       return;
     }
-
+  
     const action = isSignUp
       ? signupVerify({ mobile: mobileNumber, otp })
       : verifyOtp({ mobile: mobileNumber, otp });
-
+  
     dispatch(action).then((res) => {
       if (res.payload?.status) {
         dispatch(getProfile());
@@ -147,6 +147,15 @@ openPopup({
           },
         });
       } else {
+        // ❌ OTP Failed: Clear OTP fields & inputs
+        setOtp("");
+        otpInputs.current.forEach((input) => {
+          if (input) input.value = "";
+        });
+  
+        // Optional: focus first input
+        otpInputs.current[0]?.focus();
+  
         openPopup({
           type: "error",
           title: "OTP Failed",
@@ -158,6 +167,7 @@ openPopup({
       }
     });
   };
+  
 
   const handleOtpChange = (val, index) => {
     const otpArray = otp.split("");
@@ -225,11 +235,10 @@ openPopup({
               className="w-6 h-6 md:w-8 md:h-8 rounded-full border"
             />
             <input
-              type="text"
               value={mobileNumber}
               onChange={(e) => {
                 const val = e.target.value;
-                if (/^\d*$/.test(val)) setMobileNumber(val);
+                if (/^\d*$/.test(val)) setMobileNumber(val.slice(0, 10)); // ensure numeric + limit
               }}
               
               placeholder="117 2345678"
@@ -251,14 +260,16 @@ openPopup({
               <input
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                maxLength={50}
+                onChange={(e) => setName(e.target.value.slice(0, 50))}
                 placeholder="Your Name"
                 className="w-full mb-2 border rounded-lg px-4 py-2 text-sm outline-none"
               />
               <input
                 type="email"
+                maxLength={100}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.slice(0, 100))}
                 placeholder="Email Address"
                 className="w-full mb-3 border rounded-lg px-4 py-2 text-sm outline-none"
               />

@@ -637,6 +637,11 @@ console.log("displayedCartItems", displayedCartItems);
       <span>Service Fee</span>
       <span>{formatPrice(displayedTaxAmount) || 0} </span>
     </div> */}
+    <div className="flex justify-between text-xs md:text-sm mb-4">
+      <span>Delivery Fee</span>
+      <span>{formatPrice(0)} </span>
+      {/* <span>{formatPrice(displayedTaxAmount) || 0} </span> */}
+    </div>
     <div className="flex justify-between text-sm md:text-lg font-bold">
       <span>TO PAY</span>
       <span>{formatPrice(displayedTotalAmount)}</span>

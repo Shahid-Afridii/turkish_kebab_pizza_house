@@ -685,6 +685,7 @@ useEffect(() => {
       <input
         type="text"
         name={field}
+        maxLength={30}
         placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
         value={newAddress[field]}
         onChange={handleChange}
@@ -718,6 +719,7 @@ useEffect(() => {
     <div className="mt-2">
       <input
         type="text"
+        maxLength={30}
         placeholder="Enter custom type"
         value={customType}
         onChange={(e) => setCustomType(e.target.value)}

@@ -120,9 +120,14 @@ const otpRefs = Array.from({ length: 4 }, () => useRef());
 };
 const handleInputChange = (e) => {
   const { name, value } = e.target;
-  if (name === "mobileNumber" && !/^\d*$/.test(value)) return;
-  setFormData((prev) => ({ ...prev, [name]: value }));
+
+  const trimmedValue = value.slice(0, name === "email" ? 100 : name === "name" ? 50 : name === "mobileNumber" ? 10 : undefined);
+
+  if (name === "mobileNumber" && !/^\d*$/.test(trimmedValue)) return;
+
+  setFormData((prev) => ({ ...prev, [name]: trimmedValue }));
 };
+
 
 const handleOtpChange = (index, value) => {
   if (!/^\d?$/.test(value)) return;
@@ -249,8 +254,18 @@ openPopup({
         onClose();
         setOtpSent(false);
         setFormData({ mobileNumber: "", otp: ["", "", "", ""], name: "", email: "" });
-        window.location.href="/";
+        window.location.href = "/";
       } else {
+        // 👇 Reset OTP inputs
+        setFormData((prev) => ({
+          ...prev,
+          otp: ["", "", "", ""],
+        }));
+  
+        otpRefs.forEach((ref) => {
+          if (ref?.current) ref.current.value = "";
+        });
+  
         openPopup({
           type: "error",
           title: "Invalid OTP!",
@@ -263,6 +278,7 @@ openPopup({
       }
     });
   };
+  
   
   
   
@@ -331,6 +347,7 @@ openPopup({
                       id="mobile-number"
                       name="mobileNumber"
                       type="text"
+                      maxLength={10}
                       value={formData.mobileNumber}
                       onChange={handleInputChange}
                       placeholder="117 2345678"
@@ -347,6 +364,7 @@ openPopup({
                           <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                           <input
                             name="name"
+                            maxLength={50}
                             type="text"
                             value={formData.name}
                             onChange={handleInputChange}
@@ -359,6 +377,7 @@ openPopup({
                           <input
                             name="email"
                             type="email"
+                            maxLength={100}
                             value={formData.email}
                             onChange={handleInputChange}
                             placeholder="example@example.com"

@@ -79,15 +79,21 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewAddress({ ...newAddress, [name]: value });
+  
+    // Limit all address fields to max 30 characters
+    const limitedValue = value.slice(0, 30);
+  
+    setNewAddress({ ...newAddress, [name]: limitedValue });
+  
     setErrors((prevErrors) => {
       let newErrors = { ...prevErrors };
-      if (value.trim()) {
+      if (limitedValue.trim()) {
         delete newErrors[name];
       }
       return newErrors;
     });
   };
+  
 
   useEffect(() => {
     if (selectedAddressId) {
@@ -356,6 +362,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
         name={field}
         placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
         value={newAddress[field]}
+        maxLength={30} 
         onChange={handleChange}
         className="w-full px-3 py-2 border rounded-md"
       />
@@ -387,6 +394,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
     <div className="mt-2">
       <input
         type="text"
+        maxLength={30} 
         placeholder="Enter custom type"
         value={customType}
         onChange={(e) => setCustomType(e.target.value)}
