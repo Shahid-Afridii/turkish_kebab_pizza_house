@@ -124,10 +124,7 @@ console.log("paymentOptions", paymentOptions);
       headStyles: { fillColor: [255, 99, 132] },
     });
     doc.setFontSize(10);
-    doc.text(`Status: ${statusFilter} | Payment: ${paymentFilter}`, 14, 22);
-    if (startDate || endDate) {
-      doc.text(`Date Range: ${startDate || "Any"} to ${endDate || "Any"}`, 14, 27);
-    }
+   
     
     doc.save("orders_invoice.pdf");
   };
