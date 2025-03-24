@@ -553,7 +553,7 @@ console.log("displayedCartItems", displayedCartItems);
                               key={i}
                               className=" text-gray-700 px-2 py-1 rounded-full text-xs border "
                             >
-                              {item}    {addon.price > 0 && (
+                              {item.name}     {addon.price > 0 && (
                             <span className="text-red-500 font-semibold text-xs whitespace-nowrap">
                               +{formatPrice(addon.price)}
                             </span>
