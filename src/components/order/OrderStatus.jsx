@@ -19,17 +19,39 @@ const waveAnimation = {
 const OrderStatus = ({ isVisible, onClose, orderId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [lastRefreshedAt, setLastRefreshedAt] = useState(null);
+
   const { orderList } = useSelector((state) => state.order);
   const [matchedOrder, setMatchedOrder] = useState(null);
   const containerRef = useRef(null);
   const [rating, setRating] = useState(0);
-
+  const getRelativeTime = (date) => {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMin = Math.floor(diffMs / 60000);
+  
+    if (diffMin < 1) return "Just now";
+    if (diffMin === 1) return "1 minute ago";
+    return `${diffMin} minutes ago`;
+  };
+  
   useEffect(() => {
     if (isVisible) {
       dispatch(getOrders());
+      setLastRefreshedAt(new Date());
+
     }
   }, [dispatch, isVisible]);
-
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (lastRefreshedAt) {
+        setLastRefreshedAt((prev) => new Date(prev)); // trigger re-render
+      }
+    }, 60000); // every 1 min
+  
+    return () => clearInterval(interval);
+  }, [lastRefreshedAt]);
+  
   useEffect(() => {
     if (orderId && orderList.length > 0) {
       const found = orderList.find((order) => order.order_id === orderId);
@@ -198,12 +220,26 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
             View Order
           </button>
           <button
-            onClick={() => dispatch(getOrders())}
-            className="bg-white text-black px-3 py-1 rounded-lg text-sm"
+ onClick={() => {
+  dispatch(getOrders());
+  setLastRefreshedAt(new Date());
+}}            className="bg-white text-black px-3 py-1 rounded-lg text-sm"
           >
             Refresh
           </button>
         </div>
+        {lastRefreshedAt && (
+  <p className="text-xs text-white/70 mt-1">
+  
+    {lastRefreshedAt && (
+  <p className="text-xs text-white mt-1 text-right">
+    Last refreshed: {getRelativeTime(lastRefreshedAt)}
+  </p>
+)}
+
+  </p>
+)}
+
       </div>
     </motion.div>
   );
