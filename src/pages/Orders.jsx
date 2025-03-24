@@ -132,7 +132,7 @@ const PaginationControls = () => {
             }}
             className={`px-3 py-1 border rounded ${
               currentPage === page
-                ? "bg-red-600 text-white border-red-600"
+                ? "bg-primary text-white border-red-600"
                 : "hover:bg-gray-100"
             }`}
           >
@@ -221,7 +221,7 @@ const PaginationControls = () => {
       <div className="flex flex-row justify-end items-center gap-2 sm:gap-3 mb-4">
   <button
     onClick={downloadPDF}
-    className="flex items-center gap-1 bg-red-600 text-white px-3 py-1.5 rounded text-xs sm:text-sm font-medium hover:bg-red-700 transition"
+    className="flex items-center gap-1 bg-primary text-white px-3 py-1.5 rounded text-xs sm:text-sm font-medium hover:bg-red-700 transition"
   >
     <AiOutlineFilePdf className="text-base sm:text-lg" />Invoice
     <span className="hidden xs:inline">PDF</span>
@@ -263,7 +263,7 @@ const PaginationControls = () => {
               }}
               className={`px-3 py-1 capitalize text-xs sm:text-sm rounded-full font-medium border transition ${
                 statusFilter === status
-                  ? "bg-red-600 text-white border-red-600"
+                  ? "bg-primary text-white border-red-600"
                   : "text-gray-600 hover:bg-gray-100 border-gray-300"
               }`}
             >
@@ -365,7 +365,7 @@ const PaginationControls = () => {
                       onClick={() => setTempStatusFilter(status)}
                       className={`px-3 py-1 capitalize text-xs rounded-full font-medium border transition ${
                         tempStatusFilter === status
-                          ? "bg-red-600 text-white border-red-600"
+                          ? "bg-primary text-white border-red-600"
                           : "text-gray-600 hover:bg-gray-100 border-gray-300"
                       }`}
                     >
@@ -443,7 +443,7 @@ const PaginationControls = () => {
                   setCurrentPage(1);
                   setShowMobileFilter(false);
                 }}
-                className="w-full mt-4 bg-red-600 text-white py-2 rounded text-sm font-medium"
+                className="w-full mt-4 bg-primary text-white py-2 rounded text-sm font-medium"
               >
                 Apply Filters
               </button>

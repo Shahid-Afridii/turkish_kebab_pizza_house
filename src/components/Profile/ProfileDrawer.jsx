@@ -448,7 +448,7 @@ useEffect(() => {
         {/* **Close Button** */}
         <button
           onClick={onClose}
-          className="absolute top-3 left-3 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 shadow-md"
+          className="absolute top-3 left-3 bg-primary text-white p-2 rounded-full hover:bg-primary shadow-md"
         >
           <FaTimes size={16} />
         </button>
@@ -482,7 +482,7 @@ useEffect(() => {
 
       {/* **Buttons Section** */}
       <div className="mt-4 flex justify-center space-x-4 px-6 pb-4">
-        <button onClick={handleLogout} className="flex items-center bg-red-500 text-white px-5 py-2 rounded-md text-sm font-semibold hover:bg-red-600 shadow-md">
+        <button onClick={handleLogout} className="flex items-center bg-primary text-white px-5 py-2 rounded-md text-sm font-semibold hover:bg-primary shadow-md">
           <FaSignOutAlt className="mr-2" /> Sign-out
         </button>
         <button className="flex items-center border border-red-500 text-red-500 px-5 py-2 rounded-md text-sm font-semibold bg-red-100 hover:bg-red-200 shadow-md">
@@ -685,7 +685,7 @@ onClick={() => {
       addressTitleRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
   }}
-  className="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-600 flex items-center"
+  className="bg-primary text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-primary flex items-center"
 >
   <FaPlus className="mr-2" /> Add Address
 </button>
@@ -763,7 +763,7 @@ onClick={() => {
   className={`w-full px-4 py-2 rounded-md font-semibold transition 
     ${isLoading || Object.keys(errors).length > 0 || Object.values(newAddress).some(value => value.trim() === "")
       ? "bg-gray-400 cursor-not-allowed"
-      : "bg-red-500 text-white hover:bg-red-600"}
+      : "bg-primary text-white hover:bg-primary"}
   `}
 >
   {isLoading ? "Saving..." : isEditing ? "Update Address" : "Save Address"}

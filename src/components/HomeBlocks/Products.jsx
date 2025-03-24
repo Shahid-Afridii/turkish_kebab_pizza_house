@@ -176,7 +176,7 @@ const Products = forwardRef(({ productRef }, ref) => {
             <span className="text-primary font-bold text-lg">{formatPrice(item.price)}</span>
             <button
               onClick={() => handleAddItem(item)}
-              className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition flex items-center"
+              className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary transition flex items-center"
             >
               <FaPlus className="mr-2" />
               Add Item
@@ -193,7 +193,7 @@ const Products = forwardRef(({ productRef }, ref) => {
   {visibleItems < displayedItems.length && (
     <button
       onClick={handleShowMore}
-      className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-600 flex items-center"
+      className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-primary flex items-center"
     >
       Show more
       <FaChevronDown className="ml-2" />

@@ -155,7 +155,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
     <p className="text-gray-500 text-sm mt-1">We couldn't load the categories. Please try again.</p>
     <button
       onClick={() => dispatch(fetchMenuData())}
-      className="mt-3 bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition"
+      className="mt-3 bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary transition"
     >
       Retry 🔄
     </button>

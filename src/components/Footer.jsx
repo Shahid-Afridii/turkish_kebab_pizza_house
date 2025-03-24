@@ -47,12 +47,12 @@ const Footer = () => {
               <li>
                 <Link to="/terms" className="hover:text-primary transition">Terms of Use</Link>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className="hover:text-primary transition">About Cookies</a>
               </li>
               <li>
                 <a href="#" className="hover:text-primary transition">Cookie Setting</a>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -85,7 +85,7 @@ const Footer = () => {
           </div>
 
           {/* Payment Methods */}
-          <div className="font-Noto_Sans">
+          {/* <div className="font-Noto_Sans">
             <h4 className="text-xl font-montserrat font-semibold text-gray-800 mb-4">We Accept</h4>
             <p className="text-gray-600">
               Convenient payment options for all customers.
@@ -104,7 +104,7 @@ const Footer = () => {
                 <FaCcPaypal className="text-primary text-2xl" />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Divider */}

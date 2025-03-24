@@ -43,7 +43,7 @@ const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod,handle
               />
               <button
                 onClick={handleApplyPromotionCode}
-                className="bg-red-500 text-white text-xs sm:text-sm px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition"
+                className="bg-primary text-white text-xs sm:text-sm px-4 py-2 rounded-lg font-medium hover:bg-primary transition"
               >
                 Apply
               </button>
@@ -63,7 +63,7 @@ const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod,handle
     onClick={() => handlePlaceOrder("Stripe")}
     className={`flex items-center justify-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition text-sm sm:text-base ${
       selectedPaymentMethod === "Stripe"
-        ? "bg-red-500 text-white"
+        ? "bg-primary text-white"
         : "bg-gray-100 text-gray-700"
     }`}
     disabled={isProcessing === "Stripe"} // ✅ Disable if processing
@@ -77,7 +77,7 @@ const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod,handle
     onClick={() => handlePlaceOrder("COD")}
     className={`flex items-center justify-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition text-sm sm:text-base ${
       selectedPaymentMethod === "COD"
-        ? "bg-red-500 text-white"
+        ? "bg-primary text-white"
         : "bg-gray-100 text-gray-700"
     }`}
     disabled={isProcessing === "COD"} // ✅ Disable if processing

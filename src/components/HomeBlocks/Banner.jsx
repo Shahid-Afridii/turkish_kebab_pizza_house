@@ -153,7 +153,7 @@ onClick={scrollToProducts}              className="button-primary"
 
       {/* Button */}
       <motion.button
-onClick={scrollToProducts}          className="mt-4 bg-red-500 text-white text-sm sm:text-base py-2 px-4 rounded-lg hover:bg-red-600 transition"
+onClick={scrollToProducts}          className="mt-4 bg-primary text-white text-sm sm:text-base py-2 px-4 rounded-lg hover:bg-primary transition"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, delay: 1.6 }}

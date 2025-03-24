@@ -293,7 +293,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
               className={`flex items-center justify-between w-full p-4 rounded-lg shadow-sm text-sm cursor-pointer transition-all duration-200 
                 ${
                   selectedAddressId === address.address_id
-                    ? "bg-red-600 text-white border border-red-700"
+                    ? "bg-primary text-white border border-red-700"
                     : "bg-white hover:bg-gray-100 border border-gray-300"
                 }`}
                 onClick={() => handleSelectAddress(address.address_id, address.address, address.address_type)}
@@ -332,7 +332,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
             setShowAddForm(true);
             setNewAddress({ name: "", address: "", city: "", country: "", pincode: "", phone: "" });
           }}
-          className="bg-primary text-white px-4 py-2 rounded-md text-sm md:text-base font-semibold hover:bg-red-600 flex items-center justify-center w-full max-w-[220px]"
+          className="bg-primary text-white px-4 py-2 rounded-md text-sm md:text-base font-semibold hover:bg-primary flex items-center justify-center w-full max-w-[220px]"
         >
           <FaPlus className="mr-2" /> Add Address
         </button>
@@ -414,7 +414,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
   className={`w-full px-4 py-2 rounded-md font-semibold transition 
     ${isLoading || Object.keys(errors).length > 0 || Object.values(newAddress).some(value => value.trim() === "")
       ? "bg-gray-400 cursor-not-allowed"
-      : "bg-red-500 text-white hover:bg-red-600"}
+      : "bg-primary text-white hover:bg-primary"}
   `}
 >
   {isLoading ? "Saving..." : "Save Address"}

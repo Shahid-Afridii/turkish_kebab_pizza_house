@@ -588,7 +588,7 @@ const handleRemoveItem = async (item) => {
     className={`w-6 h-6 rounded-full flex items-center justify-center ${
       (item.qty ?? item.quantity ?? 1) <= 1
         ? "bg-gray-300 cursor-not-allowed"
-        : "bg-red-500 hover:bg-red-600 text-white"
+        : "bg-primary hover:bg-primary text-white"
     }`}
   >
     <FaMinus size={10} />
@@ -605,7 +605,7 @@ const handleRemoveItem = async (item) => {
         (item.qty ?? item.quantity ?? 1) + 1
       )
     }
-    className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+    className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary"
   >
     <FaPlus size={10} />
   </button>

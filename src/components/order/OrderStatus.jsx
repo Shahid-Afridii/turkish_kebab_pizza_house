@@ -171,7 +171,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
   return (
     <motion.div
     ref={containerRef}
-    className="fixed bottom-0 left-0 right-0 z-[999] bg-red-600 text-white shadow-2xl text-sm sm:text-base"
+    className="fixed bottom-0 left-0 right-0 z-[999] bg-primary text-white shadow-2xl text-sm sm:text-base"
     variants={waveAnimation}
     initial="hidden"
     animate="visible"
@@ -184,7 +184,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
           onClose();
           sessionStorage.removeItem("latest_order_id");
         }}
-        className="bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded-lg text-xs sm:text-sm"
+        className="bg-primary hover:bg-red-400 text-white px-3 py-1 rounded-lg text-xs sm:text-sm"
       >
         Add Message
       </button>

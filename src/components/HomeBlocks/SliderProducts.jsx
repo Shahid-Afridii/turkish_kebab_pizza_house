@@ -96,7 +96,7 @@ const CustomNavigation = ({ prevEl, nextEl, disablePrev, disableNext, showArrows
     <div className="absolute inset-y-0 flex items-center justify-between w-full pointer-events-none z-10">
       <button
         ref={prevEl}
-        className={`pointer-events-auto bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 transition-all transform -translate-x-3 ${
+        className={`pointer-events-auto bg-primary text-white p-2 rounded-full shadow hover:bg-primary transition-all transform -translate-x-3 ${
           disablePrev ? "opacity-50 cursor-not-allowed" : ""
         }`}
         disabled={disablePrev}
@@ -105,7 +105,7 @@ const CustomNavigation = ({ prevEl, nextEl, disablePrev, disableNext, showArrows
       </button>
       <button
         ref={nextEl}
-        className={`pointer-events-auto bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 transition-all transform translate-x-3 ${
+        className={`pointer-events-auto bg-primary text-white p-2 rounded-full shadow hover:bg-primary transition-all transform translate-x-3 ${
           disableNext ? "opacity-50 cursor-not-allowed" : ""
         }`}
         disabled={disableNext}
@@ -189,7 +189,7 @@ const Products = forwardRef((props, ref) => {
               >
                 <div className="relative">
                   {item.popular && (
-                    <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                    <span className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
                       Popular
                     </span>
                   )}
@@ -227,7 +227,7 @@ const Products = forwardRef((props, ref) => {
                     </span>
                     <button
                       onClick={() => handleAddItem(item)}
-                      className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition flex items-center"
+                      className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary transition flex items-center"
                     >
                       <FaPlus className="mr-2" />
                       Add Item

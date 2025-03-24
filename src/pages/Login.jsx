@@ -391,7 +391,7 @@ openPopup({
                     <button
                       type="button"
                       onClick={handleGenerateOtp}
-                      className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg text-sm font-medium transition duration-300 focus:ring-2 focus:ring-red-500"
+                      className="w-full bg-primary hover:bg-primary text-white py-3 rounded-lg text-sm font-medium transition duration-300 focus:ring-2 focus:ring-red-500"
                     >
                       {isLoading ? "Processing..." : isSignUp ? "Sign-up" : "Generate OTP"}
                     </button>
@@ -420,7 +420,7 @@ openPopup({
                   <button
                     type="button"
                     onClick={handleVerifyOtp}
-                    className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg text-sm font-medium transition duration-300 focus:ring-2 focus:ring-red-500"
+                    className="w-full bg-primary hover:bg-primary text-white py-3 rounded-lg text-sm font-medium transition duration-300 focus:ring-2 focus:ring-red-500"
                   >
                     {isLoading ? "Verifying..." : "Verify OTP"}
                   </button>
