@@ -14,6 +14,7 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { AiOutlineFilePdf, AiOutlineFileExcel } from "react-icons/ai"; // Add at the top
+import { MdNavigateBefore } from "react-icons/md";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -55,7 +56,8 @@ const Orders = () => {
     const endMatch = endDate ? orderDate <= new Date(endDate) : true;
     return statusMatch && paymentMatch && startMatch && endMatch;
   });
-
+ 
+  
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
   const paginatedOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -71,37 +73,78 @@ const orders = Array.isArray(orderList) ? orderList : [];
 const statusOptions = ["All", ...new Set(orders.map(order => order.order_status?.toLowerCase()).filter(Boolean))];
 const paymentOptions = ["All", ...new Set(orders.map(order => order.mode).filter(Boolean))];
 
-console.log("orders", orders);
-console.log("statusOptions", statusOptions);
-console.log("paymentOptions", paymentOptions);
 
-  const PaginationControls = () => (
-    <div className="flex justify-center gap-3 items-center mt-6 text-xs sm:text-sm">
+const PaginationControls = () => {
+  const MAX_VISIBLE = 5;
+
+  const getDisplayedPages = () => {
+    if (totalPages <= MAX_VISIBLE) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const pages = [];
+    if (currentPage <= 3) {
+      pages.push(1, 2, 3, 4, "...", totalPages);
+    } else if (currentPage >= totalPages - 2) {
+      pages.push(1, "...", totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+    } else {
+      pages.push(1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages);
+    }
+
+    return pages;
+  };
+
+  const pagesToShow = getDisplayedPages();
+
+  return (
+    <div className="flex flex-wrap justify-center gap-2 items-center mt-6 text-xs sm:text-sm">
       <button
         disabled={currentPage === 1}
         onClick={() => {
           setCurrentPage((prev) => prev - 1);
           scrollToTop();
         }}
-        className="px-3 py-1 border rounded disabled:opacity-40"
+        className="px-2 py-1 border rounded disabled:opacity-30"
       >
-        Prev
+        <MdNavigateBefore />
       </button>
-      <span className="font-medium">
-        Page {currentPage} of {totalPages}
-      </span>
+
+      {pagesToShow.map((page, idx) =>
+        page === "..." ? (
+          <span key={idx} className="px-3 py-1 text-gray-400 select-none">...</span>
+        ) : (
+          <button
+            key={page}
+            onClick={() => {
+              setCurrentPage(page);
+              scrollToTop();
+            }}
+            className={`px-3 py-1 border rounded ${
+              currentPage === page
+                ? "bg-red-600 text-white border-red-600"
+                : "hover:bg-gray-100"
+            }`}
+          >
+            {page}
+          </button>
+        )
+      )}
+
       <button
         disabled={currentPage === totalPages}
         onClick={() => {
           setCurrentPage((prev) => prev + 1);
           scrollToTop();
         }}
-        className="px-3 py-1 border rounded disabled:opacity-40"
+        className="px-2 py-1 border rounded disabled:opacity-30"
       >
-        Next
+        <MdNavigateNext />
       </button>
     </div>
   );
+};
+
+
   const downloadPDF = () => {
     const doc = new jsPDF();
     doc.setFontSize(16);
@@ -149,6 +192,11 @@ console.log("paymentOptions", paymentOptions);
     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(data, "orders_invoice.xlsx");
   };
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
+    }
+  }, [filteredOrders, totalPages, currentPage]);
   return (
     <div className="max-w-5xl mx-auto px-3 sm:px-4 py-4">
       {/* Breadcrumbs */}
@@ -353,7 +401,7 @@ console.log("paymentOptions", paymentOptions);
       )}
 
       {/* Pagination Top */}
-      {filteredOrders.length > 0 && <PaginationControls />}
+      {/* {filteredOrders.length > 0 && <PaginationControls />} */}
  {/* Loader */}
       {isLoading ? (
         <div className="space-y-6 mt-4">
