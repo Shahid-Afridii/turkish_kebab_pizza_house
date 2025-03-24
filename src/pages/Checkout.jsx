@@ -31,7 +31,6 @@ const Checkout = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const totalAmount = useSelector((state) => state.cart.totalAmount) || 0; //
-  console.log("totalAmount", totalAmount);
   const cartFetched = useSelector((state) => state.cart.cartFetched); // ✅ Track API call status
   const taxAmount = useSelector((state) => state.cart.taxAmount);
   const taxableAmount = useSelector((state) => state.cart.taxableAmount);
@@ -64,12 +63,10 @@ const Checkout = () => {
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [activeAccordion, setActiveAccordion] = useState(1);
   const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
-console.log("isAuthenticated", isAuthenticated);
   const toggleAccordion = (index) => {
     setActiveAccordion(activeAccordion === index ? null : index);
   };
-console.log("selectedAddress", selectedAddressId);
-console.log("First Address ID:", selectedAddressId);
+
 
 // ✅ Fetch Cart: API for Authenticated | LocalStorage for Guests
 const loadLocalCart = () => {
@@ -164,14 +161,10 @@ const handleUpdateLocalQuantity = (itemId, newQuantity) => {
     const item = cartItems.find((i) => i.menu_item_id === itemId);
     if (!item) return;
 
+  
     const payload = {
       menu_item_id: item.menu_item_id,
       quantity: newQuantity,
-      instructions: item.instructions || "",
-      addons: item.add_ons?.map((addon) => ({
-        addon_id: addon.id,
-        addon_item_id: addon.item_ids || []  // Ensure this key exists in your `add_ons`
-      })) || []
     };
 
     console.log("Final Payload for API:", payload);
@@ -187,7 +180,7 @@ const handleUpdateLocalQuantity = (itemId, newQuantity) => {
       // ✅ Open Confirmation Popup
  // ✅ Open Confirmation Popup
 const openDeletePopup = (item) => {
-  console.log(item, "item");
+ 
 
   setPopupConfig({
     type: "warning",
@@ -401,7 +394,6 @@ const handleRemoveItem = async (item) => {
     const displayedTotalAmount = isAuthenticated ? totalAmount : localTotalAmount;
     const displayedTaxAmount = isAuthenticated ? taxAmount : localTaxAmount;
     const displayedTaxableAmount = isAuthenticated ? taxableAmount : localTaxableAmount;
-console.log("displayedCartItems", displayedCartItems);
 
 
   return (

@@ -75,7 +75,7 @@ export const updateQuantity = createAsyncThunk(
         instructions: item.instructions || "",
         addons: item.add_ons?.map((addon) => ({
           addon_id: addon.id,
-          addon_item_id: addon.item_ids || []
+          addon_item_id: addon.items.map((addonItem) => addonItem.id) // Extracting the id from each item in the items array
         })) || []
       };
 
