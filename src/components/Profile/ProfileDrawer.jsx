@@ -561,7 +561,7 @@ onClick={() => {
           </p>
           {/* <span className="mr-1 text-xs">Delivery: {new Date(order.updatedAt).toLocaleString()}</span>{" "} */}
           
-          {order.order_status === "pending" && (
+          
             <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center mt-2 space-y-2 md:space-y-0">
             <button
  onClick={() => {
@@ -583,7 +583,7 @@ onClick={() => {
                 <span className="ml-1 text-red-500 font-medium">{order.address.city}</span>
               </div>
             </div>
-          )}
+        
   
           {/* If you want Reorder or Rate Order buttons based on status */}
           {order.order_status === "delivered" && (
