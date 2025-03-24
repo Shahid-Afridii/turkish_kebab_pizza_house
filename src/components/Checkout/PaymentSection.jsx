@@ -73,7 +73,7 @@ const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod,handle
   </button>
 
   {/* Cash on Delivery (COD) */}
-  <button
+  {/* <button
     onClick={() => handlePlaceOrder("COD")}
     className={`flex items-center justify-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition text-sm sm:text-base ${
       selectedPaymentMethod === "COD"
@@ -84,7 +84,7 @@ const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod,handle
   >
     <FaMoneyBillWave />
     {isProcessing === "COD" ? "Processing..." : "Cash on Delivery"}
-  </button>
+  </button> */}
 </div>
 
       </div>

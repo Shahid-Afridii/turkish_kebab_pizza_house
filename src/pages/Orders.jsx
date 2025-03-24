@@ -21,6 +21,8 @@ const Orders = () => {
   
   const { orderList, isLoading, error } = useSelector((state) => state.order);
   const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
+  const [sortBy, setSortBy] = useState("latest");
+  const [tempSortBy, setTempSortBy] = useState(sortBy);
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -48,14 +50,23 @@ const Orders = () => {
     }).format(date);
   };
 
-  const filteredOrders = orderList.filter((order) => {
+  const filteredOrders = orderList
+  .filter((order) => {
     const statusMatch = statusFilter === "All" || order.order_status.toLowerCase() === statusFilter.toLowerCase();
     const paymentMatch = paymentFilter === "All" || order.mode.toLowerCase() === paymentFilter.toLowerCase();
     const orderDate = new Date(order.updatedAt);
     const startMatch = startDate ? orderDate >= new Date(startDate) : true;
     const endMatch = endDate ? orderDate <= new Date(endDate) : true;
     return statusMatch && paymentMatch && startMatch && endMatch;
+  })
+  .sort((a, b) => {
+    if (sortBy === "latest") {
+      return new Date(b.updatedAt) - new Date(a.updatedAt);
+    } else {
+      return 0; // keep original order
+    }
   });
+
  
   
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
@@ -279,6 +290,25 @@ const PaginationControls = () => {
             </button>
           ))}
         </div>
+        <div className="flex gap-2 mt-2 sm:mt-0">
+  {["latest", "default"].map((option) => (
+    <button
+      key={option}
+      onClick={() => {
+        setSortBy(option);
+        setCurrentPage(1);
+      }}
+      className={`px-3 py-1 text-xs sm:text-sm rounded-full font-medium border transition ${
+        sortBy === option
+          ? "bg-black text-white border-black"
+          : "text-gray-600 hover:bg-gray-100 border-gray-300"
+      }`}
+    >
+      {option === "latest" ? "Latest" : "Default"}
+    </button>
+  ))}
+</div>
+
       </div>
       
 
@@ -363,6 +393,27 @@ const PaginationControls = () => {
                   ))}
                 </div>
               </div>
+              
+              <div>
+  <p className="text-sm font-medium mb-2">Sort By</p>
+  <div className="flex flex-wrap gap-2">
+    {["latest", "default"].map((option) => (
+      <button
+        key={option}
+        onClick={() => setTempSortBy(option)}
+        className={`px-3 py-1 text-xs rounded-full font-medium border transition ${
+          tempSortBy === option
+            ? "bg-black text-white border-black"
+            : "text-gray-600 hover:bg-gray-100 border-gray-300"
+        }`}
+      >
+        {option === "latest" ? "Latest" : "Default"}
+      </button>
+    ))}
+  </div>
+</div>
+
+
 
               <div className="text-sm">
                 <p className="font-medium mb-2">Date Range</p>
@@ -388,6 +439,7 @@ const PaginationControls = () => {
                   setPaymentFilter(tempPaymentFilter);
                   setStartDate(tempStartDate);
                   setEndDate(tempEndDate);
+                  setSortBy(tempSortBy);
                   setCurrentPage(1);
                   setShowMobileFilter(false);
                 }}
