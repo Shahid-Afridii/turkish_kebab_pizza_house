@@ -212,7 +212,10 @@ useEffect(() => {
       </div>
 
       {/* User Info */}
-      {isAuthenticated ?   <div onClick={() => setIsProfileOpen(true)} className="flex flex-col items-center space-y-2 border-b pb-4">
+      {isAuthenticated ?   <div  onClick={() => {
+  setIsProfileOpen(true);
+  closeMenu(); // Close the mobile menu
+}}className="flex flex-col items-center space-y-2 border-b pb-4">
         {/* User Icon */}
         <div  className="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center">
           <FiUser size={30} className="text-gray-600" />

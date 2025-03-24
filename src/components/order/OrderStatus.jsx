@@ -170,78 +170,75 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
   // ❌ Else: normal order status UI
   return (
     <motion.div
-      ref={containerRef}
-      className="fixed bottom-0 left-0 right-0 z-[999] bg-red-600 text-white shadow-2xl"
-      variants={waveAnimation}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-    >
-      <div className="bg-black text-white px-4 py-2 flex justify-between items-center">
-        <p className="text-sm font-semibold">Add delivery instruction</p>
+    ref={containerRef}
+    className="fixed bottom-0 left-0 right-0 z-[999] bg-red-600 text-white shadow-2xl text-sm sm:text-base"
+    variants={waveAnimation}
+    initial="hidden"
+    animate="visible"
+    exit="exit"
+  >
+    <div className="bg-black text-white px-4 py-2 flex justify-between items-center">
+      <p className="text-xs sm:text-sm font-semibold">Add delivery instruction</p>
+      <button
+        onClick={() => {
+          onClose();
+          sessionStorage.removeItem("latest_order_id");
+        }}
+        className="bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded-lg text-xs sm:text-sm"
+      >
+        Add Message
+      </button>
+    </div>
+  
+    <div className="relative px-4 py-3 flex flex-col gap-2">
+      <button
+        onClick={() => {
+          onClose();
+          sessionStorage.removeItem("latest_order_id");
+        }}
+        className="absolute top-1 right-4 text-white hover:text-white/80 text-sm sm:text-xl"
+        aria-label="Close"
+      >
+        <RxCross2 />
+      </button>
+  
+      <div className="flex justify-between items-center">
+        <div>
+          <h3 className="text-xs sm:text-sm text-gray-300">Status</h3>
+          <p className="text-sm sm:text-lg font-bold">{orderStatusText}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs sm:text-sm">{itemsCount} Items</span>
+          <span className="text-xs sm:text-sm font-bold">{paid ? "Paid" : "Pending"}</span>
+        </div>
+      </div>
+  
+      <div className="flex justify-between items-center mt-2">
+        <button
+          onClick={() => navigate("/orders")}
+          className="text-xs sm:text-sm underline underline-offset-2"
+        >
+          View Order
+        </button>
         <button
           onClick={() => {
-            onClose();
-            sessionStorage.removeItem("latest_order_id");
+            dispatch(getOrders());
+            setLastRefreshedAt(new Date());
           }}
-          className="bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded-lg text-sm"
+          className="bg-white text-black px-3 py-1 rounded-lg text-xs sm:text-sm"
         >
-          Add Message
+          Refresh
         </button>
       </div>
-
-      <div className="relative px-4 py-3 flex flex-col gap-2">
-      <button
-  onClick={() => {
-    onClose();
-    sessionStorage.removeItem("latest_order_id");
-  }}
-  className="absolute top-1 right-4 text-white hover:text-white/80 text-xl"
-  aria-label="Close"
->
-  <RxCross2 />
-</button>
-        <div className="flex justify-between items-center">
-          <div>
-            <h3 className="text-sm text-gray-300">Status</h3>
-            <p className="text-lg font-bold">{orderStatusText}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm">{itemsCount} Items</span>
-            <span className="text-sm font-bold">{paid ? "Paid" : "Pending"}</span>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center mt-2">
-          <button
-            onClick={() => navigate("/orders")}
-            className="text-sm underline underline-offset-2"
-          >
-            View Order
-          </button>
-          <button
- onClick={() => {
-  dispatch(getOrders());
-  setLastRefreshedAt(new Date());
-}}            className="bg-white text-black px-3 py-1 rounded-lg text-sm"
-          >
-            Refresh
-          </button>
-        </div>
-        {lastRefreshedAt && (
-  <p className="text-xs text-white/70 mt-1">
   
-    {lastRefreshedAt && (
-  <p className="text-xs text-white mt-1 text-right">
-    Last refreshed: {getRelativeTime(lastRefreshedAt)}
-  </p>
-)}
-
-  </p>
-)}
-
-      </div>
-    </motion.div>
+      {lastRefreshedAt && (
+        <p className="text-[10px] sm:text-xs text-white mt-1 text-right">
+          Last refreshed: {getRelativeTime(lastRefreshedAt)}
+        </p>
+      )}
+    </div>
+  </motion.div>
+  
   );
 };
 

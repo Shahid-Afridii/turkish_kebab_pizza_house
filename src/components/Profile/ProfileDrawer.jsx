@@ -580,9 +580,9 @@ useEffect(() => {
               {/* <button className="text-xs md:text-xs px-3 py-1 border rounded-md bg-gray-200 text-gray-800 w-1/2 md:w-auto">
                 REORDER
               </button> */}
-              <button className="text-xs md:text-xs px-3 py-1 border rounded-md text-red-500 border-red-500 w-1/2 md:w-auto">
+              {/* <button className="text-xs md:text-xs px-3 py-1 border rounded-md text-red-500 border-red-500 w-1/2 md:w-auto">
                 RATE ORDER
-              </button>
+              </button> */}
             </div>
           )}
         </div>
