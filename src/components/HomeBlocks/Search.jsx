@@ -16,8 +16,16 @@ const Search = () => {
 
   const handleToggle = () => {
     dispatch(toggleVegOnly());
-    dispatch(fetchMenuItems());
+  
+    // If keyword exists and user has searched
+    if (keyword.trim().length > 0 && hasSearched) {
+      const payload = vegOnly ? { keyword,vegOnly:false } : { keyword, vegOnly: true }; 
+      dispatch(searchItems(payload));
+    } else {
+      dispatch(fetchMenuItems());
+    }
   };
+  
   // Reset search flag when keyword is updated manually
   useEffect(() => {
     setHasSearched(false);
@@ -40,7 +48,7 @@ const Search = () => {
 
   const handleSearch = () => {
     if (keyword.trim().length > 0) {
-      const payload = vegOnly ? { keyword, vegOnly } : { keyword };
+      const payload =  { keyword, vegOnly }
       dispatch(searchItems(payload)); // ✅ send vegOnly only if true
       setHasSearched(true);
     }

@@ -512,7 +512,18 @@ useEffect(() => {
             </div>
 
             {/* Content */}
+            <div className="text-center">
+  <button
+onClick={() => {
+  navigate("/orders");
+  onClose(); 
+}}    className="text-sm p-3 text-red-500 font-semibold underline underline-offset-2 hover:text-red-600"
+  >
+    View Order Details
+  </button>
+</div>
             <div className="flex-1 p-6 overflow-y-auto">
+            
               {activeTab === "orders" ? (
                <div className="flex flex-col space-y-4">
                {orders.length === 0 ? (
@@ -591,16 +602,7 @@ useEffect(() => {
   ))
   
 )}
-<div className="text-center mt-4">
-  <button
-onClick={() => {
-  navigate("/orders");
-  onClose(); 
-}}    className="text-sm text-red-500 font-semibold underline underline-offset-2 hover:text-red-600"
-  >
-    View All Orders
-  </button>
-</div>
+
              </div>
              
               ) : (
