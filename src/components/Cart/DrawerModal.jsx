@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect,useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaPlus, FaMinus, FaTimes } from "react-icons/fa";
 import { useDispatch,useSelector } from "react-redux";
@@ -143,7 +143,26 @@ useEffect(() => {
   setValidationErrors(errors);
 }, [selectedItem, selectedAddOns]); // ✅ Runs every time selected add-ons change
 
+const grandTotal = useMemo(() => {
+  const addOnTotal = Object.entries(selectedAddOns).reduce((total, [addOnId, itemIds]) => {
+    const addOn = selectedItem?.add_ons.find((addOn) => addOn.id === parseInt(addOnId));
+    if (!addOn) return total;
 
+    const itemTotal = itemIds.reduce((sum, itemId) => {
+      const item = addOn.items.find((i) => i.id === itemId);
+      return sum + parseFloat(item?.price || 0); // 👈 convert price to number
+    }, 0);
+
+    return total + itemTotal;
+  }, 0);
+
+  const basePrice = parseFloat(selectedItem?.price || 0); // 👈 convert base price to number
+
+  return (basePrice + addOnTotal) * quantity;
+}, [selectedItem, selectedAddOns, quantity]);
+
+
+console.log("grandTotal", grandTotal)
 // Quantity change handler
 const handleQuantityChange = (type) => {
   setQuantity((prev) => (type === "increment" ? prev + 1 : Math.max(1, prev - 1)));
@@ -575,7 +594,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
   whileHover="hover"
   whileTap="tap"
 >
-{isAddingToCart ? "Processing..." : `Add to Cart • ${formatPrice(selectedItem?.price * quantity)}`}
+{isAddingToCart ? "Processing..." : `Add to Cart • ${formatPrice(grandTotal)}`}
 </motion.button>
 
               </motion.div>
