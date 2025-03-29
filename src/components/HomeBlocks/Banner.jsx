@@ -69,7 +69,7 @@ const Banner = ({scrollToProducts}) => {
                   alt="Delivery Icon"
                   className="w-5 h-5"
                 />
-                <span className="ml-2 text-sm md:text-base text-orange-600 font-bold">
+                <span className="ml-2 text-sm md:text-base text-primary font-bold">
                   Delivery Time 30 min
                 </span>
               </motion.div>
@@ -145,7 +145,7 @@ onClick={scrollToProducts}              className="button-primary"
           alt="Delivery Icon"
           className="w-4 h-4"
         />
-        <span className="ml-2 text-xs sm:text-sm text-orange-600 font-bold">
+        <span className="ml-2 text-xs sm:text-sm text-primary font-bold">
           Delivery Time 30 min
         </span>
       </motion.div>
