@@ -170,7 +170,7 @@ const DynamicSEO = () => {
       <link rel="canonical" href={window.location.href} />
       <link rel="icon" href="/favicon.ico" />
       <link rel="preload" href="/assets/Mask group.png" as="image" />
-      <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+      {/* <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" /> */}
 
       <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       {path === "/" && menuItems.length > 0 && (
