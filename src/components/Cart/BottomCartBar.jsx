@@ -55,7 +55,7 @@ const BottomCartBar = () => {
   setLocalTotalAmount(total);
 };
 
-console.log("totalAmount bar", totalAmount);
+
 
 useEffect(() => {
   if (isAuthenticated) {
@@ -84,7 +84,6 @@ useEffect(() => {
 // ✅ Prevent bar from closing when route changes
 // Only triggers when the route changes
 
-  console.log("cartItems bar", localCartItems);
   
   const displayedCartItems = isAuthenticated ? cartItems : localCartItems;
   const displayedTotalAmount = isAuthenticated ? totalAmount : localTotalAmount;

@@ -34,7 +34,7 @@ const StripeIntegration = () => {
     setIsProcessing(true);
     setErrorMessage("");
 
-    console.log("Processing Payment...");
+  
 
     try {
       const result = await stripe.confirmPayment({

@@ -37,13 +37,13 @@ const Navbar = () => {
     e.preventDefault(); // Prevent the default link behavior
     setIsLoginDrawerOpen(true);
   };
-console.log("isAuthenticated", isAuthenticated);
+
   const closeLoginDrawer = () => {
     setIsLoginDrawerOpen(false);
   };
   const cartItems = useSelector((state) => state.cart.items); // Fetch cart items from Redux store
   const totalItems = useSelector((state) => state.cart.totalItems) || 0; 
-  console.log("totalItems", totalItems);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };

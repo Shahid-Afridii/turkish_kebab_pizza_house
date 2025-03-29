@@ -1,7 +1,6 @@
 import axios from "axios";
 
-console.log("Environment Variables Loaded:");
-console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
+
 
 if (!import.meta.env.VITE_API_URL) {
   console.error(
@@ -31,7 +30,6 @@ if (storedToken) {
   setAuthToken(storedToken);
 }
 
-// ✅ Log the final API base URL being used
-console.log("Final API Base URL:", api.defaults.baseURL);
+
 
 export default api;

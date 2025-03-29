@@ -18,7 +18,7 @@ export const fetchMenuItems = createAsyncThunk("menu/fetchMenuItems", async (_, 
   const categoryId = state.selectedCategoryId;
   const foodType = state.vegOnly ? true : false; // ✅ Pass vegOnly state
 
-  console.log("Fetching menu items for categoryId:", categoryId, "VegOnly:", foodType);
+
 
   try {
     const response = await api.post("/menu/menu_item", {

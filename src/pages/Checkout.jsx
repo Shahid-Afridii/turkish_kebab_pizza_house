@@ -167,7 +167,7 @@ const handleUpdateLocalQuantity = (itemId, newQuantity) => {
       quantity: newQuantity,
     };
 
-    console.log("Final Payload for API:", payload);
+    
     dispatch(updateQuantity(payload));
   }
 };

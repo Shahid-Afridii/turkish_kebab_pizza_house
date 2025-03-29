@@ -158,7 +158,7 @@ if (!newAddress.pincode.trim()) {
     return Object.keys(newErrors).length === 0;
   };
   
-console.log("errors", errors);  
+
 const handleChange = (e) => {
   const { name, value } = e.target;
   setNewAddress({ ...newAddress, [name]: value });

@@ -59,7 +59,7 @@ ${allUrls
 </urlset>`;
 
   fs.writeFileSync('public/sitemap.xml', sitemap.trim());
-  console.log('✅ sitemap.xml generated in /public');
+ 
 } catch (err) {
   console.error('❌ Failed to generate sitemap:', err.message);
 }

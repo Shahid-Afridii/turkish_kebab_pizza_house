@@ -99,7 +99,7 @@ const buttonVariants = {
 };
 
 const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
-console.log("selectedItem", selectedItem)
+
   const dispatch = useDispatch();
      // ✅ Get authentication state from Redux
      const { isAuthenticated } = useSelector((state) => state.auth);
@@ -162,7 +162,7 @@ const grandTotal = useMemo(() => {
 }, [selectedItem, selectedAddOns, quantity]);
 
 
-console.log("grandTotal", grandTotal)
+
 // Quantity change handler
 const handleQuantityChange = (type) => {
   setQuantity((prev) => (type === "increment" ? prev + 1 : Math.max(1, prev - 1)));
@@ -309,7 +309,7 @@ const handleAddToCart = () => {
   // ✅ Open bottom cart bar
   dispatch(setBottomBarVisible(true));
   onClose();
-  console.log("🛒 Added to local storage (Guest Cart):", updatedCart);
+
   return;
 }
 
@@ -319,7 +319,7 @@ const handleAddToCart = () => {
   dispatch(addToCart(cartData))
     .unwrap()
     .then(() => {
-      console.log("✅ Add to Cart Success");
+
 
       // ✅ Open bottom cart bar
       dispatch(setBottomBarVisible(true));

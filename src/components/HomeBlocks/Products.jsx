@@ -90,7 +90,7 @@ const Products = forwardRef(({ productRef }, ref) => {
   }, [windowWidth, searchResults, selectedCategoryId]);
   
 
-  console.log("keyword", keyword);
+
   return (
     <>
 

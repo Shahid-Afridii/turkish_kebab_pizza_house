@@ -28,7 +28,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
  
   const scrollToProducts = () => {
-    console.log("Scrolling to product section:", productRef.current); // Debugging log
+  
   
     if (productRef.current) {
       // ✅ Get the exact position and add an offset

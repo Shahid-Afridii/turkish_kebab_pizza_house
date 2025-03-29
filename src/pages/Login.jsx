@@ -219,7 +219,7 @@ openPopup({
   showConfirmButton: false,
   showCancelButton: false,
   onClose: () => {
-    console.log("Switching to signup mode...");
+
     if (!isSignUp && isInvalidMobileMessage) {
       setIsSignUp(true);
     }
