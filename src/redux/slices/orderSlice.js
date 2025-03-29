@@ -22,7 +22,15 @@ export const submitOrder = createAsyncThunk(
 // ✅ Get Orders
 export const getOrders = createAsyncThunk(
   "order/getAll",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
+    const state = getState();
+    const token = state.auth.token; // Get the token from the state
+
+    // Check if token exists and is valid
+    if (!token) {
+      return rejectWithValue("No token found, please log in first.");
+    }
+
     try {
       const response = await api.get("/client/order");
 
@@ -36,6 +44,7 @@ export const getOrders = createAsyncThunk(
     }
   }
 );
+
 
 // ✅ Order Slice
 const orderSlice = createSlice({

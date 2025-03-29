@@ -4,18 +4,31 @@ import api from "../../services/api"; // Ensure this points to your API service
 // ✅ Fetch Addresses
 export const getAddresses = createAsyncThunk(
   "userAddress/get",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
+    const state = getState();
+    const token = state.auth.token; // Get the token from the state
+
+    // Check if token exists and is valid
+    if (!token) {
+      return rejectWithValue("No token found, please log in first.");
+    }
+
     try {
       const response = await api.get("/client/address/get");
+
+      // Check if the response is successful
       if ((response.status === 200 || response.status === 201) && response.data?.status) {
-        return response.data.data;
+        return response.data.data; // Return address data
       }
+
+      // If the response is not successful
       throw new Error(response.data?.message || "Failed to fetch addresses");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Error fetching addresses");
     }
   }
 );
+
 
 // ✅ Add Address & Refresh List
 export const addAddress = createAsyncThunk(
