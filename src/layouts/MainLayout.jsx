@@ -40,6 +40,7 @@ const MainLayout = ({ children }) => {
 
   return (  
     <div>
+
       <Navbar className="bg-gray-50" />
       <main className="lg:py-4 lg:px-4 bg-gray-50">{children}</main>
       <Footer />

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://turkish-kebab-pizza-house.co.uk/sitemap.xml

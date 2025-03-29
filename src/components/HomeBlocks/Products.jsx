@@ -7,6 +7,9 @@ import { FaPlus,FaChevronDown } from "react-icons/fa";
 import { fetchMenuItems } from "../../redux/slices/menuSlice"; 
 import { clearSearchResults } from "../../redux/slices/searchSlice";
 import { formatPrice } from "../../utils/formatPrice";
+import { FaChevronUp } from "react-icons/fa";
+import useWindowWidth from "../../components/useWindowWidth";
+
 const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 // Static Data for All Items
 
@@ -25,6 +28,8 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
   
 const Products = forwardRef(({ productRef }, ref) => {
   const [visibleItems, setVisibleItems] = useState(6);
+  const [hasExpanded, setHasExpanded] = useState(false);
+
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const { menuItems, selectedCategoryId, status } = useSelector((state) => state.menu);
@@ -32,11 +37,14 @@ const Products = forwardRef(({ productRef }, ref) => {
   const displayedItems =
   searchResults && searchResults.length > 0 ? searchResults : menuItems;
   const { keyword } = useSelector((state) => state.search);
+  const windowWidth = useWindowWidth();
 
   const dispatch = useDispatch();
   const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
   const handleShowMore = () => {
     setVisibleItems((prev) => prev + 3);
+    setHasExpanded(true);
+
   };
 
   const handleAddItem = (item) => {
@@ -59,9 +67,28 @@ const Products = forwardRef(({ productRef }, ref) => {
       dispatch(clearSearchResults());
     }
   }, [selectedCategoryId, dispatch]);
+
   useEffect(() => {
-    setVisibleItems(8); // reset visible items whenever new search happens or category changes
-  }, [searchResults, selectedCategoryId]);  
+    const calculateVisibleItems = () => {
+      let cols = 1;
+      let rows = 2;
+  
+      if (windowWidth >= 1536) cols = 6;
+      else if (windowWidth >= 1280) cols = 4;
+      else if (windowWidth >= 1024) cols = 3;
+      else if (windowWidth >= 768) cols = 3;
+      else {
+        // Mobile: force show more items
+        cols = 1;
+        rows = 6; // ✅ Show 6 items on small screen (1 col x 6 rows)
+      }
+  
+      setVisibleItems(cols * rows);
+    };
+  
+    calculateVisibleItems();
+  }, [windowWidth, searchResults, selectedCategoryId]);
+  
 
   console.log("keyword", keyword);
   return (
@@ -142,7 +169,7 @@ const Products = forwardRef(({ productRef }, ref) => {
         </div>
         <div className="p-4 flex flex-col">
           <h3 className="text-md lg:text-lg font-bold text-gray-800">{item.name}</h3>
-          <div className="flex items-center text-sm text-gray-500 mt-2">
+          {/* <div className="flex items-center text-sm text-gray-500 mt-2">
             {[...Array(5)].map((_, i) => (
               <svg
                 key={i}
@@ -166,7 +193,7 @@ const Products = forwardRef(({ productRef }, ref) => {
               {item.rating}
             </span>
             <span className="ml-2 text-md lg:text-lg text-gray-500">{item.reviews}</span>
-          </div>
+          </div> */}
           {item.add_ons && item.add_ons.length > 0 && (
             <p className="text-xs lg:text-lg text-gray-600 mt-2 truncate">
               {item.add_ons.map((addon) => addon.name).join(", ")}
@@ -191,24 +218,41 @@ const Products = forwardRef(({ productRef }, ref) => {
 
 <div className="flex justify-center mt-8 gap-4 flex-wrap">
   {visibleItems < displayedItems.length && (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.97 }}
       onClick={handleShowMore}
-      className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-primary flex items-center"
+      className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg font-medium shadow hover:bg-primary/90 transition duration-300"
     >
-      Show more
-      <FaChevronDown className="ml-2" />
-    </button>
+      <span>Load More...</span>
+      <FaChevronDown className="mt-[2px]" />
+    </motion.button>
   )}
 
-  {visibleItems > 6 && (
-    <button
-      onClick={() => setVisibleItems(6)}
-      className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-400"
+{hasExpanded && visibleItems > (
+  windowWidth >= 1536 ? 12 :
+  windowWidth >= 1280 ? 8 :
+  windowWidth >= 1024 ? 6 :
+  windowWidth >= 768 ? 6 :
+  6 
+) && (
+
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.97 }}
+      onClick={() => {
+        setVisibleItems(6);
+        setHasExpanded(false);
+      }}
+      className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg font-medium shadow hover:bg-primary/90 transition duration-300"
     >
-      Show less
-    </button>
+      <span>Load less</span>
+      <FaChevronUp className="mt-[2px]" />
+    </motion.button>
   )}
 </div>
+
+
 
 
       <DrawerModal
