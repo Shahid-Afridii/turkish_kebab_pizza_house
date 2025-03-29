@@ -367,7 +367,7 @@ const PaginationControls = () => {
         <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-end">
           <div className="bg-white w-full p-5 rounded-t-lg max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Filter Orders</h3>
+              <h1 className="text-lg font-semibold">Filter Orders</h1>
               <button   aria-label="Close the filter"
  onClick={() => setShowMobileFilter(false)} className="text-gray-500 text-sm">
                 Close

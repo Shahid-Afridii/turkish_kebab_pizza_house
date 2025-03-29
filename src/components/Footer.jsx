@@ -20,7 +20,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* About Us */}
           <div className="font-Noto_Sans">
-            <h3 className="text-2xl font-title font-bold text-gray-800">Turkish Kebab Pizza House</h3>
+            <h1 className="text-2xl font-title font-bold text-gray-800">Turkish Kebab Pizza House</h1>
             <p className="mt-4  text-gray-600">
               Serving the best kebabs and pizzas in Belfast with a passion for
               quality and taste. Visit us for an unforgettable experience.

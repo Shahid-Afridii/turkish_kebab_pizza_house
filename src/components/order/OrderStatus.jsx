@@ -100,9 +100,9 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
   <RxCross2 />
 </button>
 
-    <h3 className="text-sm font-medium mb-2">
+    <h1 className="text-sm font-medium mb-2">
       Please tell us about your previous order.
-    </h3>
+    </h1>
 
     <p className="text-base font-semibold text-white mb-2">
       {matchedOrder.items?.[0]?.name} & {itemsCount - 1} Others
@@ -210,7 +210,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
   
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-xs sm:text-sm text-gray-300">Status</h3>
+          <h1 className="text-xs sm:text-sm text-gray-300">Status</h1>
           <p className="text-sm sm:text-lg font-bold">{orderStatusText}</p>
         </div>
         <div className="flex items-center gap-2">

@@ -410,9 +410,9 @@ openPopup({
                 </>
               ) : (
                 <>
-                  <h3 className="text-lg font-semibold text-center text-gray-800 mb-4">
+                  <h1 className="text-lg font-semibold text-center text-gray-800 mb-4">
                     Enter OTP
-                  </h3>
+                  </h1>
                   <div onPaste={handlePaste} className="flex justify-center space-x-3 mb-6">
                   {formData.otp.map((digit, index) => (
                       <input

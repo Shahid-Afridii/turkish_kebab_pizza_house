@@ -397,9 +397,9 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <h3 className="text-md md:text-xl font-semibold text-gray-800">
+                <h1 className="text-md md:text-xl font-semibold text-gray-800">
                   {selectedItem?.name}
-                </h3>
+                </h1>
                 {/* Selection Limit Condition */}
    {/* Show Selected Add-ons or Description */}
    <p className="text-xs md:text-sm capitalize text-gray-500 mt-1">

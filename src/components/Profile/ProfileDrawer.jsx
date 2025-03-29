@@ -713,8 +713,8 @@ onClick={() => {
      <AnimatePresence >
                 {showAddForm && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="mt-4 p-4 border rounded-lg bg-gray-100">
-                    <h3 ref={addressTitleRef}  className="text-lg font-semibold mb-2">        {isEditing ? "Edit Address" : "New Address"}
-                    </h3>
+                    <h1 ref={addressTitleRef}  className="text-lg font-semibold mb-2">        {isEditing ? "Edit Address" : "New Address"}
+                    </h1>
                     <form onSubmit={handleSubmit} className="grid gap-3">
 
 

@@ -54,9 +54,9 @@ const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod,handle
 
       {/* Payment Methods */}
       <div>
-        <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-4">
+        <h1 className="text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-4">
           {/* Select Payment Method */}
-        </h3>
+        </h1>
         <div className="grid grid-cols-1 gap-2 sm:gap-4">
   {/* Pay Now - Stripe */}
   <button

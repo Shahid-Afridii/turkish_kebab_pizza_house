@@ -287,7 +287,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
       {isModalOpen && (
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999] px-4">
     <div className={`bg-white rounded-lg p-6 w-full max-w-[520px] ${addresses.length > 0 ? "h-auto max-h-[650px]" : "h-auto"} shadow-lg flex flex-col`}>
-      <h3 className="text-lg font-semibold mb-4 text-center md:text-xl">Select Address</h3>
+      <h1 className="text-lg font-semibold mb-4 text-center md:text-xl">Select Address</h1>
 
       {/* Address List with Custom Scrollbar */}
       {addresses.length > 0 ? (
@@ -356,7 +356,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
             exit={{ opacity: 0, y: 10 }}
             className="mt-4 p-4 border rounded-lg  max-h-[220px] overflow-y-auto custom-scrollbar"
           >
-            <h3 className="text-lg font-semibold mb-2 text-center">New Address</h3>
+            <h2 className="text-lg font-semibold mb-2 text-center">New Address</h2>
             <form onSubmit={handleSubmit} className="grid gap-3">
 
 {/* Address Type Selection */}
