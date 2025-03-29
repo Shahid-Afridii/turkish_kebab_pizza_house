@@ -448,6 +448,7 @@ useEffect(() => {
         {/* **Close Button** */}
         <button
           onClick={onClose}
+          aria-label="Close popup"
           className="absolute top-3 left-3 bg-primary text-white p-2 rounded-full hover:bg-primary shadow-md"
         >
           <FaTimes size={16} />
@@ -482,10 +483,12 @@ useEffect(() => {
 
       {/* **Buttons Section** */}
       <div className="mt-4 flex justify-center space-x-4 px-6 pb-4">
-        <button onClick={handleLogout} className="flex items-center bg-primary text-white px-5 py-2 rounded-md text-sm font-semibold hover:bg-primary shadow-md">
+        <button   aria-label="Sign out of your account"
+ onClick={handleLogout} className="flex items-center bg-primary text-white px-5 py-2 rounded-md text-sm font-semibold hover:bg-primary shadow-md">
           <FaSignOutAlt className="mr-2" /> Sign-out
         </button>
-        <button className="flex items-center border border-red-500 text-red-500 px-5 py-2 rounded-md text-sm font-semibold bg-red-100 hover:bg-red-200 shadow-md">
+        <button   aria-label="Edit your profile information"
+ className="flex items-center border border-red-500 text-red-500 px-5 py-2 rounded-md text-sm font-semibold bg-red-100 hover:bg-red-200 shadow-md">
           <FaEdit className="mr-2" /> Edit
         </button>
       </div>
@@ -495,6 +498,8 @@ useEffect(() => {
             <div className="flex border-b">
               <button
                 onClick={() => setActiveTab("orders")}
+                aria-selected={activeTab === "orders"}
+  aria-label="View order history"
                 className={`w-1/2 py-3 text-center text-sm font-medium ${
                   activeTab === "orders" ? "text-red-500 border-b-2 border-red-500" : "text-gray-600"
                 }`}
@@ -502,6 +507,8 @@ useEffect(() => {
                 Order History
               </button>
               <button
+               aria-selected={activeTab === "addresses"}
+  aria-label="View address details"
                 onClick={() => setActiveTab("addresses")}
                 className={`w-1/2 py-3 text-center text-sm font-medium ${
                   activeTab === "addresses" ? "text-red-500 border-b-2 border-red-500" : "text-gray-600"
@@ -514,6 +521,7 @@ useEffect(() => {
             {/* Content */}
             <div className="text-center">
   <button
+    aria-label="View order details"
 onClick={() => {
   navigate("/orders");
   onClose(); 
@@ -564,6 +572,7 @@ onClick={() => {
           
             <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center mt-2 space-y-2 md:space-y-0">
             <button
+              aria-label="Track your order status"
  onClick={() => {
   sessionStorage.setItem("latest_order_id", order.order_id);
   const event = new CustomEvent("show-order-status", {
@@ -630,22 +639,27 @@ onClick={() => {
       </div>
 
    {/* Dropdown Menu Button */}
-   <button onClick={() => toggleOptions(item.address_id)} className="relative z-20">
-        <FiMoreVertical className="text-gray-500 text-lg" />
+   <button   aria-label="Show more options for this address"
+ onClick={() => toggleOptions(item.address_id)} className="relative z-20">
+        <FiMoreVertical className="text-gray-500 text-lg" aria-hidden="true" />
       </button>
 
       {/* Dropdown Menu (Appears Next to Each Address) */}
       {showOptions === item.address_id && (
         <div ref={dropdownRef} className=" bg-white shadow-md rounded-md py-2 w-36 md:w-48 border z-30">
-          <button onClick={() => handleEditAddress(item)} className="flex items-center px-3 py-1 text-xs md:text-sm hover:bg-gray-100 w-full">
-            <FiEdit className="mr-2 text-gray-600" /> Edit
+          <button   aria-label={`Edit address ${item.address_id}`}
+ onClick={() => handleEditAddress(item)} className="flex items-center px-3 py-1 text-xs md:text-sm hover:bg-gray-100 w-full">
+            <FiEdit className="mr-2 text-gray-600" aria-hidden="true"  /> Edit
           </button>
-          <button   onClick={() => handleDeleteAddress(item.address_id)}
+          <button    aria-label={`Delete address ${item.address_id}`}
+ onClick={() => handleDeleteAddress(item.address_id)}
  className="flex items-center px-3 py-1 text-xs md:text-sm text-red-500 hover:bg-gray-100 w-full">
-            <FiTrash2 className="mr-2" /> Delete
+            <FiTrash2 className="mr-2" aria-hidden="true" /> Delete
           </button>
           {!item.is_primary && (
             <button      
+            aria-label={`Set address ${item.address_id} as primary`}
+
                                      onClick={() => handleSetPrimaryAddress(item.address_id)}
             className="flex items-center px-3 py-1 text-xs md:text-sm text-blue-600 font-semibold hover:bg-gray-100 w-full">
               Set as Primary
@@ -685,9 +699,11 @@ onClick={() => {
       addressTitleRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
   }}
+  aria-label="Add a new address"
+
   className="bg-primary text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-primary flex items-center"
 >
-  <FaPlus className="mr-2" /> Add Address
+  <FaPlus className="mr-2" aria-hidden="true"/> Add Address
 </button>
 
 
@@ -760,6 +776,8 @@ onClick={() => {
     Object.keys(errors).length > 0 ||  
     Object.values(newAddress).some(value => value.trim() === "") 
   }
+  aria-label={isLoading ? "Saving address" : isEditing ? "Update address" : "Save address"}
+
   className={`w-full px-4 py-2 rounded-md font-semibold transition 
     ${isLoading || Object.keys(errors).length > 0 || Object.values(newAddress).some(value => value.trim() === "")
       ? "bg-gray-400 cursor-not-allowed"

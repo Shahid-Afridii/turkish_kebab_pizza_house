@@ -183,6 +183,7 @@ useEffect(() => {
   </div>
           {/* Hamburger Menu */}
           <button
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             className="flex items-center justify-center h-10 w-10 text-primary border border-primary rounded-full hover:bg-primary hover:text-white transition"
             onClick={toggleMenu}
           >
@@ -204,6 +205,7 @@ useEffect(() => {
       {/* Close Icon */}
       <div className="flex justify-end">
         <button
+          aria-label="Close menu"
           onClick={closeMenu}
           className="flex items-center justify-center h-10 w-10 text-primary bg-red-100 border border-primary rounded-full hover:bg-gray-100 transition"
         >

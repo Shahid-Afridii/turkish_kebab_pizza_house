@@ -203,6 +203,7 @@ const Products = forwardRef(({ productRef }, ref) => {
             <span className="text-primary font-bold text-lg">{formatPrice(item.price)}</span>
             <button
               onClick={() => handleAddItem(item)}
+              aria-label={`Add ${item?.name || "item"} to cart`}
               className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary transition flex items-center"
             >
               <FaPlus className="mr-2" />

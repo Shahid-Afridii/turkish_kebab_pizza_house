@@ -143,6 +143,7 @@ useEffect(() => {
 
         {/* Close Button */}
         <button
+          aria-label="Close bottom bar"
          onClick={() => dispatch(setBottomBarVisible(false))}
           className="text-white px-3 py-2 rounded-lg font-bold text-xs sm:text-sm lg:text-lg flex items-center justify-center"
         >

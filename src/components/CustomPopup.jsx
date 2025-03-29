@@ -112,7 +112,9 @@ const CustomPopup = ({
           </div>
         </motion.div>
         {showCloseIcon && (
-          <button onClick={onClose} className="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
+          <button onClick={onClose}  
+             aria-label="Close popup"
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
             <AiOutlineCloseCircle className="h-6 w-6" />
           </button>
         )}
@@ -124,6 +126,7 @@ const CustomPopup = ({
           <div className="flex justify-center space-x-4 mt-6">
             {showCancelButton && (
               <button
+              aria-label="Cancel and close popup"
                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-full transition-all duration-200 ease-in-out"
                 onClick={onClose}
               >
@@ -132,6 +135,7 @@ const CustomPopup = ({
             )}
             {showConfirmButton && (
               <button
+              aria-label="Confirm and proceed"
                 className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-all duration-200 ease-in-out"
                 onClick={handleConfirm}
               >

@@ -191,6 +191,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
       <div className="flex justify-center gap-2 mb-6">
         <button
           onClick={() => setMode("delivery")}
+          aria-label="Select delivery mode"
           className={`w-28 py-2 text-xs sm:text-sm font-medium rounded-md transition ${
             mode === "delivery"
               ? "bg-primary text-white"
@@ -200,6 +201,8 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
           Delivery
         </button>
         <button
+          aria-label="Select pickup mode"
+
           onClick={() => setMode("pickup")}
           className={`w-28 py-2 text-xs sm:text-sm font-medium rounded-md transition ${
             mode === "pickup"
@@ -258,10 +261,12 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
             </div>
           </div> */}
           <div className="flex justify-between mt-4">
-            <button className="text-primary text-xs sm:text-sm font-medium hover:underline">
+            <button   aria-label="Add delivery instructions"
+ className="text-primary text-xs sm:text-sm font-medium hover:underline">
               Delivery Instructions
             </button>
             <button 
+              aria-label="Select delivery address"
               className="text-primary text-xs sm:text-sm font-medium hover:underline"
               onClick={() => setIsModalOpen(true)}
             >
@@ -328,6 +333,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
       {/* Add Address Button (No Extra Space Above) */}
       <div className="flex justify-center mt-3">
         <button
+          aria-label="Add a new delivery address"
           onClick={() => {
             setShowAddForm(true);
             setNewAddress({ name: "", address: "", city: "", country: "", pincode: "", phone: "" });
@@ -406,6 +412,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
 
 <button
   type="submit"
+  aria-label={isLoading ? "Saving address, please wait" : "Save new address"}
   disabled={
     isLoading || 
     Object.keys(errors).length > 0 ||  
@@ -428,6 +435,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
       {/* Cancel Button */}
       <div className="mt-4 flex justify-end">
         <button
+          aria-label="Cancel and close address form"
           className="text-red-600 text-sm font-medium hover:underline"
           onClick={() => {
             setIsModalOpen(false);

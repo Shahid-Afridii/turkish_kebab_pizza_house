@@ -65,6 +65,11 @@ const StripeIntegration = () => {
           <PaymentElement onReady={() => setIsElementLoaded(true)} />
           {errorMessage && <p className="text-red-500 text-sm mt-2">{errorMessage}</p>}
           <button
+           aria-label={
+            isProcessing
+              ? "Processing your Stripe payment"
+              : "Submit payment now with Stripe"
+          }
             type="submit"
             disabled={!stripe || !isElementLoaded || isProcessing}
             className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg"

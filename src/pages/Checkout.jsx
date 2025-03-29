@@ -490,6 +490,7 @@ const handleRemoveItem = async (item) => {
       <div className="flex flex-col items-center justify-center text-center py-10">
         <p className="text-gray-500 mb-4">No items in cart</p>
         <button
+          aria-label="Go to the products page to add products"
           onClick={() => navigate("/")}
           className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition"
         >
@@ -528,9 +529,11 @@ const handleRemoveItem = async (item) => {
                         : handleRemoveLocalItem(item.menu_item_id);
                       window.dispatchEvent(new Event("storage"));
                     }}
+                    aria-label={`Delete ${item.name || "item"}`}
+
                     className="text-red-500 hover:text-red-600 p-1"
                   >
-                    <FaTrash size={13} />
+                    <FaTrash size={13} aria-hidden="true"  />
                   </button>
                 </div>
 
@@ -578,6 +581,8 @@ const handleRemoveItem = async (item) => {
 
                 <div className="flex items-center gap-2">
   <button
+    aria-label="Decrease quantity"
+
     disabled={(item.qty ?? item.quantity ?? 1) <= 1}
     onClick={() =>
       handleUpdateLocalQuantity(
@@ -591,7 +596,7 @@ const handleRemoveItem = async (item) => {
         : "bg-primary hover:bg-primary text-white"
     }`}
   >
-    <FaMinus size={10} />
+    <FaMinus size={10} aria-hidden="true"/>
   </button>
 
   <span className="px-2 py-1 text-xs sm:text-sm font-medium text-gray-800 border rounded-md">
@@ -605,6 +610,7 @@ const handleRemoveItem = async (item) => {
         (item.qty ?? item.quantity ?? 1) + 1
       )
     }
+      aria-label="Increase quantity"
     className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary"
   >
     <FaPlus size={10} />

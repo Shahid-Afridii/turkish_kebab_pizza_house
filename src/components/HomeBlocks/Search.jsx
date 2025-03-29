@@ -83,6 +83,7 @@ const Search = () => {
 
           {keyword.length > 0 && (
             <button
+            aria-label="Clear search input"
               onClick={handleClear}
               className="absolute right-16 top-1/2 -translate-y-1/2 text-gray-500 hover:text-red-500 transition"
               title="Clear"
@@ -93,6 +94,7 @@ const Search = () => {
 
           <button
             type="button"
+            aria-label={loading ? "Searching..." : "Search"}
             onClick={handleSearch}
             className="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:text-white hover:bg-primary rounded-lg p-2 transition"
           >

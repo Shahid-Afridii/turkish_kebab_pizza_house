@@ -312,6 +312,7 @@ openPopup({
                 {isSignUp ? "Sign-up" : otpSent ? "Verify OTP" : "Log-in"}
               </h2>
               <button
+                aria-label="Close"
                 onClick={onClose}
                 className="text-gray-500 hover:text-gray-700"
               >
@@ -389,6 +390,13 @@ openPopup({
 
                     {/* Buttons */}
                     <button
+                     aria-label={
+                      isLoading
+                        ? "Processing request"
+                        : isSignUp
+                        ? "Sign up"
+                        : "Generate one-time password"
+                    }
                       type="button"
                       onClick={handleGenerateOtp}
                       className="w-full bg-primary hover:bg-primary text-white py-3 rounded-lg text-sm font-medium transition duration-300 focus:ring-2 focus:ring-red-500"
@@ -419,6 +427,7 @@ openPopup({
                   </div>
                   <button
                     type="button"
+                    aria-label={isLoading ? "Verifying your one-time password" : "Verify one-time password"}
                     onClick={handleVerifyOtp}
                     className="w-full bg-primary hover:bg-primary text-white py-3 rounded-lg text-sm font-medium transition duration-300 focus:ring-2 focus:ring-red-500"
                   >

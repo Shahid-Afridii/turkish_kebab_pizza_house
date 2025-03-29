@@ -113,6 +113,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
       {/* Left Arrow */}
       {isScrollable && (
         <button
+        aria-label="Scroll to previous items"
           onClick={handlePrev}
           className="absolute left-[-5px] sm:left-2 z-10 w-6 h-6 sm:w-8 sm:h-8 bg-white shadow-md rounded-full flex items-center justify-center text-primary border border-primary hover:bg-primary hover:text-white hidden sm:flex"
         >
@@ -155,6 +156,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
     <p className="text-gray-500 text-sm mt-1">We couldn't load the categories. Please try again.</p>
     <button
       onClick={() => dispatch(fetchMenuData())}
+      aria-label="Retry loading menu data"
       className="mt-3 bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary transition"
     >
       Retry 🔄
@@ -216,6 +218,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
       {isScrollable && (
         <button
           onClick={handleNext}
+            aria-label="Scroll to next items"
           className="absolute right-[-5px] sm:right-2 z-10 w-6 h-6 sm:w-8 sm:h-8 bg-white shadow-md rounded-full flex items-center justify-center text-primary border border-primary hover:bg-primary hover:text-white hidden sm:flex"
         >
           <FaArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />

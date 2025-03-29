@@ -110,6 +110,7 @@ const PaginationControls = () => {
   return (
     <div className="flex flex-wrap justify-center gap-2 items-center mt-6 text-xs sm:text-sm">
       <button
+        aria-label="Previous page"
         disabled={currentPage === 1}
         onClick={() => {
           setCurrentPage((prev) => prev - 1);
@@ -126,6 +127,7 @@ const PaginationControls = () => {
         ) : (
           <button
             key={page}
+            aria-label={`Go to page ${page}`}
             onClick={() => {
               setCurrentPage(page);
               scrollToTop();
@@ -142,6 +144,8 @@ const PaginationControls = () => {
       )}
 
       <button
+        aria-label="Next page"
+
         disabled={currentPage === totalPages}
         onClick={() => {
           setCurrentPage((prev) => prev + 1);
@@ -149,7 +153,7 @@ const PaginationControls = () => {
         }}
         className="px-2 py-1 border rounded disabled:opacity-30"
       >
-        <MdNavigateNext />
+        <MdNavigateNext aria-hidden="true" />
       </button>
     </div>
   );
@@ -221,29 +225,34 @@ const PaginationControls = () => {
       <div className="flex flex-row justify-end items-center gap-2 sm:gap-3 mb-4">
   <button
     onClick={downloadPDF}
+      aria-label="Download invoice as PDF"
     className="flex items-center gap-1 bg-primary text-white px-3 py-1.5 rounded text-xs sm:text-sm font-medium hover:bg-red-700 transition"
   >
-    <AiOutlineFilePdf className="text-base sm:text-lg" />Invoice
+    <AiOutlineFilePdf className="text-base sm:text-lg" aria-hidden="true" />Invoice
     <span className="hidden xs:inline">PDF</span>
   </button>
 
   <button
     onClick={downloadExcel}
+    aria-label="Download invoice as Excel"
     className="flex items-center gap-1 bg-green-600 text-white px-3 py-1.5 rounded text-xs sm:text-sm font-medium hover:bg-green-700 transition"
   >
     <AiOutlineFileExcel className="text-base sm:text-lg" /> Invoice
-    <span className="hidden xs:inline">Excel</span>
+    <span className="hidden xs:inline" aria-hidden="true">Excel</span>
   </button>
 </div>
       {/* Mobile Filter Button */}
       <div className="flex sm:hidden justify-end mb-3">
         <button
+          aria-label="Apply filters"
+
           onClick={() => {
             setTempStatusFilter(statusFilter);
             setTempPaymentFilter(paymentFilter);
             setTempStartDate(startDate);
             setTempEndDate(endDate);
             setShowMobileFilter(true);
+            
           }}
           className="flex items-center gap-1 px-3 py-1 text-sm border rounded bg-gray-100 hover:bg-gray-200"
         >
@@ -261,6 +270,8 @@ const PaginationControls = () => {
                 setStatusFilter(status);
                 setCurrentPage(1);
               }}
+              aria-label={`Filter by ${status}`}
+
               className={`px-3 py-1 capitalize text-xs sm:text-sm rounded-full font-medium border transition ${
                 statusFilter === status
                   ? "bg-primary text-white border-red-600"
@@ -280,6 +291,8 @@ const PaginationControls = () => {
                 setPaymentFilter(mode);
                 setCurrentPage(1);
               }}
+              aria-label={`Filter by ${mode} payment method`}
+
               className={`px-3 py-1 text-xs sm:text-sm rounded-full font-medium border transition ${
                 paymentFilter === mode
                   ? "bg-indigo-600 text-white border-indigo-600"
@@ -298,6 +311,8 @@ const PaginationControls = () => {
         setSortBy(option);
         setCurrentPage(1);
       }}
+      aria-label={`Sort by ${option === "latest" ? "latest" : "default"}`}
+
       className={`px-3 py-1 text-xs sm:text-sm rounded-full font-medium border transition ${
         sortBy === option
           ? "bg-black text-white border-black"
@@ -350,7 +365,8 @@ const PaginationControls = () => {
           <div className="bg-white w-full p-5 rounded-t-lg max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Filter Orders</h3>
-              <button onClick={() => setShowMobileFilter(false)} className="text-gray-500 text-sm">
+              <button   aria-label="Close the filter"
+ onClick={() => setShowMobileFilter(false)} className="text-gray-500 text-sm">
                 Close
               </button>
             </div>
@@ -362,6 +378,7 @@ const PaginationControls = () => {
                   {statusOptions.map((status) => (
                     <button
                       key={status}
+                      aria-label={`Filter by ${status}`}
                       onClick={() => setTempStatusFilter(status)}
                       className={`px-3 py-1 capitalize text-xs rounded-full font-medium border transition ${
                         tempStatusFilter === status
@@ -381,6 +398,7 @@ const PaginationControls = () => {
                   {paymentOptions.map((mode) => (
                     <button
                       key={mode}
+                      aria-label={`Filter by ${mode} payment method`}
                       onClick={() => setTempPaymentFilter(mode)}
                       className={`px-3 py-1 text-xs capitalize rounded-full font-medium border transition ${
                         tempPaymentFilter === mode
@@ -400,6 +418,7 @@ const PaginationControls = () => {
     {["latest", "default"].map((option) => (
       <button
         key={option}
+        aria-label={`Sort by ${option === "latest" ? "latest" : "default"}`}
         onClick={() => setTempSortBy(option)}
         className={`px-3 py-1 text-xs rounded-full font-medium border transition ${
           tempSortBy === option
@@ -434,6 +453,8 @@ const PaginationControls = () => {
               </div>
 
               <button
+                aria-label="Apply the selected filters"
+
                 onClick={() => {
                   setStatusFilter(tempStatusFilter);
                   setPaymentFilter(tempPaymentFilter);

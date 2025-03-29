@@ -96,6 +96,7 @@ const CustomNavigation = ({ prevEl, nextEl, disablePrev, disableNext, showArrows
     <div className="absolute inset-y-0 flex items-center justify-between w-full pointer-events-none z-10">
       <button
         ref={prevEl}
+        aria-label="Scroll to previous slide"
         className={`pointer-events-auto bg-primary text-white p-2 rounded-full shadow hover:bg-primary transition-all transform -translate-x-3 ${
           disablePrev ? "opacity-50 cursor-not-allowed" : ""
         }`}
@@ -105,6 +106,7 @@ const CustomNavigation = ({ prevEl, nextEl, disablePrev, disableNext, showArrows
       </button>
       <button
         ref={nextEl}
+        aria-label="Scroll to next slide"
         className={`pointer-events-auto bg-primary text-white p-2 rounded-full shadow hover:bg-primary transition-all transform translate-x-3 ${
           disableNext ? "opacity-50 cursor-not-allowed" : ""
         }`}
@@ -226,6 +228,7 @@ const Products = forwardRef((props, ref) => {
                       {item.price}
                     </span>
                     <button
+                      aria-label={`Add ${item?.name || "item"} to cart`}
                       onClick={() => handleAddItem(item)}
                       className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary transition flex items-center"
                     >

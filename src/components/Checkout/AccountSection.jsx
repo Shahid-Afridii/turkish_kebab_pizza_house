@@ -223,7 +223,8 @@ openPopup({
         <div>
           <p className="text-xs md:text-sm text-gray-600 mb-2">
             {isSignUp ? "Already have an account?" : "Don’t have an account?"}{" "}
-            <button onClick={() => setIsSignUp(!isSignUp)} className="text-primary underline font-medium">
+            <button   aria-label={isSignUp ? "Switch to login form" : "Switch to sign-up form"}
+ onClick={() => setIsSignUp(!isSignUp)} className="text-primary underline font-medium">
               {isSignUp ? "Login" : "Sign up"}
             </button>
           </p>
@@ -245,6 +246,7 @@ openPopup({
               className="flex-1 border rounded-lg px-2 md:px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
             />
             <button
+              aria-label={isLoading ? "Sending OTP, please wait" : "Send one-time password"}
               onClick={handleSendOtp}
               disabled={isLoading}
               className={`bg-primary text-white px-4 py-2 rounded-md text-sm font-semibold transition ${
@@ -298,6 +300,8 @@ openPopup({
             <button
               onClick={handleVerifyOtp}
               disabled={isLoading}
+              aria-label={isLoading ? "Verifying one-time password, please wait" : "Verify one-time password"}
+
               className={`bg-primary text-white px-4 py-2 rounded-lg font-medium text-sm transition ${
                 isLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-primary/90"
               }`}
@@ -312,13 +316,15 @@ openPopup({
               <button
                 onClick={handleSendOtp}
                 disabled={isLoading}
+                aria-label={isLoading ? "Resending one-time password" : "Resend one-time password"}
                 className="text-primary underline disabled:opacity-60"
               >
                 Resend OTP
               </button>
             </p>
             {isSignUp && (
-    <button onClick={handleEditNumber} className="text-primary underline">
+    <button     aria-label="Edit phone number"
+    onClick={handleEditNumber} className="text-primary underline">
       Edit Number
     </button>
   )}

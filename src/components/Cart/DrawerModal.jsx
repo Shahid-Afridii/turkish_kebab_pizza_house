@@ -487,6 +487,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
     return (
       <button
         key={item.id}
+        aria-label={`Select add-on: ${item.name}${item.price > 0 ? `, additional ${formatPrice(item.price)}` : ""}`}
         onClick={() => handleAddOnSelect(addOn.id, item.id, addOn.is_multi_select, addOn.select_upto)}
         disabled={isLimitReached && !isSelected}
         className={`px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm rounded border transition-all ${
@@ -519,6 +520,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
       );
     })}
     <button
+      aria-label={`Clear selected add-ons for ${addOn.name}`}
       onClick={() => clearSelectedAddOns(addOn.id)}
       className="text-primary underline text-xs sm:text-sm mt-1 sm:mt-0"
     >

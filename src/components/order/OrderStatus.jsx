@@ -114,6 +114,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
     <button
       key={star}
       onClick={() => setRating(star)}
+      aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
       className={`text-lg cursor-pointer transition-all ${
         star <= rating ? "text-yellow-400" : "text-white/40"
       }`}
@@ -128,6 +129,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
       {["Too cold", "Delayed delivery", "Underbaked", "Incomplete order"].map((issue) => (
         <button
           key={issue}
+          aria-label={`Select issue: ${issue}`}
           className="border border-white text-white rounded-md px-3 py-0.5 text-xs"
         >
           {issue}
@@ -146,17 +148,20 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
     <div className="mt-3 flex justify-between items-center">
       <button
         className="text-xs underline underline-offset-2"
+        aria-label="View your order history"
         onClick={() => navigate("/orders")}
       >
         View Order
       </button>
 
       <div className="flex gap-3">
-        <button   onClick={() => {
+        <button   aria-label="Skip rating and close popup"
+  onClick={() => {
               onClose();
               sessionStorage.removeItem("latest_order_id");
             }}className="text-xs text-gray-100">Skip</button>
-        <button className="bg-white text-primary px-3 py-1 rounded-md text-xs font-semibold">
+        <button   aria-label="Submit rating"
+ className="bg-white text-primary px-3 py-1 rounded-md text-xs font-semibold">
           Submit
         </button>
       </div>
@@ -184,6 +189,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
           onClose();
           sessionStorage.removeItem("latest_order_id");
         }}
+        aria-labelledby="delivery-instruction-label"
         className="bg-primary hover:bg-red-400 text-white px-3 py-1 rounded-lg text-xs sm:text-sm"
       >
         Add Message
@@ -216,6 +222,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
       <div className="flex justify-between items-center mt-2">
         <button
           onClick={() => navigate("/orders")}
+          aria-label="View your order history"
           className="text-xs sm:text-sm underline underline-offset-2"
         >
           View Order
@@ -225,6 +232,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
             dispatch(getOrders());
             setLastRefreshedAt(new Date());
           }}
+          aria-label="Refresh your orders"
           className="bg-white text-black px-3 py-1 rounded-lg text-xs sm:text-sm"
         >
           Refresh

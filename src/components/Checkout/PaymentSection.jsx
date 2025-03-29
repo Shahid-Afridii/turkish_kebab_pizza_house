@@ -61,6 +61,7 @@ const PaymentSection = ({ selectedPaymentMethod, setSelectedPaymentMethod,handle
   {/* Pay Now - Stripe */}
   <button
     onClick={() => handlePlaceOrder("Stripe")}
+    aria-label={isProcessing === "Stripe" ? "Processing payment with Stripe" : "Pay now using Stripe"}
     className={`flex items-center justify-center gap-2 p-3 border rounded-lg shadow-md hover:shadow-lg transition text-sm sm:text-base ${
       selectedPaymentMethod === "Stripe"
         ? "bg-primary text-white"
