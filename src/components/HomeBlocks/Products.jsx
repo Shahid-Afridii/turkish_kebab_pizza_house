@@ -95,10 +95,10 @@ const Products = forwardRef(({ productRef }, ref) => {
     <>
 
     <div ref={productRef} className="px-4 sm:px-8  bg-gray-50">
-    <div className="flex flex-col items-center justify-center text-center my-6">
+    {/* <div className="flex flex-col items-center justify-center text-center my-6">
    <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">Craving Kebabs & Pizzas?</h1>
    <h2 className="text-base sm:text-lg font-medium text-gray-600 mt-2">Delicious Options Just for You</h2>
-</div>
+</div> */}
 
 
      {searchResults && searchResults.length > 0 && (
@@ -176,7 +176,7 @@ const Products = forwardRef(({ productRef }, ref) => {
 
         </div>
         <div className="p-4 flex flex-col">
-          <h3 className="text-md lg:text-lg font-bold text-gray-800">{item.name}</h3>
+          <h1 className="text-md lg:text-lg font-bold text-gray-800">{item.name}</h1>
           {/* <div className="flex items-center text-sm text-gray-500 mt-2">
             {[...Array(5)].map((_, i) => (
               <svg
