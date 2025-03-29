@@ -1,4 +1,3 @@
-// ✅ Updated SEO with real business info + breadcrumbs
 import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
