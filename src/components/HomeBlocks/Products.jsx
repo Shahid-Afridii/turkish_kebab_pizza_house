@@ -94,7 +94,7 @@ const Products = forwardRef(({ productRef }, ref) => {
   return (
     <>
 
-    <div ref={productRef} className="px-4 sm:px-8  bg-gray-50">
+    <div ref={productRef} className="px-4 sm:px-8 py-8 bg-gray-50">
     {/* <div className="flex flex-col items-center justify-center text-center my-6">
    <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">Craving Kebabs & Pizzas?</h1>
    <h2 className="text-base sm:text-lg font-medium text-gray-600 mt-2">Delicious Options Just for You</h2>
