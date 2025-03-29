@@ -39,7 +39,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-xl font-montserrat font-semibold text-gray-800 mb-4">Quick Links</h4>
+            <h2 className="text-xl font-montserrat font-semibold text-gray-800 mb-4">Quick Links</h2>
             <ul className="space-y-3 text-gray-600 font-Montserrat_Alternates">
               <li>
                 <Link to="/privacy-policy" className="hover:text-primary transition">Privacy Policy</Link>
@@ -58,7 +58,7 @@ const Footer = () => {
 
           {/* Follow Us */}
           <div>
-            <h4 className="text-xl font-montserrat font-semibold text-gray-800 mb-4">Follow Us</h4>
+            <h2 className="text-xl font-montserrat font-semibold text-gray-800 mb-4">Follow Us</h2>
             <p className="text-gray-600 font-Noto_Sans">
               Stay connected with us on social media for updates and offers.
             </p>
