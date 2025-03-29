@@ -9,6 +9,7 @@ import { clearSearchResults } from "../../redux/slices/searchSlice";
 import { formatPrice } from "../../utils/formatPrice";
 import { FaChevronUp } from "react-icons/fa";
 import useWindowWidth from "../../components/useWindowWidth";
+import { Helmet } from "react-helmet";  
 
 const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 // Static Data for All Items
@@ -93,6 +94,22 @@ const Products = forwardRef(({ productRef }, ref) => {
 
   return (
     <>
+<Helmet>
+  {/* Preload all images for LCP */}
+  {displayedItems?.length > 0 &&
+    displayedItems.map((item) => {
+      return (
+        item.images?.map((image, index) => (
+          <link
+            key={index}
+            rel="preload"
+            href={`${IMAGE_URL}${image}`}
+            as="image"
+          />
+        ))
+      );
+    })}
+</Helmet>
 
     <div ref={productRef} className="px-4 sm:px-8 py-8 bg-gray-50">
     {/* <div className="flex flex-col items-center justify-center text-center my-6">
