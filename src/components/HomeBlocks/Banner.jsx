@@ -7,15 +7,17 @@ const Banner = ({scrollToProducts}) => {
       {/* Desktop and Tablet Banner */}
       <div className="hidden md:block p-0 md:p-2 lg:p-0">
         <div className="relative w-full h-screen overflow-hidden">
-          {/* Fullscreen Responsive Image */}
+       
           <motion.img
-            src="assets/Banner image 4 1.png" // Replace with your image path
-            alt="Pizza"
-            className="absolute top-0 left-0 w-full h-full"
-            initial={{ scale: 1.2 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-          />
+  src="assets/Banner image 4 1.png" 
+  alt="Pizza"
+  className="absolute top-0 left-0 w-full h-auto"
+  style={{ aspectRatio: "2.03" }} 
+  initial={{ scale: 1.2 }}
+  animate={{ scale: 1 }}
+  transition={{ duration: 1.5, ease: "easeInOut" }}
+/>
+
 
           {/* Left-Side Content */}
           <div className="absolute inset-0 flex items-center justify-start xl:px-12">
