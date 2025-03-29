@@ -351,6 +351,7 @@ openPopup({
                       maxLength={10}
                       value={formData.mobileNumber}
                       onChange={handleInputChange}
+                      aria-label="Enter your mobile number"
                       placeholder="117 2345678"
                       className="flex-1 outline-none px-2 text-sm text-gray-800 bg-transparent focus:ring-0"
                     />
@@ -368,6 +369,7 @@ openPopup({
                             maxLength={50}
                             type="text"
                             value={formData.name}
+                            aria-label="Enter your name"
                             onChange={handleInputChange}
                             placeholder="Your Name"
                             className="w-full px-4 py-2 border rounded-lg text-sm text-gray-800 outline-none transition duration-300 focus:ring-1 focus:ring-red-500 focus:border-red-500"
@@ -382,6 +384,7 @@ openPopup({
                             value={formData.email}
                             onChange={handleInputChange}
                             placeholder="example@example.com"
+                            aria-label="Enter your email address"
                             className="w-full px-4 py-2 border rounded-lg text-sm text-gray-800 outline-none transition duration-300 focus:ring-1 focus:ring-red-500 focus:border-red-500"
                           />
                         </div>
@@ -420,6 +423,7 @@ openPopup({
                         onChange={(e) => handleOtpChange(index, e.target.value)}
                         ref={otpRefs[index]}
                         maxLength="1"
+                        aria-label={`Enter OTP digit ${index + 1}`}
                         className="w-12 h-12 text-xl text-center border rounded-lg outline-none focus:ring-2 focus:ring-red-500"
                       />
                     ))}

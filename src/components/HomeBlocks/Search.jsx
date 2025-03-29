@@ -75,6 +75,7 @@ const Search = () => {
           <input
             type="text"
             value={keyword}
+            aria-label="Search"
             onChange={(e) => dispatch(setSearchKeyword(e.target.value))}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
@@ -129,6 +130,7 @@ const Search = () => {
             <input
               type="checkbox"
               className="sr-only peer"
+              aria-label="Vegetarian only"
               checked={vegOnly}
               onChange={handleToggle}
             />

@@ -65,17 +65,20 @@ const Footer = () => {
             <div className="flex space-x-4 mt-6">
               <a
                 href="#"
+                aria-label="Visit our Facebook page"
                 className="flex items-center justify-center w-10 h-10 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 transition"
               >
                 <FaFacebookF />
               </a>
               <a
                 href="#"
+                aria-label="Visit our Instagram profile"
                 className="flex items-center justify-center w-10 h-10 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 transition"
               >
                 <FaInstagram />
               </a>
               <a
+                aria-label="Visit our Twitter profile"
                 href="#"
                 className="flex items-center justify-center w-10 h-10 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 transition"
               >

@@ -236,6 +236,7 @@ openPopup({
               className="w-6 h-6 md:w-8 md:h-8 rounded-full border"
             />
             <input
+              aria-label="Enter your mobile number"
               value={mobileNumber}
               onChange={(e) => {
                 const val = e.target.value;
@@ -261,6 +262,7 @@ openPopup({
             <>
               <input
                 type="text"
+                aria-label="Enter your name"
                 value={name}
                 maxLength={50}
                 onChange={(e) => setName(e.target.value.slice(0, 50))}
@@ -270,6 +272,7 @@ openPopup({
               <input
                 type="email"
                 maxLength={100}
+                aria-label="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value.slice(0, 100))}
                 placeholder="Email Address"
@@ -288,6 +291,7 @@ openPopup({
                 <input
                   key={idx}
                   type="text"
+                  aria-label={`Enter OTP digit ${idx + 1}`}
                   maxLength="1"
                   onChange={(e) => handleOtpChange(e.target.value, idx)}
                   onKeyDown={(e) => handleOtpKeyDown(e, idx)}

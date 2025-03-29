@@ -728,6 +728,7 @@ onClick={() => {
         name={field}
         maxLength={30}
         placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+        aria-label={`Enter ${field.charAt(0).toUpperCase() + field.slice(1)}`}
         value={newAddress[field]}
         onChange={handleChange}
         className="w-full px-3 py-2 border rounded-md"
@@ -747,6 +748,7 @@ onClick={() => {
           name="address_type"
           value={option}
           checked={newAddress.address_type === option}
+          aria-label={`Select ${option} address type`}
           onChange={handleTypeChange}
           className="form-radio text-red-500"
         />
@@ -765,6 +767,8 @@ onClick={() => {
         value={customType}
         onChange={(e) => setCustomType(e.target.value)}
         className="w-full px-3 py-2 border rounded-md"
+        aria-label="Enter custom address type"
+
       />
     </div>
   )}

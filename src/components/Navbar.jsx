@@ -89,7 +89,7 @@ useEffect(() => {
     <header className="bg-gray-50 relative z-[9999]">
       <div className="container mx-auto flex justify-between items-center px-2 py-4 lg:px-6">
         {/* Logo */}
-        <Link to="/" className="flex items-center">
+        <Link to="/" className="flex items-center" aria-label="Go to homepage">
           <img
             src="/assets/Mask group.png" // Replace with your actual logo path
             alt="Logo"
@@ -109,6 +109,7 @@ useEffect(() => {
           </Link> */}
           <Link
             to="/info"
+            aria-label="View Restaurant Info"
             className={`nav-link ${
               isActive("/info") ? "border-b-2 border-primary text-primary" : ""
             }`}
@@ -117,6 +118,7 @@ useEffect(() => {
           </Link>
           <Link
             to="/about"
+            aria-label="Learn more about us"
             className={`nav-link ${
               isActive("/about") ? "border-b-2 border-primary text-primary" : ""
             }`}
@@ -132,6 +134,7 @@ useEffect(() => {
   <div className="relative flex items-center">
     <Link
       to="/checkout"
+      aria-label="Go to checkout"
       className="flex items-center justify-center rounded-full h-12 w-12  transition"
     >
       <img src="assets/cart.png" alt="Cart" className="w-12 h-12" />
@@ -156,7 +159,8 @@ useEffect(() => {
              
             </div>
           ) : (
-            <Link to="#login" onClick={toggleLoginDrawer} className="button-primary">
+            <Link   aria-label="Open login drawer"
+            to="#login" onClick={toggleLoginDrawer} className="button-primary">
               Login
             </Link>
           )}
@@ -171,6 +175,7 @@ useEffect(() => {
 <div className="relative flex items-center">
     <Link
       to="/checkout"
+      aria-label="Go to checkout"
       className="flex items-center justify-center rounded-full h-12 w-12  transition"
     >
       <img src="assets/cart.png" alt="Cart" className="w-12 h-12" />
@@ -255,6 +260,7 @@ useEffect(() => {
         </Link> */}
         <Link
           to="/info"
+          aria-label="View Restaurant Info"
           className={`nav-link text-sm ${
             isActive("/info")
               ? "border-b-2 border-primary text-primary"
@@ -268,6 +274,7 @@ useEffect(() => {
         </Link>
         <Link
           to="/about"
+          aria-label="Learn more about us"
           className={`nav-link text-sm ${
             isActive("/about")
               ? "border-b-2 border-primary text-primary"
@@ -286,6 +293,8 @@ useEffect(() => {
               ? "border-b-2 border-primary text-primary"
               : ""
           }`}
+          aria-label="Sign out"
+
           style={{fontSize: "16px"}}
 
           onClick={handleLogout}

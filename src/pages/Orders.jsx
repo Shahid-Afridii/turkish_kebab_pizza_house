@@ -216,7 +216,8 @@ const PaginationControls = () => {
     <div className="max-w-5xl mx-auto px-3 sm:px-4 py-4">
       {/* Breadcrumbs */}
       <nav className="flex items-center text-gray-600 text-xs sm:text-sm mb-4">
-        <Link to="/" className="flex items-center hover:text-primary">
+        <Link to="/"   aria-label="Go to homepage"
+ className="flex items-center hover:text-primary">
           <FaHome className="mr-1" /> Home
         </Link>
         <MdNavigateNext className="mx-2" />
@@ -339,6 +340,7 @@ const PaginationControls = () => {
     <input
       type="date"
       value={startDate}
+      aria-label="Select start date"
       onChange={(e) => setStartDate(e.target.value)}
       className="appearance-none outline-none text-sm bg-transparent"
     />
@@ -352,6 +354,7 @@ const PaginationControls = () => {
     <input
       type="date"
       value={endDate}
+      aria-label="Select end date"
       onChange={(e) => setEndDate(e.target.value)}
       className="appearance-none outline-none text-sm bg-transparent"
     />
@@ -440,12 +443,14 @@ const PaginationControls = () => {
                   <input
                     type="date"
                     value={tempStartDate}
+                    aria-label="Select temporary start date"
                     onChange={(e) => setTempStartDate(e.target.value)}
                     className="w-1/2 px-2 py-1.5 border rounded border-gray-300"
                   />
                   <input
                     type="date"
                     value={tempEndDate}
+                    aria-label="Select temporary end date"
                     onChange={(e) => setTempEndDate(e.target.value)}
                     className="w-1/2 px-2 py-1.5 border rounded border-gray-300"
                   />

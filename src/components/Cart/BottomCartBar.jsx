@@ -119,13 +119,15 @@ useEffect(() => {
       {/* Bottom Green Section */}
       <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5">
         {/* Items Count Button */}
-        <Link  to="/checkout" className="flex font-Montserrat_Alternates items-center justify-center bg-green-600 hover:bg-green-500 text-white px-4 py-2 sm:px-6 sm:py-2 lg:px-8 lg:py-3 rounded-lg font-bold text-xs sm:text-sm lg:text-lg">
+        <Link    aria-label={`Checkout with ${displayedCartItems.length} item${displayedCartItems.length !== 1 ? "s" : ""}`}
+to="/checkout" className="flex font-Montserrat_Alternates items-center justify-center bg-green-600 hover:bg-green-500 text-white px-4 py-2 sm:px-6 sm:py-2 lg:px-8 lg:py-3 rounded-lg font-bold text-xs sm:text-sm lg:text-lg">
         {displayedCartItems.length} Item{displayedCartItems.length !== 1 ? "s" : ""}
         </Link>
 
         {/* Cart Details */}
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
-          <Link  to="/checkout" className="flex items-center gap-1 sm:gap-2 lg:gap-3">
+          <Link   aria-label="View Cart"
+ to="/checkout" className="flex items-center gap-1 sm:gap-2 lg:gap-3">
             <img
               src="assets/Vector.png" // Replace with the correct path to your cart icon
               alt="Cart Icon"

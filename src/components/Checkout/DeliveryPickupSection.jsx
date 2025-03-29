@@ -219,6 +219,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
         <div className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input
+              aria-label="House number and street name"
               type="text"
               placeholder="House Number & Street Name"
               value={selectedAddress}
@@ -228,6 +229,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
             />
             <input
               type="text"
+              aria-label="Save address as (e.g., Home, Office, etc.)"
               readOnly
               onClick={() => setIsModalOpen(true)}
               value={addressType}
@@ -319,6 +321,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
                 name="selectedAddress"
                 checked={selectedAddressId === address.address_id}
                 readOnly
+                aria-label="Select this address"
                 className="h-4 w-4 md:h-5 md:w-5 text-red-600 border-gray-400 focus:ring-0 cursor-pointer"
               />
             </div>
@@ -370,6 +373,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
         value={newAddress[field]}
         maxLength={30} 
         onChange={handleChange}
+        aria-label={`Enter ${field.charAt(0).toUpperCase() + field.slice(1)}`}
         className="w-full px-3 py-2 border rounded-md"
       />
       {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
@@ -387,6 +391,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
           name="address_type"
           value={option}
           checked={newAddress.address_type === option}
+          aria-label={`Select address type ${option}`}
           onChange={handleTypeChange}
           className="form-radio text-red-500"
         />
@@ -403,6 +408,7 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
         maxLength={30} 
         placeholder="Enter custom type"
         value={customType}
+        aria-label="Enter custom address type"
         onChange={(e) => setCustomType(e.target.value)}
         className="w-full px-3 py-2 border rounded-md"
       />

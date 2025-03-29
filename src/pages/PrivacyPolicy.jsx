@@ -20,7 +20,8 @@ const PrivacyPolicy = () => {
     <div className="container mx-auto p-4">
       {/* ✅ Breadcrumbs */}
       <nav className="flex items-center text-gray-600 text-sm mb-4">
-        <Link to="/" className="flex items-center hover:text-primary">
+        <Link to="/"   aria-label="Go to homepage"
+ className="flex items-center hover:text-primary">
           <FaHome className="mr-1" /> Home
         </Link>
         <MdNavigateNext className="mx-2" />
