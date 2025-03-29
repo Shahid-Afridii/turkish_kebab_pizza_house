@@ -133,16 +133,16 @@ useEffect(() => {
            {/* Cart Icon with Badge */}
   <div className="relative flex items-center">
   <Link
-  to="/checkout"
-  aria-label="Go to checkout"
-  className="flex items-center justify-center rounded-full w-12 h-12 transition"
->
-  <img 
-    src="assets/cart.png" 
-    alt="Cart" 
-    className="w-full h-full object-cover" 
-  />
-</Link>
+      to="/checkout"
+      aria-label="Go to checkout"
+      className="flex items-center justify-center rounded-full w-12 h-12 transition"
+    >
+      <img 
+        src="assets/cart.png" 
+        alt="Cart" 
+        className="w-full h-full object-contain"
+      />
+    </Link>
 
     {(isAuthenticated ? cartItems.length : localCartCount) > 0&& (
       <span className="absolute -bottom-2 -right-2 bg-primary text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
