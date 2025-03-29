@@ -224,7 +224,7 @@ const Products = forwardRef((props, ref) => {
                     {item.description}
                   </p>
                   <div className="flex justify-between items-center mt-4">
-                    <span className="text-red-500 font-bold text-lg">
+                    <span className="text-primary font-bold text-lg">
                       {item.price}
                     </span>
                     <button

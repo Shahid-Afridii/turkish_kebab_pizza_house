@@ -488,7 +488,7 @@ useEffect(() => {
           <FaSignOutAlt className="mr-2" /> Sign-out
         </button>
         <button   aria-label="Edit your profile information"
- className="flex items-center border border-red-500 text-red-500 px-5 py-2 rounded-md text-sm font-semibold bg-red-100 hover:bg-red-200 shadow-md">
+ className="flex items-center border border-red-500 text-primary px-5 py-2 rounded-md text-sm font-semibold bg-red-100 hover:bg-red-200 shadow-md">
           <FaEdit className="mr-2" /> Edit
         </button>
       </div>
@@ -501,7 +501,7 @@ useEffect(() => {
                 aria-selected={activeTab === "orders"}
   aria-label="View order history"
                 className={`w-1/2 py-3 text-center text-sm font-medium ${
-                  activeTab === "orders" ? "text-red-500 border-b-2 border-red-500" : "text-gray-600"
+                  activeTab === "orders" ? "text-primary border-b-2 border-red-500" : "text-gray-600"
                 }`}
               >
                 Order History
@@ -511,7 +511,7 @@ useEffect(() => {
   aria-label="View address details"
                 onClick={() => setActiveTab("addresses")}
                 className={`w-1/2 py-3 text-center text-sm font-medium ${
-                  activeTab === "addresses" ? "text-red-500 border-b-2 border-red-500" : "text-gray-600"
+                  activeTab === "addresses" ? "text-primary border-b-2 border-red-500" : "text-gray-600"
                 }`}
               >
                 Address
@@ -525,7 +525,7 @@ useEffect(() => {
 onClick={() => {
   navigate("/orders");
   onClose(); 
-}}    className="text-sm p-3 text-red-500 font-semibold underline underline-offset-2 hover:text-red-600"
+}}    className="text-sm p-3 text-primary font-semibold underline underline-offset-2 hover:text-red-600"
   >
     View Order Details
   </button>
@@ -581,15 +581,15 @@ onClick={() => {
   window.dispatchEvent(event);
   onClose(); // ✅ Close the drawer
 }}
-  className="text-xs border px-3 py-1 rounded-md text-red-500 border-red-500"
+  className="text-xs border px-3 py-1 rounded-md text-primary border-red-500"
 >
   Track Order
 </button>
 
               <div className="flex items-center text-xs font-medium text-gray-800">
                 
-                <FiMapPin className="ml-2 text-red-500" />
-                <span className="ml-1 text-red-500 font-medium">{order.address.city}</span>
+                <FiMapPin className="ml-2 text-primary" />
+                <span className="ml-1 text-primary font-medium">{order.address.city}</span>
               </div>
             </div>
         
@@ -600,7 +600,7 @@ onClick={() => {
               {/* <button className="text-xs md:text-xs px-3 py-1 border rounded-md bg-gray-200 text-gray-800 w-1/2 md:w-auto">
                 REORDER
               </button> */}
-              {/* <button className="text-xs md:text-xs px-3 py-1 border rounded-md text-red-500 border-red-500 w-1/2 md:w-auto">
+              {/* <button className="text-xs md:text-xs px-3 py-1 border rounded-md text-primary border-red-500 w-1/2 md:w-auto">
                 RATE ORDER
               </button> */}
             </div>
@@ -653,7 +653,7 @@ onClick={() => {
           </button>
           <button    aria-label={`Delete address ${item.address_id}`}
  onClick={() => handleDeleteAddress(item.address_id)}
- className="flex items-center px-3 py-1 text-xs md:text-sm text-red-500 hover:bg-gray-100 w-full">
+ className="flex items-center px-3 py-1 text-xs md:text-sm text-primary hover:bg-gray-100 w-full">
             <FiTrash2 className="mr-2" aria-hidden="true" /> Delete
           </button>
           {!item.is_primary && (
@@ -733,7 +733,7 @@ onClick={() => {
         onChange={handleChange}
         className="w-full px-3 py-2 border rounded-md"
       />
-      {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
+      {errors[field] && <p className="text-primary text-xs">{errors[field]}</p>}
     </div>
   ) : null
 )}
@@ -750,7 +750,7 @@ onClick={() => {
           checked={newAddress.address_type === option}
           aria-label={`Select ${option} address type`}
           onChange={handleTypeChange}
-          className="form-radio text-red-500"
+          className="form-radio text-primary"
         />
         <span className="text-sm capitalize">{option}</span>
       </label>

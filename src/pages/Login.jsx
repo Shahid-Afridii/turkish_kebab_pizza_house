@@ -326,9 +326,9 @@ openPopup({
                 <>
                   <p className="text-sm text-gray-600 mb-4">
                     {isSignUp ? (
-                      <>Already have an account? <span className="text-red-500 font-semibold cursor-pointer" onClick={() => setIsSignUp(false)}>Log-in</span></>
+                      <>Already have an account? <span className="text-primary font-semibold cursor-pointer" onClick={() => setIsSignUp(false)}>Log-in</span></>
                     ) : (
-                      <>Don’t have an account? <span className="text-red-500 font-semibold cursor-pointer" onClick={() => setIsSignUp(true)}>Sign-up</span></>
+                      <>Don’t have an account? <span className="text-primary font-semibold cursor-pointer" onClick={() => setIsSignUp(true)}>Sign-up</span></>
                     )}
                   </p>
 

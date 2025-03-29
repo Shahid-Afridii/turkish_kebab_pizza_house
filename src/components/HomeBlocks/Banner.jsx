@@ -53,7 +53,7 @@ const Banner = ({scrollToProducts}) => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, delay: 1.2 }}
               >
-                Get <span className="text-red-500 font-[600]">10% discount</span> on order above{" "}
+                Get <span className="text-primary font-[600]">10% discount</span> on order above{" "}
                 <span className="font-[600]">£16</span>
               </motion.p>
 
@@ -129,7 +129,7 @@ onClick={scrollToProducts}              className="button-primary"
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, delay: 1.2 }}
       >
-        Get <span className="text-red-500 font-semibold">10% discount</span> on order above{" "}
+        Get <span className="text-primaryfont-semibold">10% discount</span> on order above{" "}
         <span className="font-semibold">£16</span>
       </motion.p>
 
