@@ -95,21 +95,16 @@ const Products = forwardRef(({ productRef }, ref) => {
   return (
     <>
 <Helmet>
-  {/* Preload all images for LCP */}
-  {displayedItems?.length > 0 &&
-    displayedItems.map((item) => {
-      return (
-        item.images?.map((image, index) => (
-          <link
-            key={index}
-            rel="preload"
-            href={`${IMAGE_URL}${image}`}
-            as="image"
-          />
-        ))
-      );
-    })}
+  {/* Preload LCP Image (Image that's displayed above the fold, e.g., first image in the first item) */}
+  {displayedItems?.length > 0 && displayedItems[0]?.images?.[0] && (
+    <link
+      rel="preload"
+      href={`${IMAGE_URL}${displayedItems[0].images[0]}`}
+      as="image"
+    />
+  )}
 </Helmet>
+
 
     <div ref={productRef} className="px-4 sm:px-8 py-8 bg-gray-50">
     {/* <div className="flex flex-col items-center justify-center text-center my-6">
