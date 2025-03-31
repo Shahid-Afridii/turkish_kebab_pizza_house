@@ -77,100 +77,100 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
   const orderStatusText = statusTextMap[matchedOrder.order_status?.toLowerCase()] || "Processing";
 
   // ✅ If delivered, show rating section
-  if (matchedOrder.order_status?.toLowerCase() === "delivered") {
-    return (
-      <motion.div
-  ref={containerRef}
-  className="fixed bottom-0 left-0 right-0 z-[999] bg-primary text-white shadow-2xl rounded-t-2xl"
-  variants={waveAnimation}
-  initial="hidden"
-  animate="visible"
-  exit="exit"
->
-  <div className="relative p-4 pb-2">
-     {/* Close Icon */}
-     <button
-  onClick={() => {
-    onClose();
-    sessionStorage.removeItem("latest_order_id");
-  }}
-  className="absolute top-3 right-4 text-white hover:text-white/80 text-xl"
-  aria-label="Close"
->
-  <RxCross2 />
-</button>
+//   if (matchedOrder.order_status?.toLowerCase() === "delivered") {
+//     return (
+//       <motion.div
+//   ref={containerRef}
+//   className="fixed bottom-0 left-0 right-0 z-[999] bg-primary text-white shadow-2xl rounded-t-2xl"
+//   variants={waveAnimation}
+//   initial="hidden"
+//   animate="visible"
+//   exit="exit"
+// >
+//   <div className="relative p-4 pb-2">
+//      {/* Close Icon */}
+//      <button
+//   onClick={() => {
+//     onClose();
+//     sessionStorage.removeItem("latest_order_id");
+//   }}
+//   className="absolute top-3 right-4 text-white hover:text-white/80 text-xl"
+//   aria-label="Close"
+// >
+//   <RxCross2 />
+// </button>
 
-    <h1 className="text-sm font-medium mb-2">
-      Please tell us about your previous order.
-    </h1>
+//     <h1 className="text-sm font-medium mb-2">
+//       Please tell us about your previous order.
+//     </h1>
 
-    <p className="text-base font-semibold text-white mb-2">
-      {matchedOrder.items?.[0]?.name} & {itemsCount - 1} Others
-    </p>
+//     <p className="text-base font-semibold text-white mb-2">
+//       {matchedOrder.items?.[0]?.name} & {itemsCount - 1} Others
+//     </p>
 
-    {/* Star Rating */}
-    <div className="flex gap-1 mb-2">
-  {[1, 2, 3, 4, 5].map((star) => (
-    <button
-      key={star}
-      onClick={() => setRating(star)}
-      aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
-      className={`text-lg cursor-pointer transition-all ${
-        star <= rating ? "text-yellow-400" : "text-white/40"
-      }`}
-    >
-      ★
-    </button>
-  ))}
-</div>
+//     {/* Star Rating */}
+//     <div className="flex gap-1 mb-2">
+//   {[1, 2, 3, 4, 5].map((star) => (
+//     <button
+//       key={star}
+//       onClick={() => setRating(star)}
+//       aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
+//       className={`text-lg cursor-pointer transition-all ${
+//         star <= rating ? "text-yellow-400" : "text-white/40"
+//       }`}
+//     >
+//       ★
+//     </button>
+//   ))}
+// </div>
 
-    {/* Issue Tags */}
-    <div className="flex flex-wrap gap-2 mb-3">
-      {["Too cold", "Delayed delivery", "Underbaked", "Incomplete order"].map((issue) => (
-        <button
-          key={issue}
-          aria-label={`Select issue: ${issue}`}
-          className="border border-white text-white rounded-md px-3 py-0.5 text-xs"
-        >
-          {issue}
-        </button>
-      ))}
-    </div>
+//     {/* Issue Tags */}
+//     <div className="flex flex-wrap gap-2 mb-3">
+//       {["Too cold", "Delayed delivery", "Underbaked", "Incomplete order"].map((issue) => (
+//         <button
+//           key={issue}
+//           aria-label={`Select issue: ${issue}`}
+//           className="border border-white text-white rounded-md px-3 py-0.5 text-xs"
+//         >
+//           {issue}
+//         </button>
+//       ))}
+//     </div>
 
-    {/* Feedback Textarea */}
-    <textarea
-      placeholder="Please let us know, it could help us improve."
-      className="w-full border border-white/20 bg-white text-black rounded-md p-2 resize-none focus:outline-none text-sm placeholder:text-gray-400"
-      rows="2"
-    />
+//     {/* Feedback Textarea */}
+//     <textarea
+//       placeholder="Please let us know, it could help us improve."
+//       className="w-full border border-white/20 bg-white text-black rounded-md p-2 resize-none focus:outline-none text-sm placeholder:text-gray-400"
+//       rows="2"
+//     />
 
-    {/* Footer */}
-    <div className="mt-3 flex justify-between items-center">
-      <button
-        className="text-xs underline underline-offset-2"
-        aria-label="View your order history"
-        onClick={() => navigate("/orders")}
-      >
-        View Order
-      </button>
+//     {/* Footer */}
+//     <div className="mt-3 flex justify-between items-center">
+//       <button
+//         className="text-xs underline underline-offset-2"
+//         aria-label="View your order history"
+//         onClick={() => navigate("/orders")}
+//       >
+//         View Order
+//       </button>
 
-      <div className="flex gap-3">
-        <button   aria-label="Skip rating and close popup"
-  onClick={() => {
-              onClose();
-              sessionStorage.removeItem("latest_order_id");
-            }}className="text-xs text-gray-100">Skip</button>
-        <button   aria-label="Submit rating"
- className="bg-white text-primary px-3 py-1 rounded-md text-xs font-semibold">
-          Submit
-        </button>
-      </div>
-    </div>
-  </div>
-</motion.div>
+//       <div className="flex gap-3">
+//         <button   aria-label="Skip rating and close popup"
+//   onClick={() => {
+//               onClose();
+//               sessionStorage.removeItem("latest_order_id");
+//             }}className="text-xs text-gray-100">Skip</button>
+//         <button   aria-label="Submit rating"
+//  className="bg-white text-primary px-3 py-1 rounded-md text-xs font-semibold">
+//           Submit
+//         </button>
+//       </div>
+//     </div>
+//   </div>
+// </motion.div>
 
-    );
-  }
+//     );
+//   }
 
   // ❌ Else: normal order status UI
   return (
