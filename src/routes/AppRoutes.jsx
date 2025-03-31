@@ -11,6 +11,7 @@ const Orders = lazy(() => import('../pages/Orders'));
 const RestaurantInfo = lazy(() => import('../pages/RestrauntInfo'));
 const PrivacyPolicy = lazy(() => import('../pages/PrivacyPolicy'));
 const TermsAndConditons = lazy(() => import('../pages/TermsAndConditons'));
+const NotFound = lazy(() => import('../pages/NotFound')); 
 
 const AppRoutes = () => (
   
@@ -24,6 +25,7 @@ const AppRoutes = () => (
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsAndConditons />} />
       <Route path="/login" element={<Login />} />
+      <Route path="*" element={<NotFound />} /> 
     </Routes>
 
 );
