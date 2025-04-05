@@ -392,7 +392,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
             <div className="h-full flex flex-col">
               {/* Sticky Header */}
               <motion.div
-                className="sticky top-0 bg-white px-4  py-3 md:py-5 shadow-sm z-[9999]text-center border-b border-gray-200"
+                className="sticky top-0 bg-white px-4  py-3 md:pt-5 shadow-sm z-[9999]text-center border-b border-gray-200"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
@@ -400,6 +400,9 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 <h1 className="text-md md:text-xl font-semibold text-gray-800">
                   {selectedItem?.name}
                 </h1>
+                <h2 className="tpl-4 text-base md:text-md text-gray-700 leading-relaxed tracking-wide">
+                  {selectedItem?.long_desc}
+                </h2>
                 {/* Selection Limit Condition */}
    {/* Show Selected Add-ons or Description */}
    <p className="text-xs md:text-sm capitalize text-gray-500 mt-1">
@@ -426,7 +429,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 {selectedItem?.rating &&   <p className="text-xs md:text-lg text-green-600 font-medium mt-1">
                   {selectedItem?.rating} ⭐ • 30 min
                 </p>}
-              
+                
                 {/* Close Button */}
                 <motion.button
                   className="absolute -top-0 md:-top-0  right-0 bg-primary text-white w-8 h-8 rounded-md lg:rounded-full shadow-lg flex items-center justify-center md:m-3 z-50"
@@ -437,6 +440,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 >
                   ✕
                 </motion.button>
+                
               </motion.div>
 
               {/* Content */}
@@ -499,7 +503,6 @@ const handleRemoveAddon = (addOnId, itemId) => {
     );
   })}
 </div>
-
 
       {/* Display Selected Add-ons */}
       {selectedAddOns[addOn.id]?.length > 0 && (

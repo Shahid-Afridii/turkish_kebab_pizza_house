@@ -552,12 +552,23 @@ const PaginationControls = () => {
                     />
                     <div>
                       <p className="text-sm font-medium text-gray-800">{item.name}</p>
-                      {item.addOn?.length > 0 && (
-                        <p className="text-xs text-gray-500">
-                          Add-ons:{" "}
-                          <span className="text-gray-700">{item.addOn.map((a) => a.name).join(", ")}</span>
-                        </p>
-                      )}
+                      {item.addon?.length > 0 && (
+  <div className="text-xs text-gray-600 mt-1 space-y-1">
+    {item.addon.map((addon, i) => (
+      <div key={i}>
+        <span className="font-medium text-gray-700">{addon.addon_name}:</span>{" "}
+        {addon.addon_item.map((ai, j) => (
+          <span key={j} className="inline-block ml-1">
+            {ai.addon_item_name}
+            {ai.amount ? ` (£${ai.amount})` : ""}
+            {j < addon.addon_item.length - 1 && ","}
+          </span>
+        ))}
+      </div>
+    ))}
+  </div>
+)}
+
                     </div>
                   </div>
                 ))}

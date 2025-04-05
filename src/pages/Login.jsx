@@ -213,7 +213,7 @@ const isInvalidMobileMessage = errorMessage.includes("invalid mobile") || errorM
 
 openPopup({
   type: "error",
-  title: "OTP Error",
+  title: "Error",
   subText: res.payload || "Failed to send OTP.",
   autoClose: 2,
   showConfirmButton: false,

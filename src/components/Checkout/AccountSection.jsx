@@ -95,7 +95,7 @@ const AccountSection = () => {
 
 openPopup({
   type: "error",
-  title: "OTP Error",
+  title: "Error",
   subText: res.payload || "Failed to send OTP.",
   showConfirmButton: false,
   showCancelButton: false,

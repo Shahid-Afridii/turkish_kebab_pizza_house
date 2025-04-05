@@ -57,17 +57,22 @@ const Products = forwardRef(({ productRef }, ref) => {
     setDrawerOpen(false);
     setSelectedItem(null);
   };
+
   useEffect(() => {
-    // ✅ Only dispatch fetchMenuItems when there's no active search
-    if (selectedCategoryId && (!searchResults || searchResults.length === 0)) {
-      dispatch(fetchMenuItems());
-    }
   
-    // ✅ Always clear previous search results when switching category
+    if (!selectedCategoryId) return;
+  
+    // Clear search results if switching category
     if (searchResults?.length > 0) {
       dispatch(clearSearchResults());
     }
-  }, [selectedCategoryId, dispatch]);
+  
+    // Only dispatch if search is empty
+    if (!searchResults || searchResults.length === 0) {
+      dispatch(fetchMenuItems());
+    }
+  }, [selectedCategoryId, searchResults, dispatch]);
+  
 
   useEffect(() => {
     const calculateVisibleItems = () => {
@@ -215,10 +220,12 @@ const Products = forwardRef(({ productRef }, ref) => {
             <span className="ml-2 text-md lg:text-lg text-gray-500">{item.reviews}</span>
           </div> */}
           {item.add_ons && item.add_ons.length > 0 && (
-            <p className="text-xs lg:text-lg text-gray-600 mt-2 truncate">
+            <p className="text-xs lg:text-lg text-gray-600 my-2 truncate">
               {item.add_ons.map((addon) => addon.name).join(", ")}
             </p>
           )}
+                    <h2 className="text-md lg:text-md  text-gray-800">{item.short_desc}</h2>
+
           <div className="flex justify-between items-center mt-4">
             <span className="text-primary font-bold text-lg">{formatPrice(item.price)}</span>
             <button
