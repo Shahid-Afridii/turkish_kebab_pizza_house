@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import BottomCartBar from "../components/Cart/BottomCartBar";
 import OrderStatus from "../components/order/OrderStatus";
+import { AnimatePresence } from "framer-motion";
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
@@ -56,13 +57,17 @@ const MainLayout = ({ children }) => {
       )}
 
       {/* OrderStatus component shown if query param or sessionStorage is set */}
+      <AnimatePresence mode="wait">
       {orderId && (
         <OrderStatus
+        key={orderId} // important to re-trigger animation on order change
           isVisible={showOrderStatus}
           onClose={() => setShowOrderStatus(false)}
           orderId={orderId}
         />
       )}
+      </AnimatePresence>
+     
     </div>
   );
 };
