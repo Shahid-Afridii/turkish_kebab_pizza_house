@@ -399,7 +399,8 @@ const PaginationControls = () => {
               <div>
                 <p className="text-sm font-medium mb-2">Order Status</p>
                 <div className="flex flex-wrap gap-2 capitalize">
-                {statusOptions.map((status) => {
+              
+                       {statusOptions.map((status) => {
   const count = status === "All"
     ? orders.length
     : statusCountMap[status.toLowerCase()] || 0;
@@ -407,15 +408,14 @@ const PaginationControls = () => {
   return (
     <div className="relative inline-block" key={status}>
       <button
-        onClick={() => {
-          setStatusFilter(status);
-          setCurrentPage(1);
-        }}
+                             onClick={() => setTempStatusFilter(status)}
+
+        key={status}
         aria-label={`Filter by ${status}`}
-        className={`px-4 pr-6 py-1 capitalize text-xs sm:text-sm rounded-full font-medium border transition relative ${
-          statusFilter === status
+        className={`px-3 py-1 capitalize text-xs rounded-full font-medium border transition ${
+          tempStatusFilter === status
             ? "bg-primary text-white border-red-600"
-            : "text-gray-700 hover:bg-gray-100 border-gray-300"
+            : "text-gray-600 hover:bg-gray-100 border-gray-300"
         }`}
       >
         {status}
