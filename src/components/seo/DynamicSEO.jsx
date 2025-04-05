@@ -19,6 +19,11 @@ const seoConfig = {
     description: "Review your selected dishes before checkout.",
     keywords: "food cart, kebab cart, pizza cart, cart review",
   },
+  "/about": {
+  title: `About Us | ${BRAND_NAME}`,
+  description: `Learn more about ${BRAND_NAME}, our passion for Turkish flavors, fresh ingredients, and our mission to serve the best kebabs and pizzas in Belfast.`,
+  keywords: "about Turkish restaurant, Belfast kebab shop, pizza and kebab story, restaurant history",
+},
   "/checkout": {
     title: `Secure Checkout | ${BRAND_NAME}`,
     description: "Complete your order with secure online payment or cash on delivery. Fast and safe checkout.",

@@ -13,6 +13,7 @@ const staticRoutes = [
   '/checkout',
   '/orders',
   '/login',
+  "/about",
   '/terms',
   '/privacy-policy',
   '/info',

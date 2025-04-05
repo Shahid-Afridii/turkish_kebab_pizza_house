@@ -29,7 +29,7 @@ const TermsAndConditons = () => {
       </nav>
 
       {isLoading ? (
-        <p className="text-gray-600 text-center">Loading policy...</p>
+        <p className="text-gray-600 text-center">Loading...</p>
       ) : error ? (
         <p className="text-red-500 text-center">Error: {error}</p>
       ) : policyDetails ? (
