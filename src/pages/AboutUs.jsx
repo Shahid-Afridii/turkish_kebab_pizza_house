@@ -68,8 +68,7 @@ const AboutUs = () => {
             of what Kebab or Pizza has to offer. We always work with Fresh, high-quality ingredients so that your
             taste buds are truly pampered. We love to treat our customers with an exquisite dining experience,
             with speedy preparation and cooking, so you do not have to sit and wait for your food. Create an order
-            easily and quickly via our website or make it even easier for yourself by downloading our free app via
-            the App Store or Google Play. Then at the tap of a button you can send an order to us immediately.
+            easily and quickly via our website . Then at the tap of a button you can send an order to us immediately.
           </p>
         </motion.div>
 
