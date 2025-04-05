@@ -104,7 +104,7 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
     pending: {
       label: "Pending Confirmation",
       icon: (
-        <div className="bg-white p-1.5 rounded-full">
+        <div className="bg-white p-1 lg:p-1.5 rounded-full">
           <FaClock className="text-yellow-500 text-lg sm:text-xl" />
         </div>
       ),
@@ -113,8 +113,8 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
     accepted: {
       label: "Order Accepted",
       icon: (
-        <div className="bg-white p-1.5 rounded-full">
-          <FaUtensils className="text-blue-500 text-lg sm:text-xl" />
+        <div className="bg-white p-1 lg:p-1.5 rounded-full">
+          <FaUtensils className="text-blue-500 text-md sm:text-xl" />
         </div>
       ),
       message: "Chef is prepping your order",
@@ -122,8 +122,8 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
     preparing: {
       label: "Preparing",
       icon: (
-        <div className="bg-white p-1.5 rounded-full animate-pulse">
-          <FaUtensils className="text-orange-500 text-lg sm:text-xl" />
+        <div className="bg-white p-1 lg:p-1.5 rounded-full animate-pulse">
+          <FaUtensils className="text-orange-500 text-md sm:text-xl" />
         </div>
       ),
       message: "Order is being cooked",
@@ -131,8 +131,8 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
     "on the way": {
       label: "On the Way",
       icon: (
-        <div className="bg-white p-1.5 rounded-full animate-bounce">
-          <FaTruck className="text-cyan-500 text-lg sm:text-xl" />
+        <div className="bg-white p-1 lg:p-1.5 rounded-full animate-bounce">
+          <FaTruck className="text-cyan-500 text-md sm:text-xl" />
         </div>
       ),
       message: "Out for delivery",
@@ -140,8 +140,8 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
     delivered: {
       label: "Delivered",
       icon: (
-        <div className="bg-white p-1.5 rounded-full">
-          <FaCheckCircle className="text-green-500 text-lg sm:text-xl" />
+        <div className="bg-white p-1 lg:p-1.5 rounded-full">
+          <FaCheckCircle className="text-green-500 text-md sm:text-xl" />
         </div>
       ),
       message: "Delivered successfully",
@@ -149,8 +149,8 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
     cancelled: {
       label: "Cancelled",
       icon: (
-        <div className="bg-white p-1.5 rounded-full">
-          <FaTimesCircle className="text-red-500 text-lg sm:text-xl" />
+        <div className="bg-white p-1 lg:p-1.5 rounded-full">
+          <FaTimesCircle className="text-red-500 text-md sm:text-xl" />
         </div>
       ),
       message: "Order was cancelled",
@@ -158,8 +158,8 @@ const OrderStatus = ({ isVisible, onClose, orderId }) => {
     processing: {
       label: "Processing",
       icon: (
-        <div className="bg-white p-1.5 rounded-full animate-spin">
-          <FaSpinner className="text-white text-lg sm:text-xl" />
+        <div className="bg-white p-1 lg:p-1.5 rounded-full animate-spin">
+          <FaSpinner className="text-white text-md sm:text-xl" />
         </div>
       ),
       message: "Processing payment",
@@ -320,52 +320,51 @@ const { label, icon, message } = statusConfig[currentStatus] || {
       >
         <RxCross2 />
       </button>
-  
-      <motion.div    variants={listContainer}
+      <motion.div
+  variants={listContainer}
   initial="hidden"
-  animate="visible"className="space-y-2">
-  
-
-  {/* Products List */}
-  <div className="space-y-1">
-  {matchedOrder.items.map((item, i) => (
-    <motion.div
-    variants={itemFade}
-      key={i}
-      className="flex items-center justify-between  rounded-md px-3 py-2"
-    >
-      {/* Left Section: Image + Name + Qty */}
-      <div className="flex items-center gap-2">
+  animate="visible"
+  className="w-full"
+>
+  <div className="flex items-center justify-between px-2 py-2 sm:py-3 gap-2 sm:gap-4 overflow-hidden">
+    
+    {/* Left: Product Images */}
+    <div className="flex items-center shrink-0">
+      {matchedOrder.items.slice(0, 3).map((item, i) => (
         <img
+          key={i}
           src={item.image ? `${IMAGE_URL}${item.image}` : "/assets/noimage.png"}
           alt={item.name}
-          className="w-12 h-12 object-cover rounded border"
+          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white object-cover"
+          style={{ marginLeft: i === 0 ? "0" : "-8px" }}
         />
-        <div className="flex flex-col justify-center">
-          <p className="text-sm font-semibold text-white">{item.name}</p>
-          <p className="text-xs text-white/70">Qty: {item.qty}</p>
+      ))}
+      {matchedOrder.items.length > 3 && (
+        <div
+          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white bg-white/70 text-black text-[10px] sm:text-xs flex items-center justify-center"
+          style={{ marginLeft: "-8px" }}
+        >
+          +{matchedOrder.items.length - 3}
         </div>
-      </div>
+      )}
+    </div>
 
-    
-      {/* Center: Order Status with Icon + Message */}
-<div className="flex flex-col items-center justify-center w-1/3 text-center">
-  {icon}
-  <p className="text-[12px] sm:text-[16px] text-white mt-0.5">{message}</p>
-</div>
+    {/* Center: Status Icon & Message */}
+    <div className="flex items-center justify-center gap-1 flex-1 overflow-hidden truncate">
+      <div className="shrink-0">{icon}</div>
+      <p className="text-xs sm:text-sm text-white truncate">{message}</p>
+    </div>
 
-
-      {/* Right: Item count + Payment status */}
-      <div className="text-right">
-        <p className="text-xs sm:text-sm">{itemsCount} Items</p>
-        <p className="text-xs sm:text-sm font-bold">{paid ? "Paid" : "Pending"}</p>
-      </div>
-    </motion.div>
-  ))}
-</div>
-
-
+    {/* Right: Count & Payment */}
+    <div className="text-right text-white text-xs sm:text-sm shrink-0">
+      <p className="whitespace-nowrap">{itemsCount} Items</p>
+      <p className="font-semibold">{paid ? "Paid" : "Pending"}</p>
+    </div>
+  </div>
 </motion.div>
+
+
+
 
   
       <div className="flex justify-between items-center mt-2">

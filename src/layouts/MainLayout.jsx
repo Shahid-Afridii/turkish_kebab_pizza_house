@@ -56,11 +56,11 @@ const MainLayout = ({ children }) => {
         />
       )}
 
-      {/* OrderStatus component shown if query param or sessionStorage is set */}
+   
       <AnimatePresence mode="wait">
       {orderId && (
         <OrderStatus
-        key={orderId} // important to re-trigger animation on order change
+        key={orderId} 
           isVisible={showOrderStatus}
           onClose={() => setShowOrderStatus(false)}
           orderId={orderId}
