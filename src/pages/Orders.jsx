@@ -186,7 +186,14 @@ const PaginationControls = () => {
     
     doc.save("orders_invoice.pdf");
   };
-  
+  const statusCountMap = orders.reduce((acc, order) => {
+    const key = order.order_status?.toLowerCase();
+    if (key) {
+      acc[key] = (acc[key] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
   
   const downloadExcel = () => {
     const excelData = filteredOrders.map((order) => ({
@@ -264,24 +271,38 @@ const PaginationControls = () => {
       {/* Desktop Filters */}
       <div className="hidden  sm:flex flex-col gap-3 sm:gap-4 md:flex-row justify-between items-start md:items-center mb-4">
         <div className="flex flex-wrap gap-2">
-          {statusOptions.map((status) => (
-            <button
-              key={status}
-              onClick={() => {
-                setStatusFilter(status);
-                setCurrentPage(1);
-              }}
-              aria-label={`Filter by ${status}`}
+        {statusOptions.map((status) => {
+  const count = status === "All"
+    ? orders.length
+    : statusCountMap[status.toLowerCase()] || 0;
 
-              className={`px-3 py-1 capitalize text-xs sm:text-sm rounded-full font-medium border transition ${
-                statusFilter === status
-                  ? "bg-primary text-white border-red-600"
-                  : "text-gray-600 hover:bg-gray-100 border-gray-300"
-              }`}
-            >
-              {status}
-            </button>
-          ))}
+  return (
+    <div className="relative inline-block" key={status}>
+      <button
+        onClick={() => {
+          setStatusFilter(status);
+          setCurrentPage(1);
+        }}
+        aria-label={`Filter by ${status}`}
+        className={`px-4 pr-6 py-1 capitalize text-xs sm:text-sm rounded-full font-medium border transition relative ${
+          statusFilter === status
+            ? "bg-primary text-white border-red-600"
+            : "text-gray-700 hover:bg-gray-100 border-gray-300"
+        }`}
+      >
+        {status}
+      </button>
+
+      {count > 0 && (
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] sm:text-[11px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md">
+          {count}
+        </span>
+      )}
+    </div>
+  );
+})}
+
+
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -378,20 +399,36 @@ const PaginationControls = () => {
               <div>
                 <p className="text-sm font-medium mb-2">Order Status</p>
                 <div className="flex flex-wrap gap-2 capitalize">
-                  {statusOptions.map((status) => (
-                    <button
-                      key={status}
-                      aria-label={`Filter by ${status}`}
-                      onClick={() => setTempStatusFilter(status)}
-                      className={`px-3 py-1 capitalize text-xs rounded-full font-medium border transition ${
-                        tempStatusFilter === status
-                          ? "bg-primary text-white border-red-600"
-                          : "text-gray-600 hover:bg-gray-100 border-gray-300"
-                      }`}
-                    >
-                      {status}
-                    </button>
-                  ))}
+                {statusOptions.map((status) => {
+  const count = status === "All"
+    ? orders.length
+    : statusCountMap[status.toLowerCase()] || 0;
+
+  return (
+    <div className="relative inline-block" key={status}>
+      <button
+        onClick={() => {
+          setStatusFilter(status);
+          setCurrentPage(1);
+        }}
+        aria-label={`Filter by ${status}`}
+        className={`px-4 pr-6 py-1 capitalize text-xs sm:text-sm rounded-full font-medium border transition relative ${
+          statusFilter === status
+            ? "bg-primary text-white border-red-600"
+            : "text-gray-700 hover:bg-gray-100 border-gray-300"
+        }`}
+      >
+        {status}
+      </button>
+
+      {count > 0 && (
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] sm:text-[11px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md">
+          {count}
+        </span>
+      )}
+    </div>
+  );
+})}
                 </div>
               </div>
 
