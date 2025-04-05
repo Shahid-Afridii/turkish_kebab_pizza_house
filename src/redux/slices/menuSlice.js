@@ -5,7 +5,13 @@ import api from "../../services/api"; // ✅ Centralized API import
 export const fetchMenuData = createAsyncThunk("menu/fetchMenu", async () => {
   try {
     const response = await api.get("/menu/menu");
-    return response.data.status ? response.data.data : [];
+    if (response.data.status) {
+      return {
+        menu: response.data.data,
+        holiday: response.data.holiday || false,
+      };
+    }
+    return { menu: [], holiday: false };
   } catch (error) {
     console.error("Error fetching menu:", error);
     throw error;
@@ -38,8 +44,9 @@ const menuSlice = createSlice({
   initialState: {
     menu: [],
     menuItems: [],
-    selectedCategoryId: null, // ✅ Track the selected category ID globally
-    vegOnly: false, // ✅ Store vegOnly toggle in Redux
+    selectedCategoryId: null, 
+    holiday: false, 
+    vegOnly: false, 
     status: "idle",
     error: null,
   },
@@ -62,14 +69,15 @@ const menuSlice = createSlice({
       })
       .addCase(fetchMenuData.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.menu = action.payload;
-        if (!state.selectedCategoryId && action.payload.length > 0) {
-          const firstActiveCategory = action.payload.find((category) => category.status === "active");
-        
+        state.menu = action.payload.menu;
+        state.holiday = action.payload.holiday;
+        if (!state.selectedCategoryId && action.payload.menu.length > 0) {
+          const firstActiveCategory = action.payload.menu.find((category) => category.status === "active");
+      
           if (firstActiveCategory) {
-            state.selectedCategoryId = firstActiveCategory.id; // ✅ Auto-select first active category
+            state.selectedCategoryId = firstActiveCategory.id;
           } else {
-            state.selectedCategoryId = action.payload[0].id; // ✅ Fallback to first category if no active category exists
+            state.selectedCategoryId = action.payload.menu[0].id;
           }
         }
         
