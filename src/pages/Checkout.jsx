@@ -42,6 +42,7 @@ const Checkout = () => {
   const [localTaxAmount, setLocalTaxAmount] = useState(0);
   const [localTaxableAmount, setLocalTaxableAmount] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false); // ✅ Loading state for payment processing
+  const holiday = useSelector((state) => state.menu.holiday);
 
 
    // ✅ Dynamic state for order
@@ -445,7 +446,7 @@ const handleRemoveItem = async (item) => {
        
 
           {/* Payment Section */}
-          {isAuthenticated &&     <div className={`bg-white rounded-lg shadow-md ${activeAccordion === 3 ? "p-6" : "p-4"}`}>
+          {(isAuthenticated && !holiday) &&    <div className={`bg-white rounded-lg shadow-md ${activeAccordion === 3 ? "p-6" : "p-4"}`}>
   <div
     className="flex items-center justify-between cursor-pointer"
     onClick={() => toggleAccordion(3)}
@@ -460,7 +461,7 @@ const handleRemoveItem = async (item) => {
       <FaChevronDown className="text-gray-600" />
     )}
   </div>
-  {activeAccordion === 3 && <PaymentSection
+  {activeAccordion === 3 &&  <PaymentSection
             selectedPaymentMethod={selectedPaymentMethod}
             setSelectedPaymentMethod={setSelectedPaymentMethod}
             handlePlaceOrder={handlePlaceOrder} // ✅ Passing function as prop

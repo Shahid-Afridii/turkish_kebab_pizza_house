@@ -107,6 +107,7 @@ const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
 const existingItem = useSelector((state) =>
   state.cart.items.find((item) => item.menu_item_id === selectedItem?.id)
 );
+  const holiday = useSelector((state) => state.menu.holiday);
 
   const [selectedAddOns, setSelectedAddOns] = useState({});
 
@@ -554,7 +555,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
               </motion.div>
 
               {/* Footer */}
-              <motion.div
+              {!holiday &&( <motion.div
                 className="flex items-center justify-between border-t border-gray-200 px-4 py-3"
                 initial="hidden"
                 animate="visible"
@@ -613,7 +614,8 @@ const handleRemoveAddon = (addOnId, itemId) => {
 </motion.button>
 
 
-              </motion.div>
+              </motion.div>) }
+             
             </div>
           </motion.div>
         </>

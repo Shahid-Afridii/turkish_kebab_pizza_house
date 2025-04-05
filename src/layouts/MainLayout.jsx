@@ -5,12 +5,14 @@ import Footer from "../components/Footer";
 import BottomCartBar from "../components/Cart/BottomCartBar";
 import OrderStatus from "../components/order/OrderStatus";
 import { AnimatePresence } from "framer-motion";
+import { useSelector } from "react-redux";
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
   const [isBottomBarVisible, setBottomBarVisible] = useState(true);
   const [showOrderStatus, setShowOrderStatus] = useState(false);
   const [orderId, setOrderId] = useState(null);
+  const holiday = useSelector((state) => state.menu.holiday);
 
   const shouldShowBottomCartBar = location.pathname !== "/checkout" && location.pathname !== "/orders";
 
@@ -46,6 +48,13 @@ const MainLayout = ({ children }) => {
 
   return (
     <div>
+        {/* Top bar when restaurant is closed */}
+    {holiday && (
+      <div className="w-full bg-red-200 text-primary text-xs lg:text-sm text-center py-2 z-50">
+        🚫       Our restaurant is <span className="font-bold underline">currently closed</span>. Please check back soon — we’ll be ready to serve you!
+
+      </div>
+    )}
       <Navbar className="bg-gray-50" />
       <main className="lg:py-4 lg:px-4 bg-gray-50">{children}</main>
       <Footer />
