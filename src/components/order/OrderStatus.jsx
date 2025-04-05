@@ -350,7 +350,7 @@ const { label, icon, message } = statusConfig[currentStatus] || {
     </div>
 
     {/* Center: Status Icon & Message */}
-    <div className="flex items-center justify-center gap-1 flex-1 overflow-hidden truncate">
+    <div className="flex items-center justify-center gap-1 flex-1 p-2 overflow-hidden truncate">
       <div className="shrink-0">{icon}</div>
       <p className="text-xs sm:text-sm text-white truncate">{message}</p>
     </div>
