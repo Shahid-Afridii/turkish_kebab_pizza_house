@@ -215,7 +215,7 @@ openPopup({
     <div className="bg-white p-4 md:p-6">
       {isAuthenticated ? (
         <div className="bg-green-600 text-white p-4 md:p-6 rounded-lg flex items-center gap-4">
-          <p className="text-sm md:text-base flex items-center gap-2">
+          <p className="text-xs md:text-base flex items-center gap-2">
             Mobile Number Verified <FaCheckCircle className="h-5 w-5 text-white" />
           </p>
         </div>
@@ -229,34 +229,37 @@ openPopup({
             </button>
           </p>
 
-          <div className="flex items-center gap-2 md:gap-4 mb-3">
-            <img
-              src="https://flagcdn.com/w40/gb.png"
-              alt="UK Flag"
-              className="w-6 h-6 md:w-8 md:h-8 rounded-full border"
-            />
-            <input
-              aria-label="Enter your mobile number"
-              value={mobileNumber}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (/^\d*$/.test(val)) setMobileNumber(val.slice(0, 10)); // ensure numeric + limit
-              }}
-              
-              placeholder="117 2345678"
-              className="flex-1 border rounded-lg px-2 md:px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
-            />
-            <button
-              aria-label={isLoading ? "Sending OTP, please wait" : "Send one-time password"}
-              onClick={handleSendOtp}
-              disabled={isLoading}
-              className={`bg-primary text-white px-4 py-2 rounded-md text-sm font-semibold transition ${
-                isLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-primary/90"
-              }`}
-            >
-              {isLoading ? "Processing..." : "OTP"}
-            </button>
-          </div>
+          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-3 w-full">
+  <div className="flex items-center gap-2 w-full md:w-auto">
+    <img
+      src="https://flagcdn.com/w40/gb.png"
+      alt="UK Flag"
+      className="w-5 h-5 md:w-6 md:h-6 rounded-full border"
+    />
+    <input
+      aria-label="Enter your mobile number"
+      value={mobileNumber}
+      onChange={(e) => {
+        const val = e.target.value;
+        if (/^\d*$/.test(val)) setMobileNumber(val.slice(0, 10));
+      }}
+      placeholder="117 2345678"
+      className="flex-1 border rounded-lg px-2 md:px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
+    />
+  </div>
+
+  <button
+    aria-label={isLoading ? "Sending OTP, please wait" : "Send one-time password"}
+    onClick={handleSendOtp}
+    disabled={isLoading}
+    className={`w-full md:w-auto bg-primary text-white px-4 py-2 rounded-md text-sm font-semibold transition ${
+      isLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-primary/90"
+    }`}
+  >
+    {isLoading ? "Processing..." : "OTP"}
+  </button>
+</div>
+
 
           {isSignUp && (
             <>
@@ -285,34 +288,33 @@ openPopup({
         <div>
           <p className="text-xs md:text-sm text-gray-600 mb-4">Enter the OTP sent to your mobile</p>
 
-          <div className="flex items-center gap-4">
-            <div className="flex gap-2" onPaste={handlePaste}>
-              {[0, 1, 2, 3].map((_, idx) => (
-                <input
-                  key={idx}
-                  type="text"
-                  aria-label={`Enter OTP digit ${idx + 1}`}
-                  maxLength="1"
-                  onChange={(e) => handleOtpChange(e.target.value, idx)}
-                  onKeyDown={(e) => handleOtpKeyDown(e, idx)}
-                  ref={(el) => (otpInputs.current[idx] = el)}
-                  className="w-12 h-12 text-xl text-center border-2 border-red-500 rounded-md outline-none  focus:ring-red-400"
-                />
-              ))}
-            </div>
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full">
+  <div className="flex gap-2 justify-center md:justify-start" onPaste={handlePaste}>
+    {[0, 1, 2, 3].map((_, idx) => (
+      <input
+        key={idx}
+        type="text"
+        aria-label={`Enter OTP digit ${idx + 1}`}
+        maxLength="1"
+        onChange={(e) => handleOtpChange(e.target.value, idx)}
+        onKeyDown={(e) => handleOtpKeyDown(e, idx)}
+        ref={(el) => (otpInputs.current[idx] = el)}
+        className="w-9 h-9 md:w-12 md:h-12 text-md md:text-lg text-center border-2 border-red-500 rounded-md outline-none focus:ring-red-400"
+      />
+    ))}
+  </div>
 
-            <button
-              onClick={handleVerifyOtp}
-              disabled={isLoading}
-              aria-label={isLoading ? "Verifying one-time password, please wait" : "Verify one-time password"}
-
-              className={`bg-primary text-white px-4 py-2 rounded-lg font-medium text-sm transition ${
-                isLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-primary/90"
-              }`}
-            >
-              {isLoading ? "Processing..." : "Verify OTP"}
-            </button>
-          </div>
+  <button
+    onClick={handleVerifyOtp}
+    disabled={isLoading}
+    aria-label={isLoading ? "Verifying one-time password, please wait" : "Verify one-time password"}
+    className={`bg-primary text-white px-4 py-2 rounded-lg font-medium text-sm transition w-full md:w-auto ${
+      isLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-primary/90"
+    }`}
+  >
+    {isLoading ? "Processing..." : "Verify OTP"}
+  </button>
+</div>
 
           <div className="flex justify-between mt-4 text-xs md:text-sm text-gray-600">
             <p>

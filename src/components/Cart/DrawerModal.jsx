@@ -105,8 +105,9 @@ const DrawerModal = ({ isOpen, onClose, selectedItem }) => {
      const { isAuthenticated } = useSelector((state) => state.auth);
 // Fetch existing cart item details (if already added)
 const existingItem = useSelector((state) =>
-  state.cart.items.find((item) => item.id === selectedItem?.id)
+  state.cart.items.find((item) => item.menu_item_id === selectedItem?.id)
 );
+
   const [selectedAddOns, setSelectedAddOns] = useState({});
 
 // States
@@ -432,6 +433,7 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 
                 {/* Close Button */}
                 <motion.button
+                aria-label="Close drawer"
                   className="absolute -top-0 md:-top-0  right-0 bg-primary text-white w-8 h-8 rounded-md lg:rounded-full shadow-lg flex items-center justify-center md:m-3 z-50"
                   // className="absolute -top-6 right-0 bg-primary text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center border-4 border-white z-50"
                   onClick={onClose}
@@ -590,17 +592,26 @@ const handleRemoveAddon = (addOnId, itemId) => {
                 </div>
 
                 <motion.button
-   className={`bg-primary text-white px-2 md:px-5 py-3 rounded-lg font-bold text-xs md:text-sm hover:bg-opacity-90 shadow-lg transition ${
-    isAddingToCart || Object.keys(validationErrors).length > 0 ? "opacity-50 cursor-not-allowed" : ""
+  className={`bg-primary text-white px-2 md:px-5 py-3 rounded-lg font-bold text-xs md:text-sm hover:bg-opacity-90 shadow-lg transition ${
+    existingItem || isAddingToCart || Object.keys(validationErrors).length > 0
+      ? "opacity-50 cursor-not-allowed"
+      : ""
   }`}
   onClick={handleAddToCart}
-  disabled={Object.keys(validationErrors).length > 0}
+  disabled={
+    existingItem || isAddingToCart || Object.keys(validationErrors).length > 0
+  }
   variants={buttonVariants}
   whileHover="hover"
   whileTap="tap"
 >
-{isAddingToCart ? "Processing..." : `Add to Cart • ${formatPrice(grandTotal)}`}
+  {existingItem
+    ? "Already in Cart"
+    : isAddingToCart
+    ? "Processing..."
+    : `Add to Cart • ${formatPrice(grandTotal)}`}
 </motion.button>
+
 
               </motion.div>
             </div>

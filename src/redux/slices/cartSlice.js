@@ -46,7 +46,7 @@ export const removeCartItem = createAsyncThunk(
   async (cartId, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.post(`/client/cart/del`,
-        { id: cartId }, // ✅ Send cart_id in request body
+        { cart_id: cartId }, // ✅ Send cart_id in request body
       );
 
       validateResponse(response);
