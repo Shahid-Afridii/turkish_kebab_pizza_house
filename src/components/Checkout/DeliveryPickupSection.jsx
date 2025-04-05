@@ -179,13 +179,13 @@ if (!newAddress.pincode.trim() || !postcodeRegex.test(newAddress.pincode.trim())
   return (
     <div className="bg-white p-4 sm:p-6">
       {/* Header Section */}
-      <div className="text-center mb-4">
+      {/* <div className="text-center mb-4">
         {mode === "delivery" && (
           <span className="text-xs sm:text-sm text-gray-500">
             Minimum order of £10 for delivery.
           </span>
         )}
-      </div>
+      </div> */}
 
       {/* Toggle Buttons */}
       <div className="flex justify-center gap-2 mb-6">
